@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Ieemdb.Web.Models
+namespace Ieemdb.Persistence
 {
-    public static class Program
+    class Program
     {
         static void Main(string[] args)
         {
