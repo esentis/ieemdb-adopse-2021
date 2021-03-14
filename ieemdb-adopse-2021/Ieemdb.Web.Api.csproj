@@ -5,6 +5,10 @@
     <RootNamespace>ieemdb_adopse_2021</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>2</WarningLevel>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Kritikos.Configuration.Persistence" Version="0.1.9" />
     <PackageReference Include="Kritikos.StructuredLogging.Templates" Version="1.0.14" />
