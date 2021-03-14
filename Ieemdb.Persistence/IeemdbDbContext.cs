@@ -3,6 +3,7 @@ using Ieemdb.Persistence.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Ieemdb.Persistence.Models;
 
 namespace Ieemdb.Persistence
 {
@@ -14,6 +15,19 @@ namespace Ieemdb.Persistence
             : base(options)
         {
         }
+
+        public DbSet<Actor> Actors { get; set; }
+        public DbSet<Director> Directors { get; set; }
+        public DbSet<Writer> Writers { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Image> Images { get; set; }
+        public DbSet<Movie> Movies { get; set; }
+        public DbSet<MovieActor> MovieActors { get; set; }
+        public DbSet<MovieDirector> MovieDirectors { get; set; }
+        public DbSet<MoviePoster> MoviePosters { get; set; }
+        public DbSet<MovieScreenshot> MovieScreenshots { get; set; }
+        public DbSet<MovieWriter> MovieWriters { get; set; }
+        public DbSet<MovieGenre> MovieGenres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -32,6 +46,73 @@ namespace Ieemdb.Persistence
                         NormalizedName = RoleNames.Administrator,
                     },
                 });
+
+
+            });
+            builder.Entity<MovieActor>(e =>
+            {
+                e.HasOne(mv => mv.Movie)
+                    .WithMany()
+                    .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(mv => mv.Actor)
+                    .WithMany()
+                    .HasForeignKey("ActorId").OnDelete(DeleteBehavior.Restrict);
+                e.HasKey("MovieId", "ActorId");
+            });
+
+            builder.Entity<MovieDirector>(e =>
+            {
+                e.HasOne(mv => mv.Movie)
+                    .WithMany()
+                    .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(mv => mv.Director)
+                    .WithMany()
+                    .HasForeignKey("DirectorId").OnDelete(DeleteBehavior.Restrict);
+                e.HasKey("MovieId", "DirectorId");
+            });
+
+            builder.Entity<MovieWriter>(e =>
+            {
+                e.HasOne(mv => mv.Movie)
+                    .WithMany()
+                    .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(mv => mv.Writer)
+                    .WithMany()
+                    .HasForeignKey("WriterId").OnDelete(DeleteBehavior.Restrict);
+                e.HasKey("MovieId", "WriterId");
+            });
+
+            builder.Entity<MovieGenre>(e =>
+            {
+                e.HasOne(mv => mv.Movie)
+                    .WithMany()
+                    .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(mv => mv.Genre)
+                    .WithMany()
+                    .HasForeignKey("GenreId").OnDelete(DeleteBehavior.Restrict);
+                e.HasKey("MovieId", "GenreId");
+            });
+
+            builder.Entity<MoviePoster>(e =>
+            {
+                e.HasOne(mv => mv.Movie)
+                    .WithMany()
+                    .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(mv => mv.Poster)
+                    .WithMany()
+                    .HasForeignKey("PosterId").OnDelete(DeleteBehavior.Restrict);
+                e.HasKey("MovieId", "PosterId");
+            });
+
+            builder.Entity<MovieScreenshot>(e =>
+            {
+                e.HasOne(mv => mv.Movie)
+                    .WithMany()
+                    .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(mv => mv.Screenshot)
+                    .WithMany()
+                    .HasForeignKey("ScreenshotId").OnDelete(DeleteBehavior.Restrict);
+                e.HasKey("MovieId", "ScreenshotId");
             });
         }
     }
