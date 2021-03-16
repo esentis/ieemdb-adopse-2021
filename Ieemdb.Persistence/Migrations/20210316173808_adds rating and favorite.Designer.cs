@@ -3,15 +3,17 @@ using System;
 using Ieemdb.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Ieemdb.Persistence.Migrations
 {
     [DbContext(typeof(IeemdbDbContext))]
-    partial class IeemdbDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210316173808_adds rating and favorite")]
+    partial class addsratingandfavorite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
