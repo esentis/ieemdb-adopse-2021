@@ -22,6 +22,8 @@ namespace Ieemdb.Persistence
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
         public DbSet<MovieActor> MovieActors { get; set; }
         public DbSet<MovieDirector> MovieDirectors { get; set; }
         public DbSet<MoviePoster> MoviePosters { get; set; }
