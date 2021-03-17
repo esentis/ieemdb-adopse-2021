@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Ieemdb.Persistence.Models;
+using Kritikos.Configuration.Peristence.IdentityServer;
 
 namespace Ieemdb.Persistence
 {
-    public class IeemdbDbContext : IdentityDbContext<IeemdbUser, IeemdbRole, Guid>
+    public class IeemdbDbContext : ApiAuthorizationPooledDbContext<IeemdbUser, IeemdbRole, Guid>
     {
         private static readonly DateTimeOffset SeededAt = DateTime.Parse("13/03/2021");
 
