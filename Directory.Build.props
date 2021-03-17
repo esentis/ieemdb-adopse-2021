@@ -1,0 +1,154 @@
+<Project>
+  <PropertyGroup Label="Project">
+    <!-- Prepend organization name to default namespace -->
+    <RootNamespace>Esentis.$(MSBuildProjectName)</RootNamespace>
+    <!-- Generate documentation file and ignore warnings for undocumented elements -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <!-- Error out upon trying to package projects marked as not packable -->
+    <WarnOnPackingNonPackableProject>true</WarnOnPackingNonPackableProject>
+    <!-- Disable warnings on preview SDK versions -->
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+    <!-- We only target a single framework hence the subdir is not needed -->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- Same but for runtime assemblies -->
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <!-- Enable lock files -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- Locked mode should only be enabled on CI -->
+    <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</RestoreLockedMode>
+    <!-- Disable nugets from SDK fallback folders -->
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <!-- Enable nullable context by default for all projects -->
+    <Nullable>enable</Nullable>
+    <!-- Enable .NET 5+ native analyzers -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <!-- Use latest stable language features -->
+    <AnalysisLevel>latest</AnalysisLevel>
+    <!-- Use latest language version supported by the SDK -->
+    <LangVersion>latest</LangVersion>
+    <!-- Use deterministic builds -->
+    <!-- <Deterministic>true</Deterministic> -->
+  </PropertyGroup>
+
+  <!-- Sets deterministic source paths for CI builds -->
+  <PropertyGroup Label="CI Build">
+    <!-- https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#system-variables -->
+    <ContinuousIntegrationBuild Condition="'$(TF_BUILD)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <!-- https://help.github.com/en/actions/configuring-and-managing-workflows/using-environment-variables -->
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <!-- https://docs.gitlab.com/ee/ci/variables/predefined_variables.html -->
+    <ContinuousIntegrationBuild Condition="'$(GITLAB_CI)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <!-- https://www.appveyor.com/docs/environment-variables/ -->
+    <ContinuousIntegrationBuild Condition="'$(APPVEYOR)' == 'True'">true</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild Condition="'$(APPVEYOR)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!-- Enable custom nesting for files -->
+  <ItemGroup>
+    <ProjectCapability Include="DynamicFileNesting" />
+    <ProjectCapability Include="DynamicDependentFile" />
+  </ItemGroup>
+
+  <!-- Use submodule .NET ruleset for analyzers -->
+  <PropertyGroup Label="Code Analysis Ruleset" Condition="Exists('$(MSBuildThisFileDirectory)\dotnet.ruleset')">
+    <CodeAnalysisRuleset>$(MSBuildThisFileDirectory)\dotnet.ruleset</CodeAnalysisRuleset>
+  </PropertyGroup>
+
+  <!-- Use submodule stylecop configuration -->
+  <ItemGroup Label="Code Analysis Configuration" Condition="Exists('$(MSBuildThisFileDirectory)\stylecop.json')">
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+  <!-- Use common AssemblyInfo versioning -->
+  <ItemGroup Label="AssemblyInfo Versioning" Condition="Exists('$(MSBuildThisFileDirectory)\AssemblyInfo\AssemblyInfo.cs')">
+    <Compile Include="$(MSBuildThisFileDirectory)\AssemblyInfo\AssemblyInfo.cs" Link="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <PropertyGroup Label="Disable AssemblyInfo Generation" Condition="Exists('$(MSBuildThisFileDirectory)\AssemblyInfo\AssemblyInfo.cs')">
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+  </PropertyGroup>
+
+  <!-- Disable packable/publishable for test projects -->
+  <PropertyGroup Label="Output Modifiers">
+    <InTestFolder>false</InTestFolder>
+    <InTestFolder Condition="'$([System.IO.Directory]::GetParent($(MSBuildProjectDirectory)).Name)' == 'tests'">true</InTestFolder>
+    <IsTest Condition="$(MSBuildProjectName.ToLowerInvariant().EndsWith('tests'))">true</IsTest>
+    <IsPackable Condition="'$(IsTest)' == 'true' OR '$(InTestFolder)' == 'true'">false</IsPackable>
+    <IsPublishable Condition="'$(IsTest)' == 'true' OR '$(InTestFolder)' == 'true'">false</IsPublishable>
+  </PropertyGroup>
+
+  <!-- Uses pretty xunit configuration -->
+  <ItemGroup Label="xUnit Configuration" Condition="Exists('$(MSBuildThisFileDirectory)\xunit.runner.json') AND $(IsTest)=='True'">
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)\xunit.runner.json" Link="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AdditionalFiles>
+  </ItemGroup>
+
+  <!-- Project internals are exposed to projects named $(Project).Tests by default -->
+  <ItemGroup Condition="@(InternalsVisibleToSuffix->Count()) == 0 AND @(InternalsVisibleTo->Count()) == 0">
+    <InternalsVisibleToSuffix Include=".Tests" />
+  </ItemGroup>
+
+  <PropertyGroup Label="Package">
+    <PackageId>$(RootNamespace)</PackageId>
+    <Company>Kritikos IO</Company>
+    <Authors>Alexandros Kritikos</Authors>
+    <Copyright>© Kritikos IO. All rights reserved.</Copyright>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!-- Optional: Embed source files that are not tracked by the source control manager to the PDB -->
+    <!-- This is useful if you generate files during the build -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup Label="Test Dependencies" Condition="'$(IsTest)'=='true'">
+    <PackageReference Include="coverlet.msbuild" Version="3.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Label="Nugets" Condition="'$(IsTest)' != 'true'">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.321">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SerilogAnalyzer" Version="0.15.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SmartanAlyzers.ExceptionAnalyzer" Version="1.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SmartAnalyzers.MultithreadingAnalyzer" Version="1.1.31">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Label="SourceLink" Condition="$(IsPackable)">
+    <PackageReference Include="Microsoft.SourceLink.Bitbucket.Git" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitLab" Version="1.0.0" PrivateAssets="All" />
+
+    <SourceLinkGitLabHost Include="git.kritikos.io" />
+    <SourceLinkGitHubHost Include="github.com" />
+    <SourceLinkBitBucketHost Include="bitbucket.org" />
+  </ItemGroup>
+</Project>

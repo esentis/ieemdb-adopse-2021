@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-
-namespace Ieemdb.Web.Controllers
+﻿namespace Esentis.Ieemdb.Web.Controllers
 {
-    public class OidcConfigurationController : Controller
+  using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+  using Microsoft.AspNetCore.Mvc;
+  using Microsoft.Extensions.Logging;
+
+  public class OidcConfigurationController : Controller
     {
         private readonly ILogger<OidcConfigurationController> _logger;
 
