@@ -23,7 +23,7 @@ namespace Esentis.Ieemdb.Web.Helpers
 
     protected IeemdbDbContext Context { get; init; }
 
-    protected readonly IPureMapper Mapper;
+    protected IPureMapper Mapper { get; init; }
 
     protected Guid RetrieveUserId() =>
       Guid.TryParse(HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier), out var guid)

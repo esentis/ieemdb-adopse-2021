@@ -27,9 +27,6 @@ namespace Esentis.Ieemdb.Web.Controllers
       "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching",
     };
 
-    private readonly ILogger<WeatherForecastController> logger;
-    private readonly IPureMapper Mapper;
-
     public WeatherForecastController(ILogger<WeatherForecastController> logger, IeemdbDbContext ctx, IPureMapper mapper)
       : base(logger, ctx, mapper)
     {
