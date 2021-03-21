@@ -8,6 +8,7 @@ namespace Esentis.Ieemdb.Web.Helpers
 
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Models;
+  using Esentis.Ieemdb.Web.Models.Dto;
 
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
@@ -17,7 +18,9 @@ namespace Esentis.Ieemdb.Web.Helpers
   public static class MappingConfiguration
   {
     public static readonly IPureMapperConfig Mapping = new PureMapperConfig()
-      .Map<WeatherForecast, MovieDto>(mapper => forecast => new MovieDto { Title = forecast.Summary, })
+      .Map<Actor, ActorDto>(mapper => actor => new ActorDto() { Name = actor.Name, Bio = actor.Bio, Id = actor.Id, BirthDate = actor.BirthDate, })
+      .Map<ActorDto, Actor>(mapper => actorDto => new Actor() { Name = actorDto.Name, Bio = actorDto.Bio, Id = actorDto.Id, BirthDate = actorDto.BirthDate, })
+      .Map<AddActorDto, Actor>(mapper => addActor => new Actor() { Name = addActor.Name, Bio = addActor.bio, BirthDate = addActor.birthDate, })
       .Map<WeatherForecast, MovieDto>(
         mapper => forecast => new MovieDto
         {
