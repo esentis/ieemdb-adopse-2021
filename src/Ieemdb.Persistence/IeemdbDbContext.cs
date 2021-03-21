@@ -63,10 +63,9 @@ namespace Esentis.Ieemdb.Persistence
                         Name = RoleNames.Administrator,
                         NormalizedName = RoleNames.Administrator,
                     },
-          });
-
-
+              });
       });
+
       builder.Entity<MovieActor>(e =>
       {
         e.HasOne(mv => mv.Movie)
