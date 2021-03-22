@@ -13,5 +13,6 @@ namespace Esentis.Ieemdb.Web.Models
     public string Title { get; set; } = string.Empty;
 
     public ActorDto Actor { get; set; }
+    public DirectorDto Director { get; set; }
   }
 }
