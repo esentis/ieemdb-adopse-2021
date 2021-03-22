@@ -24,9 +24,6 @@ namespace Esentis.Ieemdb.Web.Helpers
       .Map<Director, DirectorDto>(mapper => director => new DirectorDto() { Name = director.Name, Bio = director.Bio, Id = director.Id, BirthDate = director.BirthDate, })
       .Map<DirectorDto, Director>(mapper => directorDto => new Director() { Name = directorDto.Name, Bio = directorDto.Bio, Id = directorDto.Id, BirthDate = directorDto.BirthDate, })
       .Map<AddDirectorDto, Director>(mapper => addDirector => new Director() { Name = addDirector.Name, Bio = addDirector.bio, BirthDate = addDirector.birthDate, })
-      .Map<Genre, GenreDto>(mapper => genre => new GenreDto() { Name = genre.Name, Id = genre.Id, })
-      .Map<GenreDto, Genre>(mapper => genreDto => new Genre() { Name = genreDto.Name, Id = genreDto.Id, })
-      .Map<AddGenreDto, Genre>(mapper => addGenre => new Genre() { Name = addGenre.Name, })
       .Map<WeatherForecast, MovieDto>(
         mapper => forecast => new MovieDto
         {
