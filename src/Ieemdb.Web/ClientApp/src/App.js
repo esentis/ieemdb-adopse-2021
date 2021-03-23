@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
+import { Route } from 'react-router';
+import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
+import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants';
+
 import {Container,Row} from 'react-bootstrap';
 
 import LeftSide from './components/LeftSide'
@@ -12,6 +17,8 @@ export default class App extends Component {
   render () {
     return (
       <Container fluid>
+            <AuthorizeRoute path='/fetch-data' component={FetchData} />
+            <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
             <Row>
               <LeftSide/>
               <RightSide/>
