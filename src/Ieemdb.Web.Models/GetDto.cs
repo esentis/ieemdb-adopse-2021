@@ -5,4 +5,5 @@ namespace Esentis.Ieemdb.Web.Models
   public record AddActorDto(string Name, DateTimeOffset birthDate, string bio);
   public record AddDirectorDto(string Name, DateTimeOffset birthDate, string bio);
   public record AddGenreDto(string Name);
+  public record AddWriterDto(string Name, DateTimeOffset birthDate, string bio);
 }
