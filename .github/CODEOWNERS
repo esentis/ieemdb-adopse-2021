@@ -1,0 +1,4 @@
+* @esentis
+*.cs @esentis @vagmark30
+*.csproj @esentis @vagmark30
+/src/Ieemdb.Web/ClientApp/* @TeoMastro @KostisGrf @GavriilJim
