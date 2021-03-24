@@ -1,6 +1,9 @@
 # IEEMDB
 
+![Logo](https://picsum.photos/200/100)
 ```Logo coming soon```
+
+Please read [Contributing Guidelines](CONTRIBUTING.md) before working on this repo.
 
 ## Contributors
 

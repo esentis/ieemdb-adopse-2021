@@ -6,17 +6,13 @@ namespace Esentis.Ieemdb.Web.Models
   using System.Text;
   using System.Threading.Tasks;
 
+  using Esentis.Ieemdb.Web.Models.Dto;
+
   public class MovieDto
   {
     public string Title { get; set; } = string.Empty;
 
     public ActorDto Actor { get; set; }
-  }
-
-  public class ActorDto
-  {
-    public string Name { get; set; } = string.Empty;
-
-    private List<MovieDto> Movies { get; set; } = new();
+    public DirectorDto Director { get; set; }
   }
 }

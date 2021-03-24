@@ -97,9 +97,9 @@
 
   <PropertyGroup Label="Package">
     <PackageId>$(RootNamespace)</PackageId>
-    <Company>Kritikos IO</Company>
-    <Authors>Alexandros Kritikos</Authors>
-    <Copyright>© Kritikos IO. All rights reserved.</Copyright>
+    <Company>Esentis</Company>
+    <Authors>Alexandros Esentis</Authors>
+    <Copyright>© Esentis IO. All rights reserved.</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <!-- Optional: Embed source files that are not tracked by the source control manager to the PDB -->

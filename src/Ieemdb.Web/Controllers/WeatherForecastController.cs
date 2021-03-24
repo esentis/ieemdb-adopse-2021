@@ -6,7 +6,9 @@ namespace Esentis.Ieemdb.Web.Controllers
 
   using AutoMapper;
 
+  using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Models;
+  using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
 
   using Kritikos.PureMap.Contracts;
@@ -18,19 +20,16 @@ namespace Esentis.Ieemdb.Web.Controllers
   [Authorize]
   [ApiController]
   [Route("[controller]")]
-  public class WeatherForecastController : ControllerBase
+  public class WeatherForecastController : BaseController<WeatherForecastController>
   {
     private static readonly string[] Summaries = new[]
     {
       "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching",
     };
 
-    private readonly ILogger<WeatherForecastController> logger;
-    private readonly IPureMapper Mapper;
-    public WeatherForecastController(ILogger<WeatherForecastController> logger, IPureMapper mapper)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, IeemdbDbContext ctx, IPureMapper mapper)
+      : base(logger, ctx, mapper)
     {
-      this.logger = logger;
-      Mapper = mapper;
     }
 
     [HttpGet]
