@@ -12,3 +12,24 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+.column-left {
+  background-color: #61dafb;
+  border: 2px solid;
+  height: 100vh;
+}
+
+.column-right {
+  background-color: #61dafb;
+  border: 2px solid;
+  height: 50vh;
+}
+
+.nav-center{
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  text-align: center;
+}
