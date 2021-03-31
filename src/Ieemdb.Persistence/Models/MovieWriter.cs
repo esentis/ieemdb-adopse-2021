@@ -2,11 +2,9 @@ namespace Esentis.Ieemdb.Persistence.Models
 {
   using System;
 
-  using Esentis.Ieemdb.Persistence.Base;
-
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class MovieWriter : Entity<long>, IAuditable<Guid>
+  public class MovieWriter : IAuditable<Guid>
   {
     public Writer Writer { get; set; }
 
