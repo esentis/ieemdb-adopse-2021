@@ -3,6 +3,7 @@ import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
 import { Route } from 'react-router';
 import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
 import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants';
+import {FetchData} from './components/FetchData';
 
 import {Container,Row} from 'react-bootstrap';
 
