@@ -46,5 +46,7 @@ namespace Esentis.Ieemdb.Persistence.Models
     public Guid CreatedBy { get; set; }
 
     public Guid UpdatedBy { get; set; }
+
+    public bool Featured { get; set; }
   }
 }
