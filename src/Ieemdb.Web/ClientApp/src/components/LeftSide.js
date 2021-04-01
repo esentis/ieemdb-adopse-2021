@@ -6,7 +6,7 @@ import LeftNav from './LeftNav';
 
 function LeftSide(){
     return(
-    <Col className="column-left" lg={4}>
+    <Col className="column-left" lg={2}>
         <Container fluid className="nav-center">
             <SearchText/>
             <br />

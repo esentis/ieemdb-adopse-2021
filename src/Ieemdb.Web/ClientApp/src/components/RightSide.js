@@ -5,7 +5,7 @@ import BottomRight from "./BottomRight";
 
 function RightSide(){
     return(
-        <Col lg={8}>
+        <Col lg={10}>
             <Row>
                 <TopRight/>
             </Row>
