@@ -33,3 +33,14 @@ code {
   transform: translateY(-50%);
   text-align: center;
 }
+
+.nav-bottom-right{
+  margin: 0;
+  text-align: center;
+  width: 100%;
+  height: 10vh;
+}
+
+.carousel-bottom-right{
+  height: 30vh;
+}
