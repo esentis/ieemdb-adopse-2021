@@ -3,7 +3,7 @@ import {Nav,Col} from 'react-bootstrap';
 
 function BottomRightNav(){
     return(
-        <Nav variant="pills" className="nav-bottom-right">
+        <Nav className="nav-bottom-right">
             <Col>
             </Col>
             <Col>

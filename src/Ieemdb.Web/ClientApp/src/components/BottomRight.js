@@ -9,7 +9,7 @@ function BottomRight(){
             <Row>
                 <BottomRightNav/>
             </Row>
-            <Row lg={14}>
+            <Row>
                 <BottomRightCarousel/>
             </Row>
         </Col>
