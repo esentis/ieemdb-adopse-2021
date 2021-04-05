@@ -1,29 +1,46 @@
 import React from "react";
 import {Nav,Col} from 'react-bootstrap';
 
-function BottomRightNav(){
+export default function BottomRightNav(){
+    
+    function showNewReleases(){
+        console.log('aaaaa')
+    }
+
+    function showPopular(){
+        console.log('bbbbb')
+    }
+
+    function showRecentlyAdded(){
+        console.log('ccccc')
+    }
+
+    function showTopRated(){
+        console.log('ddddd')
+    }
+    
     return(
         <Nav className="nav-bottom-right">
             <Col>
             </Col>
             <Col>
                 <Nav.Item>
-                    <Nav.Link>New Realeases</Nav.Link>
+                    <Nav.Link onClick={showNewReleases}>New Realeases</Nav.Link>
                 </Nav.Item>
             </Col>
             <Col>
                 <Nav.Item>
-                    <Nav.Link>Popular</Nav.Link>
+                    <Nav.Link onClick={showPopular}>Popular</Nav.Link>
                 </Nav.Item>
             </Col>
             <Col>
                 <Nav.Item>
-                    <Nav.Link>Recently Added</Nav.Link>
+                    <Nav.Link onClick={showRecentlyAdded}>Recently Added</Nav.Link>
                 </Nav.Item>
             </Col>
             <Col>
                 <Nav.Item>
-                    <Nav.Link>Top Rated</Nav.Link>
+                    <Nav.Link onClick={showTopRated}>Top Rated</Nav.Link>
                 </Nav.Item>
             </Col>
             <Col>
@@ -32,4 +49,3 @@ function BottomRightNav(){
     );
 }
 
-export default BottomRightNav;
