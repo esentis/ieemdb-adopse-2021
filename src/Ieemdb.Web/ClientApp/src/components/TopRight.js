@@ -4,10 +4,9 @@ import 'react-alice-carousel/lib/alice-carousel.css';
 import {Col} from 'react-bootstrap';
 import MovieCard from './MovieCard';
 import movies from './Movie_Dataset';
+import './TopRight.css'
 const title = 'FEATURED';
-const items = movies.map(i => <div> {MovieCard(i.id, i.title, i.poster, "250px", "55%")}</div>);
-const div_style = {display: 'flex', justifyContent: 'center', width: '100%'};
-const h1_style = {color: "#ede6c4", fontFamily: "Arial", paddingTop: "10px", fontSize: "30px", fontWeight: "bold", textShadow: "1px 10px 10px rgba(127, 113, 47), 0 0 20px rgba(127, 113, 47), 0 0 30px rgba(48, 43, 18, 1)"};
+const items = movies.map(i => <div> {MovieCard(i.id, i.title, i.poster, "250vh", "auto", true)}</div>);
 const responsive = {
     0: { items: 1 },
     568: { items: 2 },
@@ -16,10 +15,10 @@ const responsive = {
 function TopRight(){
     return(
         <Col className="column-right">
-            <div style={div_style}>
-                <h1 style={h1_style}>{title}</h1>
+            <div className="title1">
+                <h1 className="title2">{title}</h1>
             </div>
-            <div style={div_style}>
+            <div>
                 <div style={{width: "100%"}}>
                     <AliceCarousel
                         infinite
