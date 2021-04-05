@@ -1,19 +1,20 @@
 .poster {
     position: relative;
-    display: inline-block;
+    display: block;
     text-align: center;
     align-items: center;
+    margin: auto;
 }
 img {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    box-shadow: 0 0 10px black;
+    box-shadow: 0 0 1rem black;
 }
 svg {
     position: absolute;
-    bottom: 40%;
-    right: 40%;
+    bottom: 43%;
+    right: 43%;
     width: 30px;
 }
 polygon {
@@ -24,8 +25,8 @@ polygon {
 .title {
     color: white;
     font-family: Arial;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     text-shadow: -1px 1px 10px white;
     text-align: center;
-    padding-top: 5px;
+    padding-top: 0.3rem;
 }

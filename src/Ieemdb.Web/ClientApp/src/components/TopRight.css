@@ -1,4 +1,10 @@
 @import '../custom.css';
+.carousel {
+    position: relative;
+    display: block;
+    text-align: center;
+    align-items: center;
+}
 .title1 {
     display: flex;
     justify-content: center;
@@ -7,8 +13,8 @@
 .title2 {
     color: #ede6c4;
     font-family: Arial;
-    padding-top: 10px;
-    font-size: 30px;
+    padding-top: 0.8rem;
+    font-size: 2.2rem;
     font-weight: bold;
     text-shadow: 1px 10px 10px rgba(127, 113, 47), 0 0 20px rgba(127, 113, 47), 0 0 30px rgba(48, 43, 18, 1);
 }
