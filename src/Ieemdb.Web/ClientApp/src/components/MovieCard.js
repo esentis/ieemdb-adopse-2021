@@ -1,12 +1,30 @@
-import React from "react";
-var img_style = {display: "block", marginLeft: "auto", marginRight: "auto", boxShadow: "0 0 10px black"};
-var p_style = {color: "white", fontFamily: "Arial", fontSize: "20px", textShadow: "-1px 1px 10px white", textAlign: "center", padding: "5px"};
-function MovieCard(id, title, poster, height, width){
+import React from 'react';
+import './MovieCard.css';
+var svg;
+export default function MovieCard(id, title, poster, height, width, flag){
+    if (flag) {
+        svg = <svg className="btn_play" viewBox="0 0 60 60" onClick={onPlayerClick}><polygon points="0,0 50,30 0,60"/></svg>;
+    }
+    function onPosterHover(id) {
+        //Mouse on poster visible play button
+    }
+    function onPlayerClick(){
+        //Click on play button open youtube frame with trailer
+        console.log("Click on player");
+    }
+    function onPosterClick(){
+        //Click on poster open Movie Page
+        console.log("Click on poster");
+    }
     return(
         <div>
-            <img style={img_style} src={poster} alt={id} height={height} width={width}/>
-            <p style={p_style}>{title}</p>
+            <div className="poster">
+                <img src={poster} alt={id} height={height} width={width} onClick={onPosterClick} onMouseOver={onPosterHover({id})}/>
+                {svg}
+            </div>
+            <div>
+                <p className="title" onClick={onPosterClick}>{title}</p>
+            </div>
         </div>
     );
 }
-export default MovieCard;
