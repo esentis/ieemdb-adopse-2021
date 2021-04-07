@@ -1,0 +1,253 @@
+
+   .column-left {
+    background-image:url("./images/blur-background12.jpg");
+    border: 2px solid;
+    height: 100vh;
+  } 
+
+.nav-center2{
+    margin: 0;
+    position: fixed;
+    padding: 10px;
+    top: 25%;
+    z-index: 0;
+  } 
+
+  .column-left a{
+    text-decoration:none;
+    color:#D3D3D3;
+    display:block;
+    padding: 12px;
+    position:relative;
+    width: 8%;
+    right: 3%;
+    font-size: 1.20rem;
+    
+  }
+  .column-left a:hover{
+    color:#DCDCDC;
+    text-shadow:2px 2px 5px #FFFF99;
+  }
+
+  .inputClass{
+    height:4vh;
+    box-sizing: border-box;
+    position:relative;
+    display:inline-block;
+    background: none;
+    border: none; 
+    border-bottom: 2px  solid #D3D3D3 ;
+    background: none;
+    width: 8.5%;
+    color: #D3D3D3;
+    margin-left:6px;
+    outline: none;
+  }
+
+  ::placeholder{
+    color:#D3D3D3;
+    line-height: 2;
+    font-size: 1.25rem; 
+}
+
+.advButton{
+  color:#D3D3D3;
+  border: 2px solid #D3D3D3;
+  width:6rem;
+  background:none;
+  outline: 0;
+  height: 2.5rem;
+  margin-left:0.3rem;
+  border-radius: 50px;
+  padding:8px ;
+  text-align: center;
+  padding-top:4px; ;
+}
+
+.fa-cog{
+  color:#D3D3D3;
+  font-size:1.15rem;
+}
+
+.column-left span{
+  margin-left: 6px;
+}
+
+.login-Button{
+  background:none;
+  border: 2px solid #D3D3D3;
+  border-radius: 12px;
+  color: #D3D3D3;
+  padding: 8px;
+  text-align: center;
+  text-decoration: none;
+  display:inline-block;
+  font-size: 1rem;
+  position: relative;
+  width:12%;
+  outline: none;
+  left:-1.7%;
+  margin-top: 5vh;
+}
+
+
+.dropbtn {
+  background:none;
+  border: 2px solid #D3D3D3;
+  border-radius: 12px;
+  color: #D3D3D3;
+  padding: 8px;
+  text-align: center;
+  text-decoration: none;
+  display:block;
+  font-size: 1rem;
+  position: relative;
+  width:12vw;
+  outline: none;
+  left:-17%;
+  margin-top: 5vh;
+}
+
+.dropdown{
+  width:10vw;
+} 
+
+.dropdown-content {
+  display: block;
+  position: relative;
+  z-index: 0;
+  margin-left: -2vw;
+  text-align: center;
+}
+
+.dropdown-content a {
+  text-decoration: none;
+  display:inline;
+  color:#D3D3D3
+  
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+.checkbtn{
+  font-size:25px ;
+  float:right;
+  line-height: 40px;
+  cursor:pointer;
+  display: none;
+  color: #D3D3D3;
+}
+
+#check{
+  display: none;
+}
+
+
+
+/* @media (max-width:1024px){
+  .column-left *{font-size:0.4rem;}
+} */
+
+@media (max-width:1024px){
+  .checkbtn{
+    display: block;
+    background-color: black;
+  }
+  .column-left{
+    background:none;
+    background-color: black;
+    transition: all .5s;
+    height:8vh;
+    margin: 0;
+    width: 180%;
+       
+  }
+
+  .fa-cog{display: none;}
+  .column-left a{
+    font-size: 1.1rem;
+    top:10px;
+    background:none;
+   margin: 0;
+   
+  }
+
+  .login-Button{
+    top:-1vh;
+    border: none;
+    font-size: 1.1rem;
+    border-radius: 0;
+    margin-left:0;
+    padding: 0;
+    margin-top: 5%;
+  }
+
+  .dropbtn{
+  /* bottom: 5vh;
+  border: none;
+  font-size: 1.1rem;
+  border-radius: 0;
+  margin-left:12vw;
+  padding-bottom: 7vh;
+  margin: 0;
+  position: relative;
+  text-align:left ; */
+  display: none;
+}
+
+  .dropdown-content {
+    position: relative;
+    /* margin-top:-5vh; */
+    margin: 0;
+    text-align:left;
+    left:1vw;
+  }
+
+
+  .dropdown-content a {
+    display:block;
+  margin: 0;}
+
+
+  ::placeholder{
+    color:#D3D3D3;
+    font-size: 1rem;
+  }
+
+  .inputClass{
+    width: auto;
+    top:-1vh; 
+    left: 10vw;}
+
+   .advButton{
+    bottom:1vh;
+    height:2rem ;
+    margin-left: 2.5rem;
+    position: relative;
+   } 
+ 
+      
+    .column-left nav :not(.fa-cog,.advButton,.inputClass){
+      width: 100%;
+    }  
+
+    .nav-center2 {
+      left:100%;
+    }
+
+   #check:checked ~ .nav-center2{
+     left:0;
+     display: block;
+     background-color:rgba(0,0,0,0.6);
+     top:7.5%;
+     margin-right:60vw;
+     z-index: 1;
+     text-align: justify;
+     justify-items: center;
+     margin-top: 0;
+   }
+     
+}
