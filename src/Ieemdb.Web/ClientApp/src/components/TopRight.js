@@ -1,48 +1,43 @@
-import React from "react";
-import {Container,Col,Carousel} from 'react-bootstrap';
-
+import React from 'react';
+import AliceCarousel from 'react-alice-carousel';
+import 'react-alice-carousel/lib/alice-carousel.css';
+import {Col} from 'react-bootstrap';
+import MovieCard from './MovieCard';
+import movies from './Movie_Dataset';
+import './TopRight.css'
+const title = 'FEATURED';
+const items = movies.map(i => <div> {MovieCard(i.id, i.title, i.poster, "250vh", "auto", true)}</div>);
+const responsive = {
+    0: { items: 1 },
+    568: { items: 2 },
+    1024: { items: 4 },
+};
 function TopRight(){
     return(
         <Col className="column-right">
-                <Container className="nav-center">
-                <Carousel>
-                    <Carousel.Item interval={1000}>
-                        <img
-                        className="d-block w-100"
-                        src="holder.js/800x400?text=First slide&bg=373940"
-                        alt="First slide"
+            <div className="carousel">
+                <div className="title1">
+                    <h1 className="title2">{title}</h1>
+                </div>
+                <div>
+                    <div style={{width: "100%"}}>
+                        <AliceCarousel
+                            infinite
+                            autoPlay
+                            autoPlayStrategy="none"
+                            autoPlayInterval={3000}
+                            animationDuration={1000}
+                            animationType="fadeout"
+                            mouseTracking
+                            items={items}
+                            responsive={responsive}
+                            disableDotsControls
+                            disableButtonsControls
                         />
-                        <Carousel.Caption>
-                        <h3>First slide label</h3>
-                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                        </Carousel.Caption>
-                    </Carousel.Item>
-                    <Carousel.Item interval={500}>
-                        <img
-                        className="d-block w-100"
-                        src="holder.js/800x400?text=Second slide&bg=282c34"
-                        alt="Second slide"
-                        />
-                        <Carousel.Caption>
-                        <h3>Second slide label</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        </Carousel.Caption>
-                    </Carousel.Item>
-                    <Carousel.Item>
-                        <img
-                        className="d-block w-100"
-                        src="holder.js/800x400?text=Third slide&bg=20232a"
-                        alt="Third slide"
-                        />
-                        <Carousel.Caption>
-                        <h3>Third slide label</h3>
-                        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-                        </Carousel.Caption>
-                    </Carousel.Item>
-                    </Carousel>
-                </Container>
+                    </div>
+                </div>
+            </div>
         </Col>
     );
 }
-
 export default TopRight;

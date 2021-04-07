@@ -11,6 +11,7 @@
     "merge": "^1.2.1",
     "oidc-client": "^1.9.0",
     "react": "^16.0.0",
+    "react-alice-carousel": "^2.4.0",
     "react-bootstrap": "^1.5.2",
     "react-dom": "^16.0.0",
     "react-icons": "^4.2.0",
