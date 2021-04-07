@@ -4,7 +4,7 @@ import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 import MovieCard from './MovieCard';
 
-const items = movies.map(i => <div> {MovieCard(i.id, i.title, i.poster, "200vh", "45%")}</div>);
+const items = movies.map(i => <div> {MovieCard(i.id, i.title, i.poster, "200vh", "45%",false)}</div>);
 const div_style = {display: 'flex', justifyContent: 'center', width: '100%'};
 const responsive = {
     0: { items: 1 },
