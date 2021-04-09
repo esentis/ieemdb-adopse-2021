@@ -2,17 +2,15 @@ import React from 'react';
 import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 import {Col} from 'react-bootstrap';
-import MovieCard from './MovieCard';
-import movies from './Movie_Dataset';
 import './TopRight.css'
-const title = 'FEATURED';
-const items = movies.map(i => <div> {MovieCard(i.id, i.title, i.poster, "250vh", "auto", true)}</div>);
 const responsive = {
     0: { items: 1 },
     568: { items: 2 },
     1024: { items: 4 },
 };
-function TopRight(){
+function TopRight(props){
+    const title = props.title;
+    const items = props.items;
     return(
         <Col className="column-right">
             <div className="carousel">
