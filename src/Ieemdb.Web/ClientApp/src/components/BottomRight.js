@@ -6,12 +6,8 @@ import BottomRightCarousel from './BottomRightCarousel';
 function BottomRight(){
     return(
         <Col className="column-right">
-            <Row>
                 <BottomRightNav/>
-            </Row>
-            <Row>
                 <BottomRightCarousel/>
-            </Row>
         </Col>
     );
 }
