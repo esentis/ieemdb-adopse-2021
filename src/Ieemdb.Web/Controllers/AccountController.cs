@@ -76,13 +76,12 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("User not found or wrong password");
       }
 
-      // This is WIP.
-      /* var device = await Context.Devices.FirstOrDefaultAsync(e => e.Name == userLogin.DeviceName);
-       if (device == null)
-       {
-         device = new Device { User = user, Name = userLogin.DeviceName };
-         Context.Devices.Add(device);
-       }*/
+      var device = await Context.Devices.FirstOrDefaultAsync(e => e.Name == userLogin.DeviceName);
+      if (device == null)
+      {
+        device = new Device { User = user, Name = userLogin.DeviceName };
+        Context.Devices.Add(device);
+      }
 
       var accessTokenExpiration = DateTimeOffset.UtcNow.AddMinutes(jwtOptions.DurationInMinutes);
 
@@ -90,7 +89,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       var token = GenerateJwt(claims, accessTokenExpiration);
 
       var refreshToken = Guid.NewGuid();
-      // device.RefreshToken = refreshToken;
+      device.RefreshToken = refreshToken;
 
       await Context.SaveChangesAsync();
 
@@ -112,13 +111,13 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound();
       }
 
-      /* var device = await Context.Devices.Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId)
-         .SingleOrDefaultAsync();
-       if (device
-           == null)
-       {
-         return NotFound();
-       }*/
+      var device = await Context.Devices.Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId)
+           .SingleOrDefaultAsync();
+      if (device
+          == null)
+      {
+        return NotFound();
+      }
 
       var user = await userManager.FindByIdAsync(userId.ToString());
       var accessTokenExpiration = DateTimeOffset.UtcNow.AddMinutes(jwtOptions.DurationInMinutes);
@@ -126,7 +125,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       var claims = await GenerateClaims(user);
       var token = GenerateJwt(claims, accessTokenExpiration);
 
-      // device.RefreshToken = Guid.NewGuid();
+      device.RefreshToken = Guid.NewGuid();
       await Context.SaveChangesAsync();
 
       var result = new UserBindingDto(token, accessTokenExpiration, Guid.Parse(token));

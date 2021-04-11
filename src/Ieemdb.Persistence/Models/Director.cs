@@ -2,12 +2,11 @@ namespace Esentis.Ieemdb.Persistence.Models
 {
   using System;
 
-  using Esentis.Ieemdb.Persistence.Base;
   using Esentis.Ieemdb.Persistence.Helpers;
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Director : Entity<long>, IAuditable<Guid>
+  public class Director : IeemdbEntity<long>, IAuditable<Guid>
   {
     private string name = string.Empty;
 

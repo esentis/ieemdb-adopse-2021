@@ -6,9 +6,11 @@ namespace Esentis.Ieemdb.Persistence.Identity
   using System.Text;
   using System.Threading.Tasks;
 
+  using Esentis.Ieemdb.Persistence.Helpers;
+
   using Kritikos.Configuration.Persistence.Base;
 
-  public class Device : Entity<long>
+  public class Device : IeemdbEntity<long>
   {
     public string Name { get; set; }
 

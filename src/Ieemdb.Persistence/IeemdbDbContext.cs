@@ -47,7 +47,7 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<MovieGenre> MovieGenres { get; set; }
 
-    // public DbSet<Device> Devices { get; set; }
+    public DbSet<Device> Devices { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
