@@ -9,17 +9,14 @@ code {
   border-color: #1861ac;
 }
 
-.column-left {
-  background-color: #61dafb;
-  border: 2px solid;
-  height: 100vh;
-}
-
 .column-right {
   background-image: linear-gradient(rgba(41, 44, 52, 0), rgba(41, 44, 52, 0.3), rgba(41, 44, 52, 0.6), rgba(41, 44, 52, 0.9), rgba(41, 44, 52, 0.99), rgba(41, 44, 52), rgba(41, 44, 52), rgba(41, 44, 52), rgba(41, 44, 52)), url('https://wallpaperaccess.com/full/3658607.jpg');
   height: 50vh;
   padding: 0%;
   background-attachment: fixed;
+  margin-left:16.6%;
+  width: 80%;
+  
 }
 
 .nav-center{
@@ -41,5 +38,12 @@ code {
   font-Size: 1rem;
   font-Weight: bold;
   text-Shadow: 1px 5px 5px rgba(127, 113, 47), 0 0 20px rgba(127, 113, 47), 0 0 30px rgba(48, 43, 18, 1);
+}
+
+@media (max-width:1199px){
+  .column-right{
+    margin-left:0;
+    top: 7vh;
+  }
 }
 

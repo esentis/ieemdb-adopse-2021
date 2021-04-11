@@ -12,12 +12,12 @@ img {
     border: 2px solid black;
     box-shadow: 0 0 1rem black;
 }
-svg {
+/* svg {
     position: absolute;
     bottom: 43%;
     right: 43%;
     width: 30px;
-}
+} */
 polygon {
     fill: white;
     stroke: rgba(41, 44, 52);

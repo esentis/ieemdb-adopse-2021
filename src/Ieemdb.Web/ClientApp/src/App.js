@@ -9,6 +9,7 @@ import {Container,Row} from 'react-bootstrap';
 
 import LeftSide from './components/LeftSide'
 import RightSide from './components/RightSide'
+import NavigateContextProvider from './components/Navigate'
 
 import './custom.css'
 
@@ -21,9 +22,12 @@ export default class App extends Component {
             <AuthorizeRoute path='/fetch-data' component={FetchData} />
             <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
             <Row>
+            <NavigateContextProvider>
               <LeftSide/>
-              <RightSide/>
+              <RightSide />
+            </NavigateContextProvider>
             </Row>
+            
         </Container>
     );
   }
