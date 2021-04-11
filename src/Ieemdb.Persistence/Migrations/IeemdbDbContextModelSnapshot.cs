@@ -60,6 +60,15 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                             Name = "ADMINISTRATOR",
                             NormalizedName = "ADMINISTRATOR",
                             UpdatedAt = new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0))
+                        },
+                        new
+                        {
+                            Id = new Guid("7ac8f688-4a10-48c7-8b00-73c52dda15df"),
+                            ConcurrencyStamp = "ed11f5d6-7eaf-4418-9f98-bcab656e16e0",
+                            CreatedAt = new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0)),
+                            Name = "MEMBER",
+                            NormalizedName = "MEMBER",
+                            UpdatedAt = new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0))
                         });
                 });
 
