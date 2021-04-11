@@ -27,6 +27,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
   using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
+  [Route("api/account")]
   public class AccountController : BaseController<AccountController>
   {
     private readonly RoleManager<IeemdbRole> roleManager;
