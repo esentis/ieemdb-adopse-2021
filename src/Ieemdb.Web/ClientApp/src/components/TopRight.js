@@ -18,7 +18,7 @@ function TopRight(props){
                     <h1 className="title2">{title}</h1>
                 </div>
                 <div>
-                    <div style={{width: "100%"}}>
+                    <div style={{width:"100%"}}>
                         <AliceCarousel
                             infinite
                             autoPlay
