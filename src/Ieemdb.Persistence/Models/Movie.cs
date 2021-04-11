@@ -2,12 +2,11 @@ namespace Esentis.Ieemdb.Persistence.Models
 {
   using System;
 
-  using Esentis.Ieemdb.Persistence.Base;
   using Esentis.Ieemdb.Persistence.Helpers;
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Movie : Entity<long>, IAuditable<Guid>
+  public class Movie : IeemdbEntity<long>, IAuditable<Guid>
   {
     private string title = string.Empty;
 
