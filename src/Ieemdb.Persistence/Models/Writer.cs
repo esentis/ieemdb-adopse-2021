@@ -2,11 +2,12 @@ namespace Esentis.Ieemdb.Persistence.Models
 {
   using System;
 
+  using Esentis.Ieemdb.Persistence.Abstractions;
   using Esentis.Ieemdb.Persistence.Helpers;
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Writer : IeemdbEntity<long>, IAuditable<Guid>
+  public class Writer : IeemdbEntity<long>, IAuditable<Guid>, ISearchable
   {
     private string name = string.Empty;
 
@@ -16,11 +17,11 @@ namespace Esentis.Ieemdb.Persistence.Models
       set
       {
         name = value;
-        NormalizedName = value.NormalizeSearch();
+        NormalizedSearch = value.NormalizeSearch();
       }
     }
 
-    public string NormalizedName { get; private set; }
+    public string NormalizedSearch { get; private set; }
 
     public DateTimeOffset BirthDate { get; set; }
 
