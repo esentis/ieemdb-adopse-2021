@@ -7,12 +7,11 @@ import WatchList from './WatchList';
 import Featured from './Featured';
 import {usePage} from './Navigate' 
 import Login from './Login';
-
-
-
-
-
-
+import MovieView from "./MovieView";
+import { propTypes } from "react-bootstrap/esm/Image";
+import SearchView from "./SearchView";
+import { FaBreadSlice } from "react-icons/fa";
+import AdvancedSearchView from "./AdvancedSearchView";
 
 
 
@@ -22,15 +21,45 @@ function RightSide(){
 
     var topPage=<Featured />
     var bottomPage=<BottomRight/>
-    if(page=="Favorites"){
-        topPage=<Favorites />
-    }else if(page=="WatchList"){
-        topPage=<WatchList />
-    }else if(page=="Home"){
-        topPage=<Featured />
-    }else if(page=="LoginPage"){
-        topPage=<Login />
-        bottomPage=""
+
+    switch(page.name){
+        case "Home":
+            topPage=<Featured />
+            break;
+        case "Favorites":
+           topPage=<Favorites />
+           break;
+        case "WatchList":
+            topPage=<WatchList />
+            break;
+        case "LoginPage":
+            topPage=<Login name={page.name}/>
+            bottomPage=""
+            break;
+        case "MovieView":
+            topPage=<MovieView
+            key={page.key}
+            Title={page.Title}
+            Poster={page.Poster}
+            Overview={page.Overview}
+            ReleaseDate={page.ReleaseDate}
+            Genres={page.Genres}
+            Actors={page.Actors}
+            Writers={page.Writers}
+            Directors={page.Directors}
+            Rating={page.Rating}
+            Duration={page.Duration}
+            CountryOrigin={page.CountryOrigin}/>
+            bottomPage="";
+            break;
+        case "SearchView":
+            topPage=<SearchView name={page.name} SearchValue={page.value} />
+            bottomPage="";
+            break;  
+        case "AdvancedSearchView":
+            topPage=<AdvancedSearchView name={page.name} />   
+            bottomPage=""
+            break;
     }
     return(
         <Col>
@@ -38,7 +67,7 @@ function RightSide(){
             {topPage}
             </Row>
             <Row>
-               {bottomPage}
+              {bottomPage}
             </Row>
         </Col>
     );

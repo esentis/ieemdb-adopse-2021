@@ -1,13 +1,13 @@
 import React from 'react'
 import {Col} from 'react-bootstrap';
-import './Login.css'
+import '../Styles/Login.css'
 
 
-function Login() {
+function Login(props) {
     return (
        <Col className='column-right-Login'>
        <div style={{color:'white'}}>
-       <p>Login page</p>
+       <p>{props.name}</p>
        </div>
        </Col>
     )

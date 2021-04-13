@@ -2,7 +2,7 @@ import React from 'react';
 import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 import {Col} from 'react-bootstrap';
-import './TopRight.css'
+import '../Styles/TopRight.css'
 const responsive = {
     0: { items: 1 },
     568: { items: 2 },
