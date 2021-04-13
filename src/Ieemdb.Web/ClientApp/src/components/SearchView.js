@@ -1,16 +1,18 @@
 import React from 'react'
 import {Col} from 'react-bootstrap';
-import '../Styles/Login.css'
+import '../Styles/SearchView.css'
 
 
-function Login(props) {
+
+function SearchView(props) {
     return (
-       <Col className='column-right-Login'>
+       <Col className='column-right-SearchView'>
        <div style={{color:'white'}}>
        <p>{props.name}</p>
+       <p>{props.SearchValue}</p>
        </div>
        </Col>
     )
 }
 
-export default Login
+export default SearchView;

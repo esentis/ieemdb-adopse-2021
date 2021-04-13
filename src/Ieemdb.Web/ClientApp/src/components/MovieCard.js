@@ -1,34 +1,38 @@
 import React from 'react';
-import './MovieCard.css';
+import '../Styles/MovieCard.css';
+import {usePage,useUpdatePage} from './Navigate'
 var svg;
-export default function MovieCard(id, title, poster, height, width, flag){
-    /*
-    if (flag) {
-        svg = <svg className="btn_play" viewBox="0 0 60 60" onClick={onPlayerClick}><polygon points="0,0 50,30 0,60"/></svg>;
-    }
-    */
-    function onPosterHover(id) {
-        //Mouse on poster visible play button
-    }
-    /*
-    function onPlayerClick(){
-        //Click on play button open youtube frame with trailer
-        console.log("Click on player");
-    }
-    */
+function MovieCard(props){
+    const setPage=useUpdatePage();
+
+    const MovieDetails={name:"MovieView",
+    key:props.id,
+    Title:props.Title,
+    Poster:props.Poster,
+    Overview:props.Overview,
+    ReleaseDate:props.ReleaseDate,
+    Genres:props.Genres,
+    Actors:props.Actors,
+    Writers:props.Writers,
+    Directors:props.Directors,
+    Rating:props.Rating,
+    Duration:props.Duration,
+    CountryOrigin:props.CountryOrigin
+}
+
     function onPosterClick(){
         //Click on poster open Movie Page
-        console.log("Click on poster");
+        setPage(MovieDetails);
     }
     return(
         <div>
             <div className="poster">
-                <img src={poster} alt={id} height={height} width={width} onClick={onPosterClick} onMouseOver={onPosterHover({id})}/>
+                <img src={props.Poster} alt={props.id} height={props.height} width={props.width} onClick={onPosterClick} />
                 {svg}
             </div>
             <div>
-                <p className="title" onClick={onPosterClick}>{title}</p>
+                <p className="title" onClick={onPosterClick}>{props.Title}</p>
             </div>
         </div>
     );
-}
+}export default MovieCard;

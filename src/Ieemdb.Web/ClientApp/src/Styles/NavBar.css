@@ -1,6 +1,6 @@
   .column-left {
-  background-image:url("./images/blur-background12.jpg");
-  background-color: #353535;
+  /* background-image:url("./images/blur-background12.jpg"); */
+  background-color: #3F2B63;
   height: 100%;
   z-index:1;
   
@@ -59,7 +59,7 @@
   background:none;
   outline: 0;
   height: 2.5rem;
-  border-radius: 50px;
+  border-radius: 12px;
   text-align: center;
    display:inline; 
 }

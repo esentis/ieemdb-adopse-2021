@@ -11,7 +11,7 @@ import LeftSide from './components/LeftSide'
 import RightSide from './components/RightSide'
 import NavigateContextProvider from './components/Navigate'
 
-import './custom.css'
+import './Styles/custom.css'
 
 export default class App extends Component {
   static displayName = App.name;

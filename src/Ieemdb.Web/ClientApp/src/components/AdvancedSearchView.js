@@ -1,11 +1,11 @@
 import React from 'react'
 import {Col} from 'react-bootstrap';
-import '../Styles/Login.css'
+import '../Styles/AdvancedSearch.css'
 
 
-function Login(props) {
+function AdvancedSearchView(props) {
     return (
-       <Col className='column-right-Login'>
+       <Col className='column-right-AdvancedSearch'>
        <div style={{color:'white'}}>
        <p>{props.name}</p>
        </div>
@@ -13,4 +13,4 @@ function Login(props) {
     )
 }
 
-export default Login
+export default AdvancedSearchView;

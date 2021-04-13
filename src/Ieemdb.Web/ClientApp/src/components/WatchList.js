@@ -4,16 +4,25 @@ import MovieCard from './MovieCard';
 import movies from './Movie_Dataset';
 
 function WatchList() {
-    const items = movies.map(i => <div> {MovieCard(i.id, i.title, i.poster, "250vh", 'auto',true)}</div>);
     const title='WATCH LIST';
-    
+    const items=movies.map(i => <MovieCard 
+        key={i.id}
+        Title={i.title} 
+        Poster={i.poster} 
+        Overview={i.overview}
+        ReleaseDate={i.release_date}
+        Genres={i.genres}
+        Actors={i.actors}
+        Writers={i.writers}
+        Directors={i.directors}
+        Rating={i.rating}
+        Duration={i.duration}
+        CountryOrigin={i.countryOrigin}
+        height={"250vh"} 
+        width={'auto'} />)
     return (
-        <>
-        <TopRight
-         title={title}
-         items={items}    
-         />
-        </>
+        <TopRight title={title}
+                  items={items} />
     )
 }
 

@@ -13,11 +13,11 @@ export const useUpdatePage=()=>{
 }
     function NavigateContextProvider(props){
         
-        const [page,setPage]=useState("home");
+        const [page,setPage]=useState({});
          
         
-        const handleClick=(name)=>{
-            setPage(name)
+        const handleClick=(arg)=>{
+            setPage(arg);
        }
 
         return(
