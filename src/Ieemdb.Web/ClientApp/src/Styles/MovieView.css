@@ -1,14 +1,15 @@
-.column-right-Login{
+.column-right-MovieView{
     background-color: #282828;
     height: 100vh;
     padding: 0%;
-    margin-left:20% ;
     width: 80%;
-    margin-left:16.6%
+    margin-left:16.6%;
+    
+    
     }
 
     @media (max-width:1199px){
-        .column-right-Login{
+        .column-right-MovieView{
           margin-left:0;
-          top:7vh;
+          top:8vh;
 }}
