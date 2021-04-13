@@ -2,6 +2,8 @@ namespace Esentis.Ieemdb.Web.Helpers
 {
   public class LogTemplates
   {
+    public const string BootstrappingError = "Error while bootstrapping application: {Message}";
+
     public const string CreatedEntity = "Created {Entity} {@Value}";
 
     public const string RequestEntity = "User requested {Entity} with ID {Id}";

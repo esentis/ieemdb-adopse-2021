@@ -2,11 +2,12 @@ namespace Esentis.Ieemdb.Persistence.Models
 {
   using System;
 
+  using Esentis.Ieemdb.Persistence.Abstractions;
   using Esentis.Ieemdb.Persistence.Helpers;
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Movie : IeemdbEntity<long>, IAuditable<Guid>
+  public class Movie : IeemdbEntity<long>, IAuditable<Guid>, ISearchable
   {
     private string title = string.Empty;
 
@@ -18,11 +19,11 @@ namespace Esentis.Ieemdb.Persistence.Models
       set
       {
         title = value;
-        NormalizedTitle = title.NormalizeSearch();
+        NormalizedSearch = title.NormalizeSearch();
       }
     }
 
-    public string NormalizedTitle { get; private set; }
+    public string NormalizedSearch { get; private set; }
 
     public TimeSpan Duration { get; set; }
 
