@@ -3,59 +3,23 @@ using System;
 using Esentis.Ieemdb.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Esentis.Ieemdb.Persistence.Migrations
 {
     [DbContext(typeof(IeemdbDbContext))]
-    partial class IeemdbDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210411132909_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Identity.Device", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("RefreshToken")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Devices");
-                });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Identity.IeemdbRole", b =>
                 {
@@ -208,7 +172,7 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NormalizedSearch")
+                    b.Property<string>("NormalizedName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -219,9 +183,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("Actors");
                 });
@@ -253,7 +214,7 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NormalizedSearch")
+                    b.Property<string>("NormalizedName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -264,9 +225,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("Directors");
                 });
@@ -388,7 +346,7 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NormalizedSearch")
+                    b.Property<string>("NormalizedTitle")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -410,9 +368,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("Movies");
                 });
@@ -607,7 +562,7 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NormalizedSearch")
+                    b.Property<string>("NormalizedName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -618,9 +573,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("Writers");
                 });
@@ -1553,15 +1505,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Identity.Device", b =>
-                {
-                    b.HasOne("Esentis.Ieemdb.Persistence.Identity.IeemdbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Favorite", b =>

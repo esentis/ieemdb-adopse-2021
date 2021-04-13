@@ -3,15 +3,17 @@ using System;
 using Esentis.Ieemdb.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Esentis.Ieemdb.Persistence.Migrations
 {
     [DbContext(typeof(IeemdbDbContext))]
-    partial class IeemdbDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210411203515_updates models")]
+    partial class updatesmodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -208,7 +210,7 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NormalizedSearch")
+                    b.Property<string>("NormalizedName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -219,9 +221,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("Actors");
                 });
@@ -253,7 +252,7 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NormalizedSearch")
+                    b.Property<string>("NormalizedName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -264,9 +263,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("Directors");
                 });
@@ -388,7 +384,7 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NormalizedSearch")
+                    b.Property<string>("NormalizedTitle")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -410,9 +406,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("Movies");
                 });
@@ -607,7 +600,7 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NormalizedSearch")
+                    b.Property<string>("NormalizedName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -618,9 +611,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("Writers");
                 });
