@@ -27,6 +27,6 @@ variables:
     value: esentis_ieemdb-adopse-2021
 
 stages:
-  - template: /ci/azure-pipelines/stages/general/00. gitversion.yml@templates
+  - template: /ci/azure-pipelines/stages/general/00. gitversion.yml
     parameters:
       updateAssemblyInfo: true
