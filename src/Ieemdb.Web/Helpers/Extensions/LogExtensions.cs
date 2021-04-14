@@ -3,6 +3,7 @@ namespace Esentis.Ieemdb.Web.Helpers.Extensions
   using System;
   using System.IO;
 
+  using Microsoft.ApplicationInsights.Extensibility;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.Extensions.Configuration;
 
@@ -41,7 +42,8 @@ namespace Esentis.Ieemdb.Web.Helpers.Extensions
     internal static LoggerConfiguration ConfigureLogger(
       this LoggerConfiguration logConfiguration,
       IConfiguration configuration,
-      IWebHostEnvironment environment)
+      IWebHostEnvironment environment,
+      TelemetryConfiguration telemetry)
       => logConfiguration
         .CreateStartupLogger()
         .Enrich.WithProperty("Application", environment.ApplicationName)
@@ -59,6 +61,7 @@ namespace Esentis.Ieemdb.Web.Helpers.Extensions
             retainedFileCountLimit: 10,
             shared: true,
             flushToDiskInterval: TimeSpan.FromSeconds(1))
+          .WriteTo.ApplicationInsights(telemetry, TelemetryConverter.Traces)
           .WriteTo.Seq(
             configuration["Seq:Uri"],
             apiKey: configuration["Seq:ApiKey"],

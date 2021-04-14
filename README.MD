@@ -1,4 +1,6 @@
 # IEEMDB
+[![Build Status](https://dev.azure.com/kritikos/Ieemdb/_apis/build/status/Ieemdb?branchName=develop)](https://dev.azure.com/kritikos/Ieemdb/_build/latest?definitionId=21&branchName=develop)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=esentis_ieemdb-adopse-2021&metric=alert_status)](https://sonarcloud.io/dashboard?id=esentis_ieemdb-adopse-2021)
 
 ![Logo](https://picsum.photos/200/100)
 ```Logo coming soon```

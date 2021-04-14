@@ -50,6 +50,7 @@ namespace Esentis.Ieemdb.Web
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddSingleton<IPureMapper>(sp => new PureMapper(MappingConfiguration.Mapping));
+      services.AddApplicationInsightsTelemetry();
 
       services.AddHttpContextAccessor();
       services.AddSingleton<TimestampSaveChangesInterceptor>();
