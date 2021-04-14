@@ -6,6 +6,7 @@ namespace Esentis.Ieemdb.Web
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Helpers.Extensions;
 
+  using Microsoft.ApplicationInsights.Extensibility;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.Extensions.Configuration;
   using Microsoft.Extensions.DependencyInjection;
@@ -52,7 +53,8 @@ namespace Esentis.Ieemdb.Web
         .UseSerilog((_, services, configuration) =>
           configuration.ConfigureLogger(
             services.GetRequiredService<IConfiguration>(),
-            services.GetRequiredService<IWebHostEnvironment>()))
+            services.GetRequiredService<IWebHostEnvironment>(),
+            services.GetRequiredService<TelemetryConfiguration>()))
         .ConfigureWebHostDefaults(webBuilder =>
         {
           webBuilder.UseStartup<Startup>();

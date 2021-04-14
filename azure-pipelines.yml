@@ -11,9 +11,6 @@ trigger:
     include:
       - master
       - develop
-      - feature/*
-      - release/*
-      - hotfix/*
   paths:
     include:
       - azure-pipelines.yml
