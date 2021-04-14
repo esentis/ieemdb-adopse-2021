@@ -30,3 +30,20 @@ stages:
   - template: /ci/azure-pipelines/stages/general/00. gitversion.yml
     parameters:
       updateAssemblyInfo: true
+  - template: /ci/azure-pipelines/stages/dotnet/00. build.yml
+    parameters:
+      useCache: false
+      configuration: Release
+      updateAssemblyInfo: true
+      publishWeb: false
+      buildOnLinux: true
+      buildOnWindows: true
+      publishOnWindows: true
+      packOnLinux: false
+      projectsToPublish: src/Ieemdb.Web/Ieemdb.Web.csproj
+      publishArtifactName: azure
+  - template: /ci/azure-pipelines/stages/dotnet/03. intellicode.yml
+    parameters:
+      useCache: false
+      updateAssemblyInfo: true
+      branch: develop
