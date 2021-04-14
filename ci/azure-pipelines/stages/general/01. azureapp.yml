@@ -26,20 +26,10 @@ parameters:
 stages:
 - stage: AzureDeploy
   displayName: Deploy to azure webApp
-  dependsOn: Deploy
+  dependsOn:
+    - Build
+    - Test
   jobs:
-  - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
-    - template: ../../jobs/general/01. azureapp.yml
-      parameters:
-        jobName: ${{ parameters.slotNameStage }}
-        environment: ${{ parameters.environment }}
-        subscription: ${{ parameters.subscription }}
-        resourceGroup: ${{ parameters.resourceGroup }}
-        webApp: ${{ parameters.webApp }}
-        slotName: ${{ parameters.slotNameStage }}
-        deployToSlot: ${{ parameters.deployToSlot }}
-        artifact: ${{ parameters.artifact }}
-        packagesToPush: ${{ parameters.packagesToPush }}
   - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/develop') }}:
     - template: ../../jobs/general/01. azureapp.yml
       parameters:
@@ -52,7 +42,7 @@ stages:
         deployToSlot: ${{ parameters.deployToSlot }}
         artifact: ${{ parameters.artifact }}
         packagesToPush: ${{ parameters.packagesToPush }}
-  - ${{ if and(and(ne(variables['Build.SourceBranch'], 'refs/heads/master'),ne(variables['Build.SourceBranch'], 'refs/heads/main')),ne(variables['Build.SourceBranch'], 'refs/heads/develop')) }}:
+  - ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/develop') }}:
     - job:
       displayName: Empty Job for compatibility
       steps:
