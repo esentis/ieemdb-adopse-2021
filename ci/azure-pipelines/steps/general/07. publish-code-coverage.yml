@@ -1,0 +1,17 @@
+parameters:
+- name: coverageTool
+  type: string
+  values:
+    - cobertura
+    - jacoco
+  default: cobertura
+- name: summaryFile
+  type: string
+  default: $(build.artifactStagingDirectory)/coverage/coverage.cobertura.xml
+
+steps:
+- task: PublishCodeCoverageResults@1
+  displayName: Publish code coverage
+  inputs:
+    codeCoverageTool: ${{ parameters.coverageTool }}
+    summaryFileLocation: ${{ parameters.summaryFile }}

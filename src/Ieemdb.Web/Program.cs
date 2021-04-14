@@ -17,7 +17,7 @@ namespace Esentis.Ieemdb.Web
   using Serilog.Core;
   using Serilog.Extensions.Logging;
 
-  public class Program
+  public static class Program
   {
     internal static readonly LoggingLevelSwitch LevelSwitch = new();
     private static Microsoft.Extensions.Logging.ILogger logger = new NullLogger<Startup>();

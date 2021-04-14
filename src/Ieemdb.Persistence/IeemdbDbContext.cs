@@ -5,13 +5,14 @@ namespace Esentis.Ieemdb.Persistence
 
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
+  using Esentis.Ieemdb.Persistence.Joins;
   using Esentis.Ieemdb.Persistence.Models;
 
   using Kritikos.Configuration.Peristence.IdentityServer;
 
   using Microsoft.EntityFrameworkCore;
 
-  public class IeemdbDbContext : ApiAuthorizationPooledDbContext<IeemdbUser, IeemdbRole, Guid>
+  public class IeemdbDbContext : ApiAuthorizationDbContext<IeemdbUser, IeemdbRole, Guid>
   {
     private static readonly DateTimeOffset SeededAt = DateTime.Parse("13/03/2021");
 

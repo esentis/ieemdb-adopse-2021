@@ -7,7 +7,7 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Movie : IeemdbEntity<long>, IAuditable<Guid>, ISearchable
+  public class Movie : EemdbEntity<long>, ISearchable
   {
     private string title = string.Empty;
 
@@ -42,10 +42,6 @@ namespace Esentis.Ieemdb.Persistence.Models
     }
 
     public string NormalizedCountry { get; private set; }
-
-    public Guid CreatedBy { get; set; }
-
-    public Guid UpdatedBy { get; set; }
 
     public bool Featured { get; set; }
   }

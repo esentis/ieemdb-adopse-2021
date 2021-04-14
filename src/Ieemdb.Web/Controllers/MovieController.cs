@@ -7,7 +7,6 @@ namespace Esentis.Ieemdb.Web.Controllers
 
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;
-  using Esentis.Ieemdb.Persistence.Identity;
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;

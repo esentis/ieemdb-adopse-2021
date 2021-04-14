@@ -1,0 +1,240 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "version",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "gitversion",
+        "/showvariable",
+        "SemVer",
+        "/updateassemblyinfo",
+        "AssemblyInfo/AssemblyInfo.cs",
+        "/ensureassemblyinfo"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "restore",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "restore",
+        "--verbosity",
+        "minimal"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "build",
+        "--configuration",
+        "Release",
+        "--no-restore",
+        "--nologo",
+        "--verbosity",
+        "minimal",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "/p:TF_BUILD=true"
+      ],
+      "dependsOn": [
+        "version",
+        "restore"
+      ],
+      "group": "build",
+        "presentation": {
+          "reveal": "silent",
+          "panel": "shared",
+          "clear": true
+        },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "test",
+        "--configuration",
+        "Debug",
+        "--no-restore",
+        "--nologo",
+        "--verbosity",
+        "normal",
+        "--logger",
+        "trx",
+        "--results-directory",
+        "./TestResults",
+        "--collect:'XPlat Code Coverage'",
+        "/p:CopyLocalLockFileAssemblies=true",
+        "/consoleloggerparameters:NoSummary",
+        "/p:SkipAutoProps=true",
+        "/p:CollectCoverage=true",
+        "/p:CoverletOutput=../../TestResults/",
+        "/p:MergeWith=./TestResults/coverage.json",
+        "/p:CoverletOutputFormat=\"opencover%2ccobertura%2cjson\""
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "dependsOn": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "pack",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "pack",
+        "--configuration",
+        "Release",
+        "--no-restore",
+        "--nologo",
+        "--verbosity",
+        "minimal",
+        "--output",
+        "packages",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "/p:TF_BUILD=true"
+      ],
+      "dependsOn": [
+        "cleanPackages",
+        "clean",
+        "build",
+        "test"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "publish",
+        "--configuration",
+        "Release",
+        "--no-restore",
+        "--no-build",
+        "--nologo",
+        "--output",
+        "upload",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "/p:TF_BUILD=true"
+      ],
+      "dependsOn": [
+        "cleanPublish",
+        "clean",
+        "build",
+        "test"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "clean",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "clean",
+        "--configuration",
+        "Release",
+        "--verbosity",
+        "minimal"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "cleanPackages",
+      "command": "rm",
+      "type": "shell",
+      "args": [
+        "packages/*"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "cleanPublish",
+      "command": "rm",
+      "type": "shell",
+      "args": [
+        "upload/*"
+      ],
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "version",
+      "type": "command",
+      "command": "shellCommand.execute",
+      "args":{
+        "command": "dotnet gitversion /showvariable SemVer",
+        "cwd": "${workspaceFolder}"
+      }
+    }
+  ]
+}

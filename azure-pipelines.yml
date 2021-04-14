@@ -1,0 +1,68 @@
+resources:
+  repositories:
+    - repository: self
+      checkoutOptions:
+        submodules: true
+        lfs: true
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+      - develop
+      - feature/*
+      - release/*
+      - hotfix/*
+  paths:
+    include:
+      - azure-pipelines.yml
+      - src/*
+      - tests/*
+
+variables:
+  - group: Environment
+  - group: DotNet
+  - group: ApiKeys
+  - name: SONAR_PROJECT
+    value: esentis_ieemdb-adopse-2021
+
+stages:
+  - template: /ci/azure-pipelines/stages/general/00. gitversion.yml
+    parameters:
+      updateAssemblyInfo: true
+  - template: /ci/azure-pipelines/stages/dotnet/00. build.yml
+    parameters:
+      useCache: false
+      configuration: Release
+      updateAssemblyInfo: true
+      publishWeb: false
+      buildOnLinux: true
+      buildOnWindows: true
+      publishOnWindows: true
+      packOnLinux: false
+      projectsToPublish: src/Ieemdb.Web/Ieemdb.Web.csproj
+      publishArtifactName: azure
+  - template: /ci/azure-pipelines/stages/dotnet/01. test.yml
+    parameters:
+      useCache: false
+      configuration: Debug
+      testOnLinux: true
+      testOnWindows: true
+      coverageOnLinux: false
+      sonarOnLinux: true
+  - template: /ci/azure-pipelines/stages/dotnet/03. intellicode.yml
+    parameters:
+      useCache: false
+      updateAssemblyInfo: true
+      branch: develop
+  - template: /ci/azure-pipelines/stages/general/01. azureapp.yml
+    parameters:
+      environment: Azure
+      subscription: ieemdb-azure
+      resourceGroup: ieemdb
+      webApp: ieemdb
+      slotNameDevel: dev
+      slotNameStage: stage
+      deployToSlot: false
+      artifact: azure-win

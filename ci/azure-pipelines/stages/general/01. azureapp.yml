@@ -1,0 +1,49 @@
+parameters:
+- name: environment
+  type: string
+- name: jobName
+  type: string
+  default: production
+- name: subscription
+  type: string
+- name: resourceGroup
+  type: string
+- name: webApp
+  type: string
+- name: slotNameDevel
+  type: string
+- name: slotNameStage
+  type: string
+- name: deployToSlot
+  type: boolean
+  default: false
+- name: artifact
+  type: string
+- name: packagesToPush
+  type: string
+  default: '*.zip'
+
+stages:
+- stage: AzureDeploy
+  displayName: Deploy to azure webApp
+  dependsOn:
+    - Build
+    - Test
+  jobs:
+  - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/develop') }}:
+    - template: ../../jobs/general/01. azureapp.yml
+      parameters:
+        jobName: ${{ parameters.slotNameDevel }}
+        environment: ${{ parameters.environment }}
+        subscription: ${{ parameters.subscription }}
+        resourceGroup: ${{ parameters.resourceGroup }}
+        webApp: ${{ parameters.webApp }}
+        slotName: ${{ parameters.slotNameDevel }}
+        deployToSlot: ${{ parameters.deployToSlot }}
+        artifact: ${{ parameters.artifact }}
+        packagesToPush: ${{ parameters.packagesToPush }}
+  - ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/develop') }}:
+    - job:
+      displayName: Empty Job for compatibility
+      steps:
+        - checkout: none

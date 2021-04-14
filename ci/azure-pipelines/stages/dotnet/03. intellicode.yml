@@ -1,0 +1,41 @@
+parameters:
+- name: useCache
+  type: boolean
+  default: true
+- name: sdkVersion
+  default: 5.x
+  type: string
+- name: updateAssemblyInfo
+  type: boolean
+  default: false
+- name: assemblyInfoPath
+  type: string
+  default: $(Build.SourcesDirectory)
+- name: assemblyInfoArtifactName
+  type: string
+  default: AssemblyInfo
+- name: configuration
+  type: string
+  default: $(BuildConfiguration)
+- name: buildArgs
+  type: string
+  default: ''
+- name: branch
+  type: string
+  default: master
+
+stages:
+- stage: Intellicode
+  displayName: Intellicode
+  dependsOn: Version
+  jobs:
+  - template: ../../jobs/dotnet/03. intellicode.yml
+    parameters:
+      useCache: ${{ parameters.useCache }}
+      updateAssemblyInfo: ${{ parameters.updateAssemblyInfo }}
+      assemblyInfoPath: ${{ parameters.assemblyInfoPath }}
+      assemblyInfoArtifactName: ${{ parameters.assemblyInfoArtifactName }}
+      sdkVersion: ${{ parameters.sdkVersion }}
+      configuration: ${{ parameters.configuration }}
+      buildArgs: ${{ parameters.buildArgs }}
+      branch: ${{ parameters.branch }}

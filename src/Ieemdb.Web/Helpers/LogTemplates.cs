@@ -1,6 +1,6 @@
 namespace Esentis.Ieemdb.Web.Helpers
 {
-  public class LogTemplates
+  public static class LogTemplates
   {
     public const string BootstrappingError = "Error while bootstrapping application: {Message}";
 

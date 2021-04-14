@@ -49,15 +49,17 @@ namespace Esentis.Ieemdb.Web
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddSingleton<TimestampSaveChangesInterceptor>();
+      services.AddSingleton<IPureMapper>(sp => new PureMapper(MappingConfiguration.Mapping));
+
       services.AddHttpContextAccessor();
+      services.AddSingleton<TimestampSaveChangesInterceptor>();
       services.AddSingleton<AuditSaveChangesInterceptor<Guid>>();
+
       services.AddSingleton<IAuditorProvider<Guid>>(sp =>
         new AuditorProvider(sp.GetRequiredService<IHttpContextAccessor>()));
-      services.Configure<JwtOptions>(options => Configuration.GetSection("JWT").Bind(options));
+
       services.AddDbContextPool<IeemdbDbContext>((serviceProvider, options) =>
       {
-        // This is localhost connection string.
         options.UseNpgsql(
             Configuration.GetConnectionString("Ieemdb"))
           .AddInterceptors(
@@ -68,7 +70,8 @@ namespace Esentis.Ieemdb.Web
 
       services.AddDatabaseDeveloperPageExceptionFilter();
       services.AddHostedService<MigrationService<IeemdbDbContext>>();
-      services.AddSingleton<IPureMapper>(sp => new PureMapper(MappingConfiguration.Mapping));
+
+      services.Configure<JwtOptions>(options => Configuration.GetSection("JWT").Bind(options));
 
       services.AddSwaggerGen(c =>
       {
@@ -88,17 +91,15 @@ namespace Esentis.Ieemdb.Web
           {
             new OpenApiSecurityScheme
             {
-              Reference = new OpenApiReference
-              {
-                Type = ReferenceType.SecurityScheme, Id = "Bearer",
-              },
+              Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer", },
             },
             Array.Empty<string>()
           },
         });
         c.DescribeAllParametersInCamelCase();
         c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
-        c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
+        c.IncludeXmlComments(Path.Combine(
+          AppContext.BaseDirectory,
           $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
       });
 
@@ -121,8 +122,8 @@ namespace Esentis.Ieemdb.Web
         .AddDefaultUI()
         .AddDefaultTokenProviders();
 
-      // services.AddIdentityServer()
-      //  .AddApiAuthorization<IeemdbUser, IeemdbDbContext>();
+      services.AddIdentityServer()
+        .AddApiAuthorization<IeemdbUser, IeemdbDbContext>();
 
       JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
       services.AddAuthentication(options =>
@@ -142,7 +143,8 @@ namespace Esentis.Ieemdb.Web
             ValidIssuer = Configuration["JWT:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Key"])),
           };
-        });
+        })
+        .AddIdentityServerJwt();
 
       services.AddControllersWithViews();
       services.AddRazorPages();
@@ -182,6 +184,7 @@ namespace Esentis.Ieemdb.Web
       app.UseRouting();
 
       app.UseAuthentication();
+      app.UseIdentityServer();
       app.UseAuthorization();
       app.UseEndpoints(endpoints =>
       {

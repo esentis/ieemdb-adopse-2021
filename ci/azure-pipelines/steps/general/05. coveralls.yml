@@ -1,0 +1,19 @@
+parameters:
+- name: coverageDirectory
+  type: string
+  default: $(build.artifactStagingDirectory)/coverage
+- name: coverageOnPullRequests
+  type: boolean
+  default: true
+
+steps:
+- ${{ if or(parameters.coverageOnPullRequests, ne(variables['Build.Reason'], 'PullRequest')) }}:
+  - template: 01. dotnet-tool.yml
+    parameters:
+      toolName: coveralls.net
+  - ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
+    - pwsh: ../csmacnz.Coveralls --opencover --input "${{ parameters.coverageDirectory }}/coverage.opencover.xml" --useRelativePaths --commitId "$(Build.SourceVersion)" --commitBranch "$(Build.SourceBranchName)" --commitAuthor "$(Build.RequestedFor)" --commitEmail "$(Build.RequestedForEmail)" --commitMessage "$(Build.SourceVersionMessage)" --jobId "$(Build.BuildId)" --serviceName "azdevops" --serviceNumber "$(Build.BuildId)"
+      displayName: Upload coverage to Coveralls (CI)
+  - ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
+    - pwsh: ../csmacnz.Coveralls --opencover --input "${{ parameters.coverageDirectory }}/coverage.opencover.xml" --useRelativePaths --commitId "$(Build.SourceVersion)" --commitBranch "$(Build.SourceBranchName)" --commitAuthor "$(Build.RequestedFor)" --commitMessage "$(Build.SourceVersionMessage)" --jobId "$(Build.BuildId)" --serviceName "azdevops" --serviceNumber "$(Build.BuildId)" --pullRequest "$(System.PullRequest.PullRequestNumber)"
+      displayName: Upload coverage to Coveralls (PR)

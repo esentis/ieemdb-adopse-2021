@@ -1,0 +1,10 @@
+parameters:
+- name: branch
+  type: string
+  default: master
+
+steps:
+- task: IntelliCodeTeamModels@1
+  displayName: 'Visual Studio IntelliCode Team Models training'
+  inputs:
+    branch: ${{ parameters.branch }}
