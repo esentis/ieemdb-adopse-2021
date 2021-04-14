@@ -1,0 +1,32 @@
+resources:
+  repositories:
+    - repository: self
+      checkoutOptions:
+        submodules: true
+        lfs: true
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+      - develop
+      - feature/*
+      - release/*
+      - hotfix/*
+  paths:
+    include:
+      - azure-pipelines.yml
+      - src/*
+      - tests/*
+
+variables:
+  - group: Environment
+  - group: DotNet
+  - name: SONAR_PROJECT
+    value: esentis_ieemdb-adopse-2021
+
+stages:
+  - template: /ci/azure-pipelines/stages/general/00. gitversion.yml@templates
+    parameters:
+      updateAssemblyInfo: true
