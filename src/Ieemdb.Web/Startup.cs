@@ -116,7 +116,7 @@ namespace Esentis.Ieemdb.Web
             RequireNonAlphanumeric = !isDevelopment,
             RequiredLength = isDevelopment
               ? 4
-              : 12,
+              : 6,
           };
         })
         .AddEntityFrameworkStores<IeemdbDbContext>()

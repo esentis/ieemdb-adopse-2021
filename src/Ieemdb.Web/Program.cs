@@ -36,6 +36,7 @@ namespace Esentis.Ieemdb.Web
       {
         var host = CreateHostBuilder(args).Build();
         logger = host.Services.GetRequiredService<ILogger<Startup>>();
+        await host.Services.SeedDatabase();
 
         await host.RunAsync();
         return 0;
