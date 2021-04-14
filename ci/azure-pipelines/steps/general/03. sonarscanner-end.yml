@@ -1,0 +1,4 @@
+steps:
+- pwsh: |
+    ../dotnet-sonarscanner end /d:sonar.login="$(SonarCloudApiKey)"
+  displayName: Publish SonarCloud Results

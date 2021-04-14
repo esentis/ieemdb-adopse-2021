@@ -1,0 +1,14 @@
+parameters:
+  - name: pathtoPublish
+    type: string
+    default: $(build.artifactStagingDirectory)/publish
+  - name: artifactName
+    type: string
+
+steps:
+- task: PublishBuildArtifacts@1
+  displayName: Publish build artifact ${{ parameters.artifactName }}
+  inputs:
+    PathtoPublish: ${{ parameters.pathtoPublish }}
+    ArtifactName: ${{ parameters.artifactName }}
+    publishLocation: Container

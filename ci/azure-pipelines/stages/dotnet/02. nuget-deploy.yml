@@ -1,0 +1,49 @@
+parameters:
+- name: packagesToPush
+  type: string
+  default: '*.nupkg'
+- name: artifact
+  type: string
+  default: nuget
+- name: environmentPullRequest
+  type: string
+  default: 'kritikos-io'
+- name: jobNamePullRequest
+  type: string
+  default: kritikos-io
+- name: feedNamePullRequest
+  type: string
+  default: NugetKritikos
+- name: environmentRelease
+  type: string
+  default: 'kritikos-io'
+- name: jobNameRelease
+  type: string
+  default: kritikos-io
+- name: feedNameRelease
+  type: string
+  default: NugetOrgKritikos
+
+stages:
+- stage: Deploy
+  displayName: Deploys nugets
+  dependsOn:
+    - Build
+    - Test
+  jobs:
+  - ${{ if and(ne(variables['Build.Reason'], 'PullRequest'),or(eq(variables['Build.SourceBranch'], 'refs/heads/main'),eq(variables['Build.SourceBranch'], 'refs/heads/master'))) }}:
+      - template: ../../jobs/dotnet/02. nuget-deploy.yml
+        parameters:
+          artifact: ${{ parameters.artifact }}
+          packagesToPush: ${{ parameters.packagesToPush }}
+          environment: ${{ parameters.environmentRelease }}
+          jobName: ${{ parameters.jobNameRelease }}
+          feedName: ${{ parameters.feedNameRelease }}
+  - ${{ if or(eq(variables['Build.Reason'], 'PullRequest'),and(ne(variables['Build.SourceBranch'], 'refs/heads/master'),ne(variables['Build.SourceBranch'], 'refs/heads/main'))) }}:
+      - template: ../../jobs/dotnet/02. nuget-deploy.yml
+        parameters:
+          artifact: ${{ parameters.artifact }}
+          packagesToPush: ${{ parameters.packagesToPush }}
+          environment: ${{ parameters.environmentPullRequest }}
+          jobName: ${{ parameters.jobNamePullRequest }}
+          feedName: ${{ parameters.feedNamePullRequest }}
