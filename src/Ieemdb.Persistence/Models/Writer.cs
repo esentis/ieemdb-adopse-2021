@@ -7,7 +7,7 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Writer : IeemdbEntity<long>, IAuditable<Guid>, ISearchable
+  public class Writer : EemdbEntity<long>, ISearchable
   {
     private string name = string.Empty;
 
@@ -26,10 +26,6 @@ namespace Esentis.Ieemdb.Persistence.Models
     public DateTimeOffset BirthDate { get; set; }
 
     public string Bio { get; set; }
-
-    public Guid CreatedBy { get; set; }
-
-    public Guid UpdatedBy { get; set; }
 
     public bool Featured { get; set; }
   }

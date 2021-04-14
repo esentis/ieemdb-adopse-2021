@@ -7,16 +7,12 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Rating : IeemdbEntity<long>, IAuditable<Guid>
+  public class Rating : EemdbEntity<long>
   {
     public IeemdbUser User { get; set; }
 
     public double Rate { get; set; }
 
     public Movie Movie { get; set; }
-
-    public Guid CreatedBy { get; set; }
-
-    public Guid UpdatedBy { get; set; }
   }
 }
