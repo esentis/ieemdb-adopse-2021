@@ -23,6 +23,7 @@ trigger:
 variables:
   - group: Environment
   - group: DotNet
+  - group: ApiKeys
   - name: SONAR_PROJECT
     value: esentis_ieemdb-adopse-2021
 
