@@ -55,7 +55,7 @@ stages:
       useCache: false
       updateAssemblyInfo: true
       branch: develop
-  - template: /ci/azure-pipelines/stages/general/01. azureapp.yml@templates
+  - template: /ci/azure-pipelines/stages/general/01. azureapp.yml
     parameters:
       environment: Azure
       subscription: ieemdb-azure
