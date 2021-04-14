@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Esentis.Ieemdb.Persistence.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialState : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -1041,15 +1041,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         principalTable: "Writers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "CreatedAt", "Name", "NormalizedName", "UpdatedAt" },
-                values: new object[,]
-                {
-                    { new Guid("bcb65d95-5cd1-4882-a1b5-f537cde80a22"), "e683bff6-ff91-4c1e-af8b-203cdcf0ba3c", new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0)), "ADMINISTRATOR", "ADMINISTRATOR", new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0)) },
-                    { new Guid("7ac8f688-4a10-48c7-8b00-73c52dda15df"), "ed11f5d6-7eaf-4418-9f98-bcab656e16e0", new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0)), "MEMBER", "MEMBER", new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0)) }
                 });
 
             migrationBuilder.CreateIndex(

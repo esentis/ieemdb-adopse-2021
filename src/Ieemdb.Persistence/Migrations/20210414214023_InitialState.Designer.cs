@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Esentis.Ieemdb.Persistence.Migrations
 {
     [DbContext(typeof(IeemdbDbContext))]
-    [Migration("20210414190226_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20210414214023_InitialState")]
+    partial class InitialState
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -88,26 +88,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("bcb65d95-5cd1-4882-a1b5-f537cde80a22"),
-                            ConcurrencyStamp = "e683bff6-ff91-4c1e-af8b-203cdcf0ba3c",
-                            CreatedAt = new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0)),
-                            Name = "ADMINISTRATOR",
-                            NormalizedName = "ADMINISTRATOR",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0))
-                        },
-                        new
-                        {
-                            Id = new Guid("7ac8f688-4a10-48c7-8b00-73c52dda15df"),
-                            ConcurrencyStamp = "ed11f5d6-7eaf-4418-9f98-bcab656e16e0",
-                            CreatedAt = new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0)),
-                            Name = "MEMBER",
-                            NormalizedName = "MEMBER",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2021, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 2, 0, 0, 0))
-                        });
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Identity.IeemdbUser", b =>
