@@ -57,9 +57,9 @@ stages:
     parameters:
       environment: Azure
       subscription: ieemdb-azure
-      resourceGroup: ieemdb
-      webApp: ieemdb
+      resourceGroup: esentis
+      webApp: ieemdb-web
       slotNameDevel: dev
       slotNameStage: stage
-      deployToSlot: false
+      deployToSlot: true
       artifact: azure-win
