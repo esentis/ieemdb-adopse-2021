@@ -1,0 +1,32 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "Source"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/.vs": true, // Visual Studio cache
+      ".vscode": true,
+      "*.sln.DotSettings.user": true, // managed by Resharper
+      "**/.gitmodules": true, // managed by git
+      "{src,tests}/*/{bin,obj}": true, // build artifacts,
+      "TestResults": true, // Test run results
+      "AssemblyInfo": true, // GitVersion generated file
+    },
+    "files.associations": {
+      "**/ci/azure/{steps,stages}/*/*.yml": "azure-pipelines"
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "augustocdias.tasks-shell-input"
+    ]
+  }
+}

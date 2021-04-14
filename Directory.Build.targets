@@ -19,6 +19,11 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="BeforeBuild">
+    <Exec Command="dotnet gitversion /output json /showvariable SemVer /updateassemblyinfo $(MSBuildThisFileDirectory)\AssemblyInfo\AssemblyInfo.cs /ensureassemblyinfo" Condition="Exists('$(HOMEDRIVE)$(HOMEPATH)\.dotnet\tools\dotnet-gitversion.exe')" />
+    <Exec Command='$HOME/.dotnet/tools/dotnet-gitversion /output json /showvariable SemVer /updateassemblyinfo ../../AssemblyInfo/AssemblyInfo.cs /ensureassemblyinfo' Condition="Exists('$(HOME)/.dotnet/tools/dotnet-gitversion')" />
+  </Target>
+
   <Target Name="AfterBuild" Condition="$(PackageVersion) == '1.0.0'">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="PackAssembly" />
