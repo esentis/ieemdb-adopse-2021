@@ -17,5 +17,13 @@ namespace Esentis.Ieemdb.Web.Helpers
     public const string Deleted = "{Entity} with ID {Id} has been deleted";
 
     public const string Updated = "{Entity} has been updated";
+
+    public const string SeedInit = "Seeding database  {Database}";
+
+    public const string SeedAdmin = "Seeding new admin user  {AdminMail}";
+
+    public const string SeedAdminFailed = "Failed seeding admin user with errors {Errors}";
+
+    public const string DatabaseIsMissingMigrations = "Can not seed while database is missing migrations";
   }
 }
