@@ -5,6 +5,14 @@
 ![Logo](https://picsum.photos/200/100)
 ```Logo coming soon```
 
+Application is hosted at the following links:
+
+- [Production][ieemdb-prod]
+- [Master Branch (CI)][ieemdb-stage]
+- [Develop Branch (CI)][ieemdb-dev]
+
+Sponsored by [Alexandros Kritikos][akritikos] / [Kritikos IO][kritikos-io]
+
 Please read [Contributing Guidelines](CONTRIBUTING.md) before working on this repo.
 
 ## Contributors
@@ -22,3 +30,9 @@ Please read [Contributing Guidelines](CONTRIBUTING.md) before working on this re
 [Γαβριηλίδης Δημήτριος / GavriilJim](https://github.com/GavriilJim)
 
 [Μαστρομανώλης Θεόδωρος  / GavriilJim](https://github.com/TeoMastro)
+
+[ieemdb-dev]: https://ieemdb-web-dev.azurewebsites.net/
+[ieemdb-stage]: https://ieemdb-web-stage.azurewebsites.net/
+[ieemdb-prod]: https://ieemdb-web.azurewebsites.net/
+[akritikos]: https://github.com/akritikos
+[kritikos-io]: https://github.com/kritikos-io
