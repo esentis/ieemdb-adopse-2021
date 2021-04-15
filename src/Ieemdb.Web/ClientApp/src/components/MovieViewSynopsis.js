@@ -3,7 +3,7 @@ import React from 'react';
 function MovieViewSynopsis(props){
     return(
         <div>
-            <p>MovieViewSynopsis</p>
+            <p style={{color: "white"}}>MovieViewSynopsis</p>
         </div>
     );
 }

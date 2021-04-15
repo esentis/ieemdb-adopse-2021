@@ -3,7 +3,7 @@ import React from 'react';
 function MovieViewTrailer(props){
     return(
         <div>
-            <p>MovieViewTrailer</p>
+            <p style={{color: "white"}}>MovieViewTrailer</p>
         </div>
     );
 }
