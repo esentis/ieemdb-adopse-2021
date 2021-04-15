@@ -100,6 +100,16 @@
           "Microsoft.EntityFrameworkCore.Design": "5.0.5"
         }
       },
+      "SendGrid": {
+        "type": "Direct",
+        "requested": "[9.22.0, )",
+        "resolved": "9.22.0",
+        "contentHash": "5vXkfOqPhi6W5/tEmRcTVJakT69SXiCGqVRERYF4ZAtJ4alylzlOqin6w8Xrog0Brf3RL+4BKXI+CwKbFLtteA==",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1",
+          "starkbank-ecdsa": "[1.2.0, 2.0.0)"
+        }
+      },
       "Serilog.AspNetCore": {
         "type": "Direct",
         "requested": "[4.1.0, )",
@@ -1280,6 +1290,11 @@
           "System.Collections.Concurrent": "4.0.12",
           "System.Threading.Timer": "4.0.1"
         }
+      },
+      "starkbank-ecdsa": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "hP53QPYOOEIR44EK9phz+DYliM6DEieDZxpb8GZzE+++qyrWqUscKcyHCC6L9yu/ehllYtqxtT4qrjWDsuQlUQ=="
       },
       "StyleCop.Analyzers.Unstable": {
         "type": "Transitive",

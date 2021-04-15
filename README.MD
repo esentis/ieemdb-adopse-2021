@@ -5,6 +5,10 @@
 ![Logo](https://picsum.photos/200/100)
 ```Logo coming soon```
 
+Please read [Contributing Guidelines](CONTRIBUTING.md) before working on this repo.
+
+## Live Environment
+
 Application is hosted at the following links:
 
 - [Production][ieemdb-prod]
@@ -12,8 +16,6 @@ Application is hosted at the following links:
 - [Develop Branch (CI)][ieemdb-dev]
 
 Sponsored by [Alexandros Kritikos][akritikos] / [Kritikos IO][kritikos-io]
-
-Please read [Contributing Guidelines](CONTRIBUTING.md) before working on this repo.
 
 ## Contributors
 
