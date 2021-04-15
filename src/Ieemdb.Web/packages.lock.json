@@ -2,6 +2,12 @@
   "version": 1,
   "dependencies": {
     ".NETCoreApp,Version=v5.0": {
+      "Bogus": {
+        "type": "Direct",
+        "requested": "[33.0.2, )",
+        "resolved": "33.0.2",
+        "contentHash": "92CcSgl7KLEw7lerMytjY504IPnhmYqDkCgIPm5GVfiZPslRWUcgWvtoNYhKbSU4m/Ms7giKP8OxPAFTFBgC3w=="
+      },
       "Kritikos.PureMapper": {
         "type": "Direct",
         "requested": "[1.0.3, )",
@@ -243,6 +249,12 @@
           "Swashbuckle.AspNetCore.Filters.Abstractions": "7.0.2",
           "Swashbuckle.AspNetCore.SwaggerGen": "5.0.0"
         }
+      },
+      "Swashbuckle.AspNetCore.ReDoc": {
+        "type": "Direct",
+        "requested": "[6.1.2, )",
+        "resolved": "6.1.2",
+        "contentHash": "fmyjLbykzPi+V+XuPCWuMHQJHjPl3Ap8mjIHp7pvDPvZtOsEl3Y04iVjSvd+W8XgIO8EB4Kcb5DcyDrR9ubZWA=="
       },
       "Swashbuckle.AspNetCore.SwaggerGen": {
         "type": "Direct",
