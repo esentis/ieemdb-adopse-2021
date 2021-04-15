@@ -1,21 +1,23 @@
+#nullable disable // Not required for DbSet
 namespace Esentis.Ieemdb.Persistence
 {
   using System;
 
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
+  using Esentis.Ieemdb.Persistence.Joins;
   using Esentis.Ieemdb.Persistence.Models;
 
   using Kritikos.Configuration.Peristence.IdentityServer;
 
   using Microsoft.EntityFrameworkCore;
 
-  public class IeemdbDbContext : ApiAuthorizationPooledDbContext<IeemdbUser, IeemdbRole, Guid>
+  public class IeemdbDbContext : ApiAuthorizationDbContext<IeemdbUser, IeemdbRole, Guid>
   {
     private static readonly DateTimeOffset SeededAt = DateTime.Parse("13/03/2021");
 
     public IeemdbDbContext(DbContextOptions<IeemdbDbContext> options)
-        : base(options)
+      : base(options)
     {
     }
 
@@ -47,88 +49,102 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<MovieGenre> MovieGenres { get; set; }
 
+    public DbSet<Device> Devices { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
       base.OnModelCreating(builder);
-      builder.Entity<IeemdbRole>(entity =>
-      {
-        entity.HasData(new[]
-              {
-                    new IeemdbRole
-                    {
-                        CreatedAt = SeededAt,
-                        UpdatedAt = SeededAt,
-                        Id = Guid.Parse("bcb65d95-5cd1-4882-a1b5-f537cde80a22"),
-                        ConcurrencyStamp = "e683bff6-ff91-4c1e-af8b-203cdcf0ba3c",
-                        Name = RoleNames.Administrator,
-                        NormalizedName = RoleNames.Administrator,
-                    },
-              });
-      });
+      builder.Entity<Actor>()
+        .HasIndex(e => e.NormalizedSearch)
+        .IsTsVectorExpressionIndex("english");
+
+      builder.Entity<Director>()
+        .HasIndex(e => e.NormalizedSearch)
+        .IsTsVectorExpressionIndex("english");
+
+      builder.Entity<Movie>()
+        .HasIndex(e => e.NormalizedSearch)
+        .IsTsVectorExpressionIndex("english");
+
+      builder.Entity<Writer>()
+        .HasIndex(e => e.NormalizedSearch)
+        .IsTsVectorExpressionIndex("english");
 
       builder.Entity<MovieActor>(e =>
       {
         e.HasOne(mv => mv.Movie)
-                  .WithMany()
-                  .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("MovieId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Actor)
-                  .WithMany()
-                  .HasForeignKey("ActorId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("ActorId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasKey("MovieId", "ActorId");
       });
 
       builder.Entity<MovieDirector>(e =>
       {
         e.HasOne(mv => mv.Movie)
-                  .WithMany()
-                  .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("MovieId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Director)
-                  .WithMany()
-                  .HasForeignKey("DirectorId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("DirectorId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasKey("MovieId", "DirectorId");
       });
 
       builder.Entity<MovieWriter>(e =>
       {
         e.HasOne(mv => mv.Movie)
-                  .WithMany()
-                  .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("MovieId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Writer)
-                  .WithMany()
-                  .HasForeignKey("WriterId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("WriterId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasKey("MovieId", "WriterId");
       });
 
       builder.Entity<MovieGenre>(e =>
       {
         e.HasOne(mv => mv.Movie)
-                  .WithMany()
-                  .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("MovieId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Genre)
-                  .WithMany()
-                  .HasForeignKey("GenreId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("GenreId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasKey("MovieId", "GenreId");
       });
 
       builder.Entity<MoviePoster>(e =>
       {
         e.HasOne(mv => mv.Movie)
-                  .WithMany()
-                  .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("MovieId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Poster)
-                  .WithMany()
-                  .HasForeignKey("PosterId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("PosterId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasKey("MovieId", "PosterId");
       });
 
       builder.Entity<MovieScreenshot>(e =>
       {
         e.HasOne(mv => mv.Movie)
-                  .WithMany()
-                  .HasForeignKey("MovieId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("MovieId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Screenshot)
-                  .WithMany()
-                  .HasForeignKey("ScreenshotId").OnDelete(DeleteBehavior.Restrict);
+          .WithMany()
+          .HasForeignKey("ScreenshotId")
+          .OnDelete(DeleteBehavior.Restrict);
         e.HasKey("MovieId", "ScreenshotId");
       });
     }

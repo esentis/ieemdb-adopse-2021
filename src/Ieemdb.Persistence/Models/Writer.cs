@@ -1,34 +1,32 @@
-﻿namespace Esentis.Ieemdb.Persistence.Models
+namespace Esentis.Ieemdb.Persistence.Models
 {
   using System;
 
-  using Esentis.Ieemdb.Persistence.Base;
+  using Esentis.Ieemdb.Persistence.Abstractions;
   using Esentis.Ieemdb.Persistence.Helpers;
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Writer : Entity<long>, IAuditable<Guid>
+  public class Writer : EemdbEntity<long>, ISearchable
+  {
+    private string name = string.Empty;
+
+    public string Name
     {
-        private string name = string.Empty;
-
-        public string Name
-        {
-            get => name;
-            set
-            {
-                name = value;
-                NormalizedName = value.NormalizeSearch();
-            }
-        }
-
-        public string NormalizedName { get; private set; }
-
-        public DateTimeOffset BirthDate { get; set; }
-
-        public string Bio { get; set; }
-
-        public Guid CreatedBy { get; set; }
-
-        public Guid UpdatedBy { get; set; }
+      get => name;
+      set
+      {
+        name = value;
+        NormalizedSearch = value.NormalizeSearch();
+      }
     }
+
+    public string NormalizedSearch { get; private set; }
+
+    public DateTimeOffset BirthDate { get; set; }
+
+    public string Bio { get; set; }
+
+    public bool Featured { get; set; }
+  }
 }

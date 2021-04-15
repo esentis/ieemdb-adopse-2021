@@ -35,30 +35,24 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpGet("")]
     public async Task<ActionResult<List<WriterDto>>> GetWriters(int itemsPerPage = 20, int page = 1)
     {
-      // We calculate how many items we shall skip to get next page (page offset).
       var toSkip = itemsPerPage * (page - 1);
 
-      // We prepare the query without executing it.
       var writersQuery = Context.Writers
         .TagWith("Retrieving all writers")
         .OrderBy(x => x.Id);
 
-      // We calculate how many writers are in database.
       var totalWriters = await writersQuery.CountAsync();
 
-      // If page provided doesn't exist we return bad request.
       if (page > ((totalWriters / itemsPerPage) + 1))
       {
         return BadRequest("Page doesn't exist");
       }
 
-      // We create the paged query request.
       var pagedWriters = await writersQuery
         .Skip(toSkip)
         .Take(itemsPerPage)
         .ToListAsync();
 
-      // We create the result, which is paged.
       var result = new PagedResult<WriterDto>
       {
         Results = pagedWriters.Select(x => Mapper.Map<Writer, WriterDto>(x)).ToList(),
@@ -67,7 +61,6 @@ namespace Esentis.Ieemdb.Web.Controllers
         TotalElements = totalWriters,
       };
 
-      // We return OK and the paged results;
       return Ok(result);
     }
 
@@ -79,13 +72,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpGet("{id}")]
     public ActionResult<WriterDto> GetWriter(long id)
     {
-      // Returns the first writer found with the spcefic ID. If not found, the result is null.
-      var writer = Context.Writers.Where(x => x.Id == id).SingleOrDefault();
+      var writer = Context.Writers.SingleOrDefault(x => x.Id == id);
 
-      // If we haven't found a writer we return a not found response.
-#pragma warning disable IDE0046 // Waiting for the new C# version
       if (writer == null)
-#pragma warning restore IDE0046 // Convert to conditional expression
       {
         Logger.LogWarning(LogTemplates.NotFound, nameof(Writer), id);
         return NotFound($"No {nameof(Writer)} with Id {id} found in database");
@@ -93,7 +82,6 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       Logger.LogInformation(LogTemplates.RequestEntity, nameof(Writer), id);
 
-      // Everything went ok, we map the found writer to a dto and return it to client.
       return Ok(Mapper.Map<Writer, WriterDto>(writer));
     }
 
@@ -105,17 +93,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpPost("")]
     public async Task<ActionResult<WriterDto>> AddWriter([FromBody] AddWriterDto dto)
     {
-      // We map the provided writer dto to an actual Writer model.
       var writer = Mapper.Map<AddWriterDto, Writer>(dto);
 
-      // We add the writer in the database.
       Context.Writers.Add(writer);
 
-      // And we save it
       await Context.SaveChangesAsync();
       Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Writer), writer);
 
-      // We return the url where the entity was created.
       return CreatedAtAction(nameof(GetWriter), new { id = writer.Id }, Mapper.Map<Writer, WriterDto>(writer));
     }
 
@@ -127,24 +111,19 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpDelete("")]
     public async Task<ActionResult> DeleteWriter(int id)
     {
-      // We search for the writer if it exists in our db.
-      var writer = Context.Writers.Where(x => x.Id == id).SingleOrDefault();
+      var writer = Context.Writers.SingleOrDefault(x => x.Id == id);
 
-      // If not, we return a not found response.
       if (writer == null)
       {
         Logger.LogWarning(LogTemplates.NotFound, nameof(Writer), id);
         return NotFound("No writer found in the database");
       }
 
-      // We remove the writer if there is one.
       Context.Writers.Remove(writer);
 
-      // We save the changes in our db.
       await Context.SaveChangesAsync();
       Logger.LogInformation(LogTemplates.Deleted, nameof(Writer), id);
 
-      // An empty success response.
       return NoContent();
     }
 
@@ -157,26 +136,21 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpPut("{id}")]
     public async Task<ActionResult<WriterDto>> UpdateWriter(int id, AddWriterDto dto)
     {
-      // We search for the writer to update
-      var writer = Context.Writers.Where(x => x.Id == id).SingleOrDefault();
+      var writer = Context.Writers.SingleOrDefault(x => x.Id == id);
 
-      // If there is not writer found we return a not found response.
       if (writer == null)
       {
         Logger.LogWarning(LogTemplates.NotFound, nameof(Writer), id);
         return NotFound($"No {nameof(Writer)} with Id {id} found in database");
       }
 
-      // Otherwise, we expicitly update the found writer with newer values.
       writer.Name = dto.Name;
-      writer.Bio = dto.bio;
-      writer.BirthDate = dto.birthDate;
+      writer.Bio = dto.Bio;
+      writer.BirthDate = dto.BirthDate;
 
-      // And we just save the changes to commit on previous updates.
       await Context.SaveChangesAsync();
       Logger.LogInformation(LogTemplates.Updated, nameof(Writer), writer);
 
-      // We map the actual Writer entity to a dto and return the updated writer to the client.
       return Ok(Mapper.Map<Writer, WriterDto>(writer));
     }
   }

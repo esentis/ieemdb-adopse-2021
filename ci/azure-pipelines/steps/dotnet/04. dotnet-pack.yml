@@ -1,0 +1,23 @@
+parameters:
+- name: configuration
+  type: string
+  default: $(BuildConfiguration)
+- name: projectsToPack
+  type: string
+  default: src/**/*.csproj
+- name: packDirectory
+  type: string
+  default: $(build.artifactStagingDirectory)/nuget
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: Pack nugets
+    inputs:
+      command: pack
+      arguments: --nologo --no-build --no-restore
+      packagesToPack: ${{ parameters.projectsToPack }}
+      packDirectory: ${{ parameters.packDirectory }}
+      configuration: ${{ parameters.configuration }}
+      versioningScheme: byBuildNumber
+      verbosityRestore: Minimal
+      verbosityPack: Minimal

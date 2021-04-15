@@ -1,0 +1,105 @@
+parameters:
+- name: image
+  type: string
+  default: ubuntu-latest
+- name: useCache
+  type: boolean
+  default: true
+- name: sdkVersion
+  default: 5.x
+  type: string
+- name: updateAssemblyInfo
+  type: boolean
+  default: false
+- name: assemblyInfoPath
+  type: string
+  default: $(Build.SourcesDirectory)
+- name: assemblyInfoArtifactName
+  type: string
+  default: AssemblyInfo
+- name: configuration
+  type: string
+  default: $(BuildConfiguration)
+- name: buildArgs
+  type: string
+  default: ''
+- name: producePublishArtifacts
+  type: boolean
+  default: false
+- name: publishArgs
+  type: string
+  default: ''
+- name: publishWeb
+  type: boolean
+  default: false
+- name: projectsToPublish
+  type: string
+  default: src/*/*.csproj
+- name: outputPath
+  type: string
+  default: $(build.artifactStagingDirectory)/publish
+- name: pathtoPublish
+  type: string
+  default: $(build.artifactStagingDirectory)/publish
+- name: publishArtifactName
+  type: string
+  default: '$(Build.Repository.Name)-$(Build.BuildNumber)'
+- name: producePackedArtifacts
+  type: boolean
+  default: false
+- name: projectsToPack
+  type: string
+  default: src/*/*.csproj
+- name: packDirectory
+  type: string
+  default: $(build.artifactStagingDirectory)/nuget
+- name: nugetArtifactName
+  type: string
+  default: 'nuget'
+
+
+jobs:
+- job:
+  displayName: on ${{ parameters.image }}
+  pool:
+    vmImage: ${{ parameters.image }}
+  steps:
+    - checkout: self
+      fetchDepth: 1
+    - ${{ if parameters.useCache }}:
+        - template: ../../steps/nuget/00. nuget-cache.yml
+    - template: ../../steps/dotnet/00. install-sdk.yml
+      parameters:
+        sdkVersion: 5.x
+    - template: ../../steps/dotnet/01. dotnet-restore.yml
+    - ${{ if parameters.updateAssemblyInfo }}:
+      - template: ../../steps/general/08. download-build-artifact.yml
+        parameters:
+          downloadPath: ${{ parameters.assemblyInfoPath }}
+          artifactName: ${{ parameters.assemblyInfoArtifactName }}
+    - template: ../../steps/dotnet/02. dotnet-build.yml
+      parameters:
+        configuration: ${{ parameters.configuration }}
+        buildArgs: ${{ parameters.buildArgs }}
+    - ${{ if parameters.producePublishArtifacts }}:
+      - template: ../../steps/dotnet/04. dotnet-publish.yml
+        parameters:
+          projectPath: ${{ parameters.projectsToPublish }}
+          publishArgs: ${{ parameters.publishArgs }}
+          configuration: ${{ parameters.configuration }}
+          publishWeb: ${{ parameters.publishWeb }}
+          outputPath: ${{ parameters.outputPath }}
+      - template: ../../steps/general/06. publish-build-artifact.yml
+        parameters:
+          pathtoPublish: ${{ parameters.pathtoPublish }}
+          artifactName: ${{ parameters.publishArtifactName }}
+    - ${{ if parameters.producePackedArtifacts }}:
+      - template: ../../steps/dotnet/04. dotnet-pack.yml
+        parameters:
+          configuration: ${{ parameters.configuration }}
+          projectsToPack: ${{ parameters.projectsToPack }}
+          packDirectory: ${{ parameters.packDirectory }}
+      - template: ../../steps/general/06. publish-build-artifact.yml
+        parameters:
+          pathtoPublish: ${{ parameters.packDirectory }}
+          artifactName: ${{ parameters.nugetArtifactName }}

@@ -1,0 +1,13 @@
+.column-right-SearchView{
+    background-color: #282828;
+    height: 100vh;
+    padding: 0%;
+    width: 80%;
+    margin-left:16.6%
+    }
+
+    @media (max-width:1199px){
+        .column-right-SearchView{
+          margin-left:0;
+          top:8vh;
+}}

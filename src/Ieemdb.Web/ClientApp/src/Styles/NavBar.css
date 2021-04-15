@@ -1,0 +1,197 @@
+  .column-left {
+  /* background-image:url("./images/blur-background12.jpg"); */
+  background-color: #3F2B63;
+  height: 100%;
+  z-index:1;
+  
+} 
+
+.nav-center2{
+    margin: 0;
+    position: relative;
+    padding: 10px;
+    top: 25%;
+    z-index: 0;
+    right: 5%; 
+    width: 16.5vw;
+  }
+
+  .column-left a{
+    text-decoration:none;
+    color:#D3D3D3;
+    display:block;
+    padding: 12px;
+    position:relative;
+    width: 10vw;
+    font-size: 1.20rem;
+    right: 2.5vw;
+    
+  }
+
+  .column-left a:hover{
+    color:white;
+    /* text-shadow:2px 2px 5px #FFFF99; */
+  }
+
+  .inputClass{
+    height:4vh; 
+    box-sizing: border-box;
+    position:relative;
+    background: none;
+    border: none; 
+    border-bottom: 2px  solid #D3D3D3 ;
+    background: none;
+    width:8vw;
+    color: #D3D3D3;
+    outline: none; 
+  }
+
+  ::placeholder{
+    color:#D3D3D3;
+    line-height: 2;
+    font-size: 1.25rem; 
+}
+
+.advButton{
+  color:#D3D3D3;
+  border: 2px solid #D3D3D3;
+  width:auto;
+  background:none;
+  outline: 0;
+  height: 2.5rem;
+  border-radius: 12px;
+  text-align: center;
+   display:inline; 
+}
+
+ .logo{
+  width:6vw; 
+  height:7vh;
+  border: 0;
+  outline: 0;
+  background:none;
+  position: relative;
+  top:12vh;
+  display: block;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right:15vw;
+} 
+
+.fa-cog{
+  color:#D3D3D3;
+  font-size:1.15rem;
+}
+
+.column-left span{
+  margin-left: 6px;
+}
+
+.login-Button{
+  background:none;
+  border: 2px solid #D3D3D3;
+  border-radius: 50px;
+  color: #D3D3D3;
+  padding: 8px;
+  text-align: center;
+  display:inline-block;
+  font-size: 1rem;
+  position: relative;
+  width:10vw;
+  outline: none;
+  margin-top: 5vh;
+  margin-left: 0.2vw;
+}
+
+.checkbtn{
+  font-size:25px ;
+  line-height: 40px;
+  cursor:pointer;
+  display: none;
+  color: #D3D3D3;
+}
+
+#check{
+  display: none;
+} 
+
+
+ @media (max-width:1700px){
+   .login-Button{
+   }
+ }
+
+ @media (max-width:1199px){
+  .checkbtn{
+    display: block; 
+    width: 7%;
+  }
+   .column-left{
+    background: none;
+    background-color: #282828;
+    transition: all .5s;
+    height:8vh;
+    margin: 0;
+    width: 100%;
+       
+  }
+  
+  .logo{display: none;}
+
+  .fa-cog{display: none;}
+  .column-left a{
+    font-size: 1.1rem;
+    top:10px;
+    background:none;
+    margin: 0;
+   
+  }
+
+  .login-Button{
+    top:-1vh;
+    border: none;
+    font-size: 1.1rem;
+    border-radius: 0;
+    margin-left:0;
+    padding: 0;
+    margin-top: 5%;
+    text-align: left;
+
+  }
+
+  ::placeholder{
+    color:#D3D3D3;
+    font-size: 1rem;
+  }
+
+  .inputClass{
+    width: auto;
+    top:-1vh; 
+    left: 10vw;}
+
+   .advButton{
+    bottom:1vh;
+    height:2rem ;
+    margin-left: 2.5rem;
+    position: relative;
+    width: auto;
+    display: inline;
+   } 
+ 
+    .column-left nav :not(.fa-cog,.advButton,.inputClass){
+      width: 100vw;
+    }  
+
+    .nav-center2 {
+      left:100%;
+    }
+
+   #check:checked ~ .nav-center2{
+     left:0;
+     display: block;
+     background-color:rgba(0,0,0,0.6);
+     top:5%;
+     z-index: 1;
+     width: 100%;
+   } 
+}  

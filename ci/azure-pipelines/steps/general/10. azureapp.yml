@@ -1,0 +1,30 @@
+parameters:
+- name: subscription
+  type: string
+- name: resourceGroup
+  type: string
+- name: webApp
+  type: string
+- name: slotName
+  type: string
+- name: deployToSlot
+  type: boolean
+  default: false
+- name: artifact
+  type: string
+- name: packagesToPush
+  type: string
+  default: '*.zip'
+
+steps:
+- task: AzureRmWebAppDeployment@4
+  displayName: Upload to ${{ parameters.slotName }} slot
+  inputs:
+    ConnectionType: 'AzureRM'
+    appType: 'webApp'
+    azureSubscription: ${{ parameters.subscription }}
+    ResourceGroupName: ${{ parameters.resourceGroup }}
+    WebAppName: ${{ parameters.webApp }}
+    deployToSlotOrASE: ${{ parameters.deployToSlot }}
+    SlotName: ${{ parameters.slotName }}
+    packageForLinux: $(Pipeline.Workspace)/${{ parameters.artifact }}/${{ parameters.packagesToPush }}

@@ -1,9 +1,21 @@
 # IEEMDB
+[![Build Status](https://dev.azure.com/kritikos/Ieemdb/_apis/build/status/Ieemdb?branchName=develop)](https://dev.azure.com/kritikos/Ieemdb/_build/latest?definitionId=21&branchName=develop)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=esentis_ieemdb-adopse-2021&metric=alert_status)](https://sonarcloud.io/dashboard?id=esentis_ieemdb-adopse-2021)
 
 ![Logo](https://picsum.photos/200/100)
 ```Logo coming soon```
 
 Please read [Contributing Guidelines](CONTRIBUTING.md) before working on this repo.
+
+## Live Environment
+
+Application is hosted at the following links:
+
+- [Production][ieemdb-prod]
+- [Master Branch (CI)][ieemdb-stage]
+- [Develop Branch (CI)][ieemdb-dev]
+
+Sponsored by [Alexandros Kritikos][akritikos] / [Kritikos IO][kritikos-io]
 
 ## Contributors
 
@@ -20,3 +32,9 @@ Please read [Contributing Guidelines](CONTRIBUTING.md) before working on this re
 [Γαβριηλίδης Δημήτριος / GavriilJim](https://github.com/GavriilJim)
 
 [Μαστρομανώλης Θεόδωρος  / GavriilJim](https://github.com/TeoMastro)
+
+[ieemdb-dev]: https://ieemdb-web-dev.azurewebsites.net/
+[ieemdb-stage]: https://ieemdb-web-stage.azurewebsites.net/
+[ieemdb-prod]: https://ieemdb-web.azurewebsites.net/
+[akritikos]: https://github.com/akritikos
+[kritikos-io]: https://github.com/kritikos-io

@@ -35,30 +35,24 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpGet("")]
     public async Task<ActionResult<List<ActorDto>>> GetActors(int itemsPerPage = 20, int page = 1)
     {
-      // We calculate how many items we shall skip to get next page (page offset).
       var toSkip = itemsPerPage * (page - 1);
 
-      // We prepare the query without executing it.
       var actorsQuery = Context.Actors
         .TagWith("Retrieving all actors")
         .OrderBy(x => x.Id);
 
-      // We calculate how many actors are in database.
       var totalActors = await actorsQuery.CountAsync();
 
-      // If page provided doesn't exist we return bad request.
       if (page > ((totalActors / itemsPerPage) + 1))
       {
         return BadRequest("Page doesn't exist");
       }
 
-      // We create the paged query request.
       var pagedActors = await actorsQuery
         .Skip(toSkip)
         .Take(itemsPerPage)
         .ToListAsync();
 
-      // We create the result, which is paged.
       var result = new PagedResult<ActorDto>
       {
         Results = pagedActors.Select(x => Mapper.Map<Actor, ActorDto>(x)).ToList(),
@@ -67,7 +61,6 @@ namespace Esentis.Ieemdb.Web.Controllers
         TotalElements = totalActors,
       };
 
-      // We return OK and the paged results;
       return Ok(result);
     }
 
@@ -76,16 +69,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
+    /// <response code="400">Blah.</response>
     [HttpGet("{id}")]
     public ActionResult<ActorDto> GetActor(long id)
     {
-      // Returns the first actor found with the spcefic ID. If not found, the result is null.
-      var actor = Context.Actors.Where(x => x.Id == id).SingleOrDefault();
+      var actor = Context.Actors.SingleOrDefault(x => x.Id == id);
 
-      // If we haven't found an actor we return a not found response.
-#pragma warning disable IDE0046 // Waiting for the new C# version
       if (actor == null)
-#pragma warning restore IDE0046 // Convert to conditional expression
       {
         Logger.LogWarning(LogTemplates.NotFound, nameof(Actor), id);
         return NotFound($"No {nameof(Actor)} with Id {id} found in database");
@@ -93,7 +83,6 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       Logger.LogInformation(LogTemplates.RequestEntity, nameof(Actor), id);
 
-      // Everything went ok, we map the found actor to a dto and return it to client.
       return Ok(Mapper.Map<Actor, ActorDto>(actor));
     }
 
@@ -105,17 +94,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpPost("")]
     public async Task<ActionResult<ActorDto>> AddActor([FromBody] AddActorDto dto)
     {
-      // We map the provided actor dto to an actual Actor model.
       var actor = Mapper.Map<AddActorDto, Actor>(dto);
 
-      // We add the actor in the database.
       Context.Actors.Add(actor);
 
-      // And we save it
       await Context.SaveChangesAsync();
       Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Actor), actor);
 
-      // We return the url where the entity was created.
       return CreatedAtAction(nameof(GetActor), new { id = actor.Id }, Mapper.Map<Actor, ActorDto>(actor));
     }
 
@@ -127,24 +112,19 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpDelete("")]
     public async Task<ActionResult> DeleteActor(int id)
     {
-      // We search for the actor if it exists in our db.
-      var actor = Context.Actors.Where(x => x.Id == id).SingleOrDefault();
+      var actor = Context.Actors.SingleOrDefault(x => x.Id == id);
 
-      // If not, we return a not found response.
       if (actor == null)
       {
         Logger.LogWarning(LogTemplates.NotFound, nameof(Actor), id);
         return NotFound("No actor found in the database");
       }
 
-      // We remove the actor if there is one.
       Context.Actors.Remove(actor);
 
-      // We save the changes in our db.
       await Context.SaveChangesAsync();
       Logger.LogInformation(LogTemplates.Deleted, nameof(Actor), id);
 
-      // An empty success response.
       return NoContent();
     }
 
@@ -157,26 +137,21 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpPut("{id}")]
     public async Task<ActionResult<ActorDto>> UpdateActor(int id, AddActorDto dto)
     {
-      // We search for the actor to update
-      var actor = Context.Actors.Where(x => x.Id == id).SingleOrDefault();
+      var actor = Context.Actors.SingleOrDefault(x => x.Id == id);
 
-      // If there is not actor found we return a not found response.
       if (actor == null)
       {
         Logger.LogWarning(LogTemplates.NotFound, nameof(Actor), id);
         return NotFound($"No {nameof(Actor)} with Id {id} found in database");
       }
 
-      // Otherwise, we expicitly update the found actor with newer values.
       actor.Name = dto.Name;
-      actor.Bio = dto.bio;
-      actor.BirthDate = dto.birthDate;
+      actor.Bio = dto.Bio;
+      actor.BirthDate = dto.BirthDate;
 
-      // And we just save the changes to commit on previous updates.
       await Context.SaveChangesAsync();
       Logger.LogInformation(LogTemplates.Updated, nameof(Actor), actor);
 
-      // We map the actual Actor entity to a dto and return the updated actor to the client.
       return Ok(Mapper.Map<Actor, ActorDto>(actor));
     }
   }

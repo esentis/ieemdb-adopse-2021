@@ -1,0 +1,19 @@
+parameters:
+- name: coverageDirectory
+  type: string
+  default: $(build.artifactStagingDirectory)/coverage
+- name: coverageOnPullRequests
+  type: boolean
+  default: true
+
+steps:
+- template: 01. dotnet-tool.yml
+  parameters:
+    toolName: Codecov.Tool
+- ${{ if ne(variables['Build.Reason'], 'PullRequest') }}:
+  - pwsh: ../codecov --file ${{ parameters.coverageDirectory }}/coverage.opencover.xml --branch "$(Build.SourceBranchName)" --sha "$(Build.SourceVersion)"
+    displayName: Upload coverage to Codecov (CI)
+- ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
+  - ${{ if parameters.coverageOnPullRequests }}:
+    - pwsh: ../codecov --file ${{ parameters.coverageDirectory }}/coverage.opencover.xml --branch "$(Build.SourceBranchName)" --sha "$(Build.SourceVersion)" --pr "$(System.PullRequest.PullRequestNumber)"
+      displayName: Upload coverage to Codecov (PR)

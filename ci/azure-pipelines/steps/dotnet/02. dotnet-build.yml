@@ -1,0 +1,17 @@
+parameters:
+- name: configuration
+  type: string
+  default: $(BuildConfiguration)
+- name: buildArgs
+  type: string
+  default: ''
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: Build Solution
+  inputs:
+    command: build
+    configuration: ${{ parameters.configuration }}
+    arguments: --no-restore --nologo ${{ parameters.buildArgs }}
+    versioningScheme: byEnvVar
+    versionEnvVar: Build.BuildNumber
