@@ -9,6 +9,7 @@ namespace Esentis.Ieemdb.Web
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Identity;
   using Esentis.Ieemdb.Web.Helpers;
+  using Esentis.Ieemdb.Web.Helpers.Extensions;
   using Esentis.Ieemdb.Web.Options;
 
   using Kritikos.Configuration.Persistence.Extensions;
@@ -147,6 +148,7 @@ namespace Esentis.Ieemdb.Web
         })
         .AddIdentityServerJwt();
 
+      services.AddCorrelation();
       services.AddControllersWithViews();
       services.AddRazorPages();
 
@@ -187,6 +189,9 @@ namespace Esentis.Ieemdb.Web
       app.UseAuthentication();
       app.UseIdentityServer();
       app.UseAuthorization();
+
+      app.UseCorrelation();
+
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllerRoute(
