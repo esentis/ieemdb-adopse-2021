@@ -25,5 +25,7 @@ namespace Esentis.Ieemdb.Web.Helpers
     public const string SeedAdminFailed = "Failed seeding admin user with errors {Errors}";
 
     public const string DatabaseIsMissingMigrations = "Can not seed while database is missing migrations";
+
+    public const string AvailableCertificate = "Found certificate with name {Certificate}";
   }
 }
