@@ -9,6 +9,7 @@ namespace Esentis.Ieemdb.Web
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Identity;
   using Esentis.Ieemdb.Web.Helpers;
+  using Esentis.Ieemdb.Web.Helpers.Extensions;
   using Esentis.Ieemdb.Web.Options;
 
   using Kritikos.Configuration.Persistence.Extensions;
@@ -23,6 +24,7 @@ namespace Esentis.Ieemdb.Web
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.AspNetCore.Http;
   using Microsoft.AspNetCore.Identity;
+  using Microsoft.AspNetCore.Identity.UI.Services;
   using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Configuration;
@@ -71,6 +73,16 @@ namespace Esentis.Ieemdb.Web
 
       services.AddDatabaseDeveloperPageExceptionFilter();
       services.AddHostedService<MigrationService<IeemdbDbContext>>();
+
+      var sendgrid = Configuration.GetValue<string>("SendGrid:ApiKey");
+      if (string.IsNullOrEmpty(sendgrid))
+      {
+        services.AddSingleton<IEmailSender, DummyEmailSender>();
+      }
+      else
+      {
+        services.AddSingleton<IEmailSender, SendGridEmailSender>(sp => new SendGridEmailSender(sendgrid));
+      }
 
       services.Configure<JwtOptions>(options => Configuration.GetSection("JWT").Bind(options));
 
@@ -147,6 +159,7 @@ namespace Esentis.Ieemdb.Web
         })
         .AddIdentityServerJwt();
 
+      services.AddCorrelation();
       services.AddControllersWithViews();
       services.AddRazorPages();
 
@@ -187,6 +200,9 @@ namespace Esentis.Ieemdb.Web
       app.UseAuthentication();
       app.UseIdentityServer();
       app.UseAuthorization();
+
+      app.UseCorrelation();
+
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllerRoute(

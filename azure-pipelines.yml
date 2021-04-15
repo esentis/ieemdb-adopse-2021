@@ -58,7 +58,7 @@ stages:
       environment: Azure
       subscription: ieemdb-azure
       resourceGroup: esentis
-      webApp: ieemdb-web
+      webApp: ieemdb
       slotNameDevel: dev
       slotNameStage: stage
       deployToSlot: true
