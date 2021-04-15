@@ -12,4 +12,17 @@
         .column-right-MovieView{
           margin-left:0;
           top:8vh;
-}}
+}
+.splitScreen {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+.topPane {
+  width: 50%;
+}
+.bottomPane {
+  width: 50%;
+}
+}
+

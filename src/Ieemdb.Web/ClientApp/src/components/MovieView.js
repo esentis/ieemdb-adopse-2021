@@ -1,11 +1,12 @@
 import React from 'react'
-import {Col} from 'react-bootstrap';
-import '../Styles/MovieView.css'
+import {Col,Row} from 'react-bootstrap';
+import '../Styles/MovieView.css' 
+import MovieViewPoster from './MovieViewPoster';
+import MovieViewTrailer from './MovieViewTrailer';
+import MovieViewSynopsis from './MovieViewSynopsis';
 
-
-function MovieView(props) {
-    return (
-       <Col className='column-right-MovieView'>
+/*
+<Col className='column-right-MovieView'>
        <div style={{color:'white'}}>
        <p>Title:{props.Title}</p>
        <p>Poster:{props.Poster}</p>
@@ -20,6 +21,30 @@ function MovieView(props) {
        <p>CountryOrigin:{props.CountryOrigin}</p>
        </div>
        </Col>
+*/ 
+
+
+function MovieView(props) {
+    return (
+        /*<Col>
+            <Row>
+                <MovieViewPoster/>
+            </Row>
+            <Row>
+                <Col>
+                    <MovieViewSynopsis props/>
+                </Col>
+                <Col>
+                    <MovieViewTrailer/>
+                </Col>
+            </Row>
+        </Col>*/
+        <Col className='column-right-MovieView'>
+            <div className='splitScreen'>
+                <div className='topPane'><MovieViewPoster/></div>
+                <div className='bottomPane'><MovieViewTrailer/></div>
+            </div>
+        </Col>
     )
 }
 
