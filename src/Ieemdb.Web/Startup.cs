@@ -197,6 +197,18 @@ namespace Esentis.Ieemdb.Web
 
       app.UseRouting();
 
+      app.UseReDoc(c =>
+      {
+        c.RoutePrefix = "docs";
+        c.DocumentTitle = "Ieemdb API Documentation v1";
+        c.SpecUrl("/swagger/v1/swagger.json");
+        c.ExpandResponses("none");
+        c.RequiredPropsFirst();
+        c.SortPropsAlphabetically();
+        c.HideDownloadButton();
+        c.HideHostname();
+      });
+
       app.UseAuthentication();
       app.UseIdentityServer();
       app.UseAuthorization();
@@ -215,7 +227,7 @@ namespace Esentis.Ieemdb.Web
       {
         spa.Options.SourcePath = "ClientApp";
 
-        if (Environment.IsDevelopment())
+        if (Environment.IsDevelopment() && !Configuration.GetValue("AzureDeployment", false))
         {
           spa.UseReactDevelopmentServer(npmScript: "start");
         }
