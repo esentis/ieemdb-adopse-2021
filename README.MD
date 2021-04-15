@@ -33,8 +33,8 @@ Sponsored by [Alexandros Kritikos][akritikos] / [Kritikos IO][kritikos-io]
 
 [Μαστρομανώλης Θεόδωρος  / GavriilJim](https://github.com/TeoMastro)
 
-[ieemdb-dev]: https://ieemdb-web-dev.azurewebsites.net/
-[ieemdb-stage]: https://ieemdb-web-stage.azurewebsites.net/
-[ieemdb-prod]: https://ieemdb-web.azurewebsites.net/
+[ieemdb-dev]: https://ieemdb-dev.azurewebsites.net/
+[ieemdb-stage]: https://ieemdb-stage.azurewebsites.net/
+[ieemdb-prod]: https://ieemdb.azurewebsites.net/
 [akritikos]: https://github.com/akritikos
 [kritikos-io]: https://github.com/kritikos-io

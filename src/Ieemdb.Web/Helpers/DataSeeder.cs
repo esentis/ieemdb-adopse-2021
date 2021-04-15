@@ -1,12 +1,14 @@
 namespace Esentis.Ieemdb.Web.Helpers
 {
   using System;
+  using System.Collections.Generic;
   using System.Linq;
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
+  using Esentis.Ieemdb.Persistence.Joins;
 
   using Microsoft.AspNetCore.Identity;
   using Microsoft.EntityFrameworkCore;
@@ -59,6 +61,8 @@ namespace Esentis.Ieemdb.Web.Helpers
       }
     }
 
+    private static readonly Random Random = new Random();
+
     private static async Task SeedUsers(
       ILogger logger,
       UserManager<IeemdbUser> userManager,
@@ -96,6 +100,34 @@ namespace Esentis.Ieemdb.Web.Helpers
           logger.LogError(LogTemplates.SeedAdminFailed, result?.Errors);
         }
       }
+    }
+
+    private static async Task SeedMovies(IeemdbDbContext ctx)
+    {
+      var moviesCount = await ctx.Movies.CountAsync();
+      if (moviesCount > 0)
+      {
+        return;
+      }
+
+      var actors = (await ctx.Actors.ToListAsync()).ToArray();
+      var movies = Fakers.MovieProvider.Generate(10);
+
+      ctx.Movies.AddRange(movies);
+
+      List<MovieActor> movieActors = new();
+
+      foreach (var movie in movies)
+      {
+        for (var i = 0; i < Random.Next(0, 4); i++)
+        {
+          movieActors.Add(new MovieActor { Movie = movie, Actor = actors[Random.Next(0, actors.Length - 1)], });
+        }
+      }
+
+      ctx.MovieActors.AddRange(movieActors);
+
+      await ctx.SaveChangesAsync();
     }
   }
 }
