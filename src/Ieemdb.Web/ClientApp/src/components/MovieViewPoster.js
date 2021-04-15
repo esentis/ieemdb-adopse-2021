@@ -1,9 +1,9 @@
 import React from 'react';
-
 function MovieViewPoster(props){
     return(
-        <p>aaaa</p>
+        <div>
+            <p>MovieViewPoster</p>
+        </div>
     );
 }
-
 export default MovieViewPoster;

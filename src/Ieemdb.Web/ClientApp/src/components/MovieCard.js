@@ -4,24 +4,21 @@ import {usePage,useUpdatePage} from './Navigate'
 var svg;
 function MovieCard(props){
     const setPage=useUpdatePage();
-
     const MovieDetails={name:"MovieView",
-    key:props.id,
-    Title:props.Title,
-    Poster:props.Poster,
-    Overview:props.Overview,
-    ReleaseDate:props.ReleaseDate,
-    Genres:props.Genres,
-    Actors:props.Actors,
-    Writers:props.Writers,
-    Directors:props.Directors,
-    Rating:props.Rating,
-    Duration:props.Duration,
-    CountryOrigin:props.CountryOrigin
-}
-
+        key:props.id,
+        Title:props.Title,
+        Poster:props.Poster,
+        Overview:props.Overview,
+        ReleaseDate:props.ReleaseDate,
+        Genres:props.Genres,
+        Actors:props.Actors,
+        Writers:props.Writers,
+        Directors:props.Directors,
+        Rating:props.Rating,
+        Duration:props.Duration,
+        CountryOrigin:props.CountryOrigin
+    }
     function onPosterClick(){
-        //Click on poster open Movie Page
         setPage(MovieDetails);
     }
     return(

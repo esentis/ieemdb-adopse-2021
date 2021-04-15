@@ -1,28 +1,35 @@
 .column-right-MovieView{
-    background-color: #282828;
-    height: 100vh;
-    padding: 0%;
-    width: 80%;
-    margin-left:16.6%;
-    
-    
-    }
-
-    @media (max-width:1199px){
-        .column-right-MovieView{
-          margin-left:0;
-          top:8vh;
+  background-color: #282828;
+  height: 100vh;
+  padding: 0%;
+  width: 80%;
+  margin-left:16.6%;
+}
+@media (max-width:1199px){
+  .column-right-MovieView{
+    margin-left:0;
+    top:8vh;
+  }
+}
+.MovieViewPoster {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 50%;
+  background-color: red;
 }
 .splitScreen {
   display: flex;
   flex-direction: row;
+  height: 50%;
+}
+.MovieViewSynopsis {
+  width: 50%;
   height: 100%;
+  background-color: blue;
 }
-.topPane {
+.MovieViewTrailer {
   width: 50%;
+  height: 100%;
+  background-color: white;
 }
-.bottomPane {
-  width: 50%;
-}
-}
-

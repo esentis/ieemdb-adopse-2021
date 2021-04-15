@@ -38,19 +38,19 @@ function RightSide(){
             break;
         case "MovieView":
             topPage=<MovieView
-            key={page.key}
-            Title={page.Title}
-            Poster={page.Poster}
-            Overview={page.Overview}
-            ReleaseDate={page.ReleaseDate}
-            Genres={page.Genres}
-            Actors={page.Actors}
-            Writers={page.Writers}
-            Directors={page.Directors}
-            Rating={page.Rating}
-            Duration={page.Duration}
-            CountryOrigin={page.CountryOrigin}/>
-            bottomPage="";
+                key={page.key}
+                Title={page.Title}
+                Poster={page.Poster}
+                Overview={page.Overview}
+                ReleaseDate={page.ReleaseDate}
+                Genres={page.Genres}
+                Actors={page.Actors}
+                Writers={page.Writers}
+                Directors={page.Directors}
+                Rating={page.Rating}
+                Duration={page.Duration}
+                CountryOrigin={page.CountryOrigin}/>
+                bottomPage="";
             break;
         case "SearchView":
             topPage=<SearchView name={page.name} SearchValue={page.value} />

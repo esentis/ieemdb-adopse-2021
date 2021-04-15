@@ -2,7 +2,9 @@ import React from 'react';
 
 function MovieViewSynopsis(props){
     return(
-        <p>aaaa</p>
+        <div>
+            <p>MovieViewSynopsis</p>
+        </div>
     );
 }
 
