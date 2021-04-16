@@ -23,8 +23,9 @@
     background-color: transparent;
     border: 0px;
     height: 10px;
-    margin-left: 30px;
-    margin-top: 25px;
+    padding-top: 30px;
+    padding-left: 30px;
+    padding-bottom: 70px;
     font-size: 30px;
     color: white;
 }
@@ -45,7 +46,6 @@
 #divTitle, #divFavor, #divShare{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     align-items: center;
     padding: 10px;
 }
@@ -54,18 +54,21 @@
     padding-left: 2%;
     margin-right: 10px;
     align-content: flex-end;
+    justify-content: flex-start;
 }
 #divFavor{
     flex-grow: 1;
     text-align: right;
     padding-right: 2px;
     align-content: flex-end;
+    justify-content: center;
 }
 #divShare{
     flex-grow: 1;
     text-align: right;
     padding-right: 30px;
     align-content: flex-end;
+    justify-content: center;
 }
 .buttonLove {
     background-color: transparent;
@@ -104,15 +107,13 @@
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
+    justify-content: center;
 }
 #divDesc{
     flex-grow: 6;
-    justify-content: flex-start;
 }
 #divRate{
     flex-grow: 2;
-    justify-content: flex-end;
-    padding-right: 30px;
 }
 .movieDesc{
     padding: 8px 16px;

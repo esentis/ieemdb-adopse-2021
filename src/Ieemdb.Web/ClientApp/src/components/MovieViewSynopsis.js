@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button,Row,Col, Container} from 'react-bootstrap';
+import {Button,Row,Col} from 'react-bootstrap';
 import '../Styles/MovieView.css';
 function MovieViewSynopsis(props){
     const key=props.key;
@@ -17,7 +17,7 @@ function MovieViewSynopsis(props){
         <span>{countryOrigin} </span>
     );
     return(
-        <Container>
+        <Col>
             <Row>
                 <Button variant="primary" size="lg" block>WATCH AGAIN</Button>
             </Row>
@@ -48,7 +48,7 @@ function MovieViewSynopsis(props){
                     <p className="text">{countryOrigin}</p>
                 </Col>
             </Row>
-        </Container>
+        </Col>
     );
 }
 export default MovieViewSynopsis;

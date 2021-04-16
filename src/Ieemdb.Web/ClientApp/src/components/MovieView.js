@@ -14,6 +14,7 @@ function MovieView(props) {
                 <div className='MovieViewTrailer'><MovieViewTrailer key={props.id}/></div>
             </div>
         </Col>
+        
     )
 }
 export default MovieView;
