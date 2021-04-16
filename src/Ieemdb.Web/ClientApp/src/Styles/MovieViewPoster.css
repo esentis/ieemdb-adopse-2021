@@ -33,17 +33,19 @@
     color: rgb(59, 94, 189);
 }
 .movieTitle{
-    font-size: 3rem;
+    font-family: Arial;
+    font-size: 2.5rem;
     width: 90%;
     color: white;
     text-transform: uppercase;
     letter-spacing: 2px;
-    text-shadow: 2px 2px 5px rgba(41, 44, 52);
-    font-family: Monospace;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
     font-weight: bold;
     line-height: normal;
+    max-width: 130vh;
+    margin-bottom: 0px;
 }
-#divTitle, #divFavor, #divShare{
+#divTitle, #divFavorShare{
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -56,17 +58,11 @@
     align-content: flex-end;
     justify-content: flex-start;
 }
-#divFavor{
-    flex-grow: 1;
-    text-align: right;
-    padding-right: 2px;
-    align-content: flex-end;
-    justify-content: center;
-}
-#divShare{
+#divFavorShare{
     flex-grow: 1;
     text-align: right;
     padding-right: 30px;
+    padding-left: 30px;
     align-content: flex-end;
     justify-content: center;
 }
@@ -75,13 +71,16 @@
     opacity: inherit;
     color: rgb(255, 79, 154);
     border: 2px solid #e7e7e7;
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     text-align: center;
     display: inline-block;
-    font-size: 20px;
+    font-size: 1.2rem;
     transition-duration: 0.4s;
     cursor: pointer;
-    border-radius: 50px;
+    border-radius: 4rem;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+    margin-right: 2vh;
 }
 .buttonLove:hover {
   background-color: #e7e7e7;
@@ -91,13 +90,16 @@
     opacity: inherit;
     color: white;
     border: 2px solid #e7e7e7;
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     text-align: center;
     display: inline-block;
-    font-size: 20px;
+    font-size: 1.2rem;
+    font-family: Arial;
     transition-duration: 0.4s;
     cursor: pointer;
-    border-radius: 50px;
+    border-radius: 4rem;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
 }
 .buttonShare:hover {
   background-color: #e7e7e7;
@@ -107,20 +109,23 @@
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    justify-content: center;
 }
 #divDesc{
     flex-grow: 6;
+    justify-content: flex-start;
 }
 #divRate{
     flex-grow: 2;
+    justify-content: center;
 }
 .movieDesc{
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     color: white;
     background-color: rgb(59, 94, 189);
-    border-radius: 30px;
+    border-radius: 4rem;
     margin-left: 20px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
 }
 .movieDescGenres{
     height: 40px;
@@ -132,22 +137,38 @@
     border-radius: 30px;   
     margin-left: 20px;
     display: inline-block;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
 }
 .rating{
     font-size: 30px;
     font-family: Monospace;
     color: white;
     font-weight: bold;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
 }
 #star_whi{
     color: white;
     font-size: 30px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
 }
 #star_yel{
     color: yellow;
     font-size: 30px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
 }
 #empty{
     color: transparent;
     font-size: 10px;
+}
+@media (max-width:1199px){
+    #divDesc{
+        justify-content: center;
+    }
+    #divTitle{
+        justify-content: center;
+    }
+    .movieTitle{
+        text-align: center;
+    }
 }

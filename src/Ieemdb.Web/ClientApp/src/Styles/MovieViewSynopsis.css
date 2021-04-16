@@ -1,0 +1,45 @@
+.buttonAddToWatchList{
+    padding: 0.5rem 1rem;
+    margin: 10px;
+    width: 100%;
+    background-color: rgb(59, 94, 189);
+    border-radius: 0.7rem;
+    color: white;
+    transition-duration: 0.4s;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+    border: 0rem;
+}
+.buttonAddToWatchList:hover{
+    background-color: white;
+    color: rgb(59, 94, 189);
+}
+.rowTab{
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.rowTab2{
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.smallTitles{
+    order: 1;
+    flex-grow: 1;
+    font-weight: bold;
+    font-family: Arial;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+.text{
+    order: 2;
+    flex-grow: 1;
+    font-family: Arial;
+    font-size: 1rem;
+    color:cornsilk;
+}

@@ -120,10 +120,8 @@ function MovieViewPoster(props){
                 <div id="divTitle">
                     <p className="movieTitle">{props.title}</p>
                 </div>
-                <div id="divFavor">
+                <div id="divFavorShare">
                     <button className="buttonLove"><i class="fa fa-heart"></i></button>
-                </div>
-                <div id="divShare">
                     <button className="buttonShare"><i class="fa fa-share-alt"></i>  SHARE</button>
                 </div>
             </Row>

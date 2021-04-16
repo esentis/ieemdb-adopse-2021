@@ -1,0 +1,23 @@
+.titleTrailer{
+  font-weight: bold;
+  font-family: Arial;
+  font-size: 1.5rem;
+  text-shadow: 2px 2px 5px rgb(0, 0, 0);
+  padding-top: 2vh;
+  text-align: center;
+}
+.divTrailer{
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+.frameTrailer{
+  width: 70vh;
+  height: 39vh;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+@media (max-width:1199px){
+    .kenoTab{
+  height: 5vh;
+}
+}

@@ -1,33 +1,31 @@
 import React from 'react';
-import {Button,Row,Col} from 'react-bootstrap';
-import '../Styles/MovieView.css';
+import {Row,Col} from 'react-bootstrap';
+import '../Styles/MovieViewSynopsis.css';
 function MovieViewSynopsis(props){
     const key=props.key;
     const overview=props.overview;
     const directors = props.directors.map((directors) =>
-        <span>{directors} </span>
+        <span className="span">{directors} </span>
     );
     const actors = props.actors.map((actors) =>
-        <span>{actors} </span>
+        <span className="span">{actors} </span>
     );
     const writers = props.writers.map((writers) =>
-        <span>{writers} </span>
+        <span className="span">{writers} </span>
     );
     const countryOrigin = props.countryOrigin.map((countryOrigin) =>
-        <span>{countryOrigin} </span>
+        <span className="span">{countryOrigin} </span>
     );
     return(
         <Col>
-            <Row>
-                <Button variant="primary" size="lg" block>WATCH AGAIN</Button>
+            <Row >
+                <button className="buttonAddToWatchList">ADD TO WATCHLIST</button>
             </Row>
-            <Col>
-                <Row>
-                    <p className="smallTitles">SYNOPSIS</p>
-                    <p className="text">{overview}</p>
-                </Row>
-            </Col>
-            <Row>
+            <Row className="rowTab">
+                <p className="smallTitles">SYNOPSIS</p>
+                <p className="text">{overview}</p>
+            </Row>
+            <Row className="rowTab2">
                 <Col>
                     <p className="smallTitles">DIRECTORS</p>
                     <p className="text">{directors}</p>
@@ -37,12 +35,11 @@ function MovieViewSynopsis(props){
                     <p className="text">{writers}</p>
                 </Col>
             </Row>
-            <Row>
+            <Row className="rowTab2">
                 <Col>
                     <p className="smallTitles">STARRING</p>
                     <p className="text">{actors}</p>
                 </Col>
-            </Row><Row>
                 <Col>
                     <p className="smallTitles">COUNTRY OF ORIGIN</p>
                     <p className="text">{countryOrigin}</p>

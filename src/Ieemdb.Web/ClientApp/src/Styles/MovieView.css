@@ -5,12 +5,12 @@
   width: 80%;
   margin-left:16.6%;
   color:cornsilk;
-  overflow-y: scroll;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 .MovieViewPoster{
+  background-color: #282828;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -19,28 +19,23 @@
   min-height: 50vh;
 }
 .splitScreen{
+  background-color: #282828;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  width: 100%;
+  height: fit-content;
+  min-height: 50vh;
 }
-.text{
-  font-family: Arial;
-  padding-left: 1em;
-  padding-right: 1em;
-  font-size: 1rem;
-  color:cornsilk;
-}
-.smallTitles{
-  font-size: 1.1rem;
-  font-weight: bold;
-  font-family: Arial;
-  padding-left: 1em;
-  margin-top: 1em;
-}
-.divTrailer{
+.MovieViewSynopsis, .MovieViewTrailer{
   display: flex;
-  justify-content: center;
-  padding-top: 1rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.MovieViewSynopsis{
+  flex-grow: 2;
+}
+.MovieViewTrailer{
+  flex-grow: 1;
 }
 @media (max-width:1199px){
   .column-right-MovieView{
