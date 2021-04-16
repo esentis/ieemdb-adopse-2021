@@ -4,10 +4,18 @@ import '../Styles/MovieView.css';
 function MovieViewSynopsis(props){
     const key=props.key;
     const overview=props.overview;
-    const actors=props.actors;
-    const writers=props.writers;
-    const directors=props.directors;
-    const countryOrigin=props.countryOrigin;
+    const directors = props.directors.map((directors) =>
+        <span>{directors} </span>
+    );
+    const actors = props.actors.map((actors) =>
+        <span>{actors} </span>
+    );
+    const writers = props.writers.map((writers) =>
+        <span>{writers} </span>
+    );
+    const countryOrigin = props.countryOrigin.map((countryOrigin) =>
+        <span>{countryOrigin} </span>
+    );
     return(
         <Container>
             <Row>

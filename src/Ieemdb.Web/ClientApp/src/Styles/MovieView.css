@@ -12,6 +12,13 @@
     margin-left:0;
     top:8vh;
   }
+
+  .splitScreen {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+  
 }
 .MovieViewPoster {
   display: flex;
