@@ -4,14 +4,14 @@ import SearchBar from './SearchBar';
 import {Link} from 'react-router-dom';
 import '../Styles/NavBar.css'
 import  * as FaIcons  from "react-icons/fa";
-import {usePage,useUpdatePage} from './Navigate'
+import {useUpdatePage} from './Navigate'
 import logo from '../images/imdb-logo2.png';
 
 
 function LeftSide(){
     const [LoginState,setLoginState]=useState(true);
 
-    const page=usePage();   
+    /*const page=usePage();*/   
     const setPage=useUpdatePage();
 
     return(
@@ -20,7 +20,7 @@ function LeftSide(){
          <input type='checkbox' id='check'>  
         </input>
 
-        <img src={logo} className='logo' onClick={()=>setPage({name:"Home"})}  />
+        <img src={logo} alt="IeeMDB" className='logo' onClick={()=>setPage({name:"Home"})}  />
         <Container fluid className="nav-center2">
             <nav>
             <SearchBar/>

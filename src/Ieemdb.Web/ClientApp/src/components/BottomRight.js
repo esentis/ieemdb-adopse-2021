@@ -1,15 +1,13 @@
 import React from "react";
-import {Col,Row} from 'react-bootstrap';
+import {Col} from 'react-bootstrap';
 import BottomRightNav from './BottomRightNav';
 import BottomRightCarousel from './BottomRightCarousel';
-
 function BottomRight(){
     return(
         <Col className="column-right">
-                <BottomRightNav/>
-                <BottomRightCarousel/>
+            <BottomRightNav/>
+            <BottomRightCarousel/>
         </Col>
     );
 }
-
 export default BottomRight;

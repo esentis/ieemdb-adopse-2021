@@ -1,6 +1,5 @@
 import React from "react";
 import {Col,Row} from 'react-bootstrap';
-import TopRight from "./TopRight";
 import BottomRight from "./BottomRight";
 import Favorites from './Favorites';
 import WatchList from './WatchList';
@@ -8,27 +7,19 @@ import Featured from './Featured';
 import {usePage} from './Navigate' 
 import Login from './Login';
 import MovieView from "./MovieView";
-import { propTypes } from "react-bootstrap/esm/Image";
 import SearchView from "./SearchView";
-import { FaBreadSlice } from "react-icons/fa";
 import AdvancedSearchView from "./AdvancedSearchView";
-
-
-
 function RightSide(){
-
     const page=usePage();
-
     var topPage=<Featured />
     var bottomPage=<BottomRight/>
-
     switch(page.name){
         case "Home":
             topPage=<Featured />
             break;
         case "Favorites":
-           topPage=<Favorites />
-           break;
+            topPage=<Favorites />
+            break;
         case "WatchList":
             topPage=<WatchList />
             break;
@@ -51,6 +42,7 @@ function RightSide(){
                 Duration={page.Duration}
                 CountryOrigin={page.CountryOrigin}/>
                 bottomPage="";
+                console.log(page.key);
             break;
         case "SearchView":
             topPage=<SearchView name={page.name} SearchValue={page.value} />
@@ -60,6 +52,9 @@ function RightSide(){
             topPage=<AdvancedSearchView name={page.name} />   
             bottomPage=""
             break;
+        default:
+            topPage=<Featured />
+            break;    
     }
     return(
         <Col>
@@ -72,5 +67,4 @@ function RightSide(){
         </Col>
     );
 }
-
 export default RightSide;

@@ -1,7 +1,6 @@
 import React from 'react';
 import {Button,Row,Col, Container} from 'react-bootstrap';
 import '../Styles/MovieView.css';
-
 function MovieViewSynopsis(props){
     const key=props.key;
     const overview=props.overview;
@@ -44,5 +43,4 @@ function MovieViewSynopsis(props){
         </Container>
     );
 }
-
 export default MovieViewSynopsis;

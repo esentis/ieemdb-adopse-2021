@@ -1,6 +1,7 @@
 import React from 'react';
 import {Col,Row} from 'react-bootstrap';
 import '../Styles/MovieViewPoster.css'
+import {useUpdatePage} from './Navigate'
 function RatingStars(rating){
     if (rating.stars/2 < 1){
         return (<div id="divRate">
@@ -100,9 +101,8 @@ function RatingStars(rating){
     }
 }
 function MovieViewPoster(props){
-    const key = props.key;
-    const title = props.title;
-    const poster = props.poster;
+    const setPage=useUpdatePage();
+    console.log(props.id); //key de douleuei gia kapoio logo 
     const releaseDate = props.releaseDate.toString().substring(0,4);
     const genres = props.genres.map((genre) =>
         <p className="movieDescGenre">{genre}</p>
@@ -111,14 +111,14 @@ function MovieViewPoster(props){
     const durationHours = Math.floor(props.duration / 50);
     const durationMinutes = props.duration % 60;
     return(
-        <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${poster})`}}>
+        <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
             <Row className="top">
-                <button className="buttonReturn"><i id="return" class="fa fa-arrow-left"></i></button>
+                <button className="buttonReturn" onClick={()=>setPage({name:"Home"})}><i id="return" class="fa fa-arrow-left"></i></button>
             </Row>
             <Row className="center">
                 <div id="divTitle">
-                    <p className="movieTitle">{title}</p>
+                    <p className="movieTitle">{props.title}</p>
                 </div>
                 <div id="divFavor">
                     <button className="buttonLove"><i class="fa fa-heart"></i></button>
