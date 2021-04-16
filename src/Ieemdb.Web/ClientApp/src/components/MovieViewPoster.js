@@ -110,6 +110,14 @@ function MovieViewPoster(props){
     const rating = props.rating;
     const durationHours = Math.floor(props.duration / 50);
     const durationMinutes = props.duration % 60;
+    function onFavButtonClick(){
+        //Otan kanei klik sto ADD FAVORITE button
+        console.log("Click on ADD FAVORITE button");
+    }
+    function onShareButtonClick(){
+        //Otan kanei klik sto SHARE button
+        console.log("Click on SHARE button");
+    }
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
@@ -121,8 +129,8 @@ function MovieViewPoster(props){
                     <p className="movieTitle">{props.title}</p>
                 </div>
                 <div id="divFavorShare">
-                    <button className="buttonLove"><i class="fa fa-heart"></i></button>
-                    <button className="buttonShare"><i class="fa fa-share-alt"></i>  SHARE</button>
+                    <button className="buttonLove" onClick={onFavButtonClick}><i class="fa fa-heart"></i></button>
+                    <button className="buttonShare" onClick={onShareButtonClick}><i class="fa fa-share-alt"></i>  SHARE</button>
                 </div>
             </Row>
             <Row className="bottom">

@@ -16,10 +16,14 @@ function MovieViewSynopsis(props){
     const countryOrigin = props.countryOrigin.map((countryOrigin) =>
         <span className="span">{countryOrigin} </span>
     );
+    function onWatchlistButtonClick(){
+        //Otan kanei click sto ADD TO WATCHLIST button
+        console.log("Click on ADD TO WATCHLIST button");
+    }
     return(
         <Col>
             <Row >
-                <button className="buttonAddToWatchList">ADD TO WATCHLIST</button>
+                <button className="buttonAddToWatchList" onClick={onWatchlistButtonClick}>ADD TO WATCHLIST</button>
             </Row>
             <Row className="rowTab">
                 <p className="smallTitles">SYNOPSIS</p>
