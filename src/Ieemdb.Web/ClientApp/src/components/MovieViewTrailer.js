@@ -13,7 +13,7 @@ function MovieViewTrailer(props){
             <Row>
                 <Col>
                 <div className="divTrailer">
-                    <iframe className="frameTrailer" src="https://www.youtube.com/embed/qHAH_zO0TWY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe className="frameTrailer" src="https://www.youtube.com/embed/qHAH_zO0TWY" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                 </div>
                 </Col>
             </Row>
