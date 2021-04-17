@@ -5,6 +5,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
+  using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
@@ -26,12 +27,11 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Returns all actors. You can pass parameters to handle page and result items.
-    /// Defaults to 20 items per page.
+    /// Returns all actors. You can pass parameters to handle page and result count.
     /// </summary>
-    /// <param name="itemsPerPage"></param>
-    /// <param name="page"></param>
-    /// <returns></returns>
+    /// <param name="itemsPerPage">Define how many items shall be returned. </param>
+    /// <param name="page">Choose which page of the results shall be returned.</param>
+    /// <returns>Returns a list of Actors.</returns>
     [HttpGet("")]
     public async Task<ActionResult<List<ActorDto>>> GetActors(int itemsPerPage = 20, int page = 1)
     {
@@ -65,11 +65,51 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
+    /// Searches for an actor provided a text string.
+    /// </summary>
+    /// <param name="query">Search term.</param>
+    /// <param name="itemsPerPage">Define how many items shall be returned. </param>
+    /// <param name="page">Choose which page of the results shall be returned.</param>
+    /// <returns>Returns a list of Actors that match the text string.</returns>
+    [HttpGet("search")]
+    public async Task<ActionResult<List<ActorDto>>> Search(string query, int itemsPerPage = 20, int page = 1)
+    {
+      var toSkip = itemsPerPage * (page - 1);
+
+      var actorsQuery = Context.Actors
+        .TagWith($"Searching for {query}")
+        .FullTextSearch(query)
+        .OrderBy(x => x.Id);
+
+      var totalActors = await actorsQuery.CountAsync();
+
+      if (page > ((totalActors / itemsPerPage) + 1))
+      {
+        return BadRequest("Page doesn't exist");
+      }
+
+      var pagedActors = await actorsQuery
+        .Skip(toSkip)
+        .Take(itemsPerPage)
+        .ToListAsync();
+
+      var result = new PagedResult<ActorDto>
+      {
+        Results = pagedActors.Select(x => Mapper.Map<Actor, ActorDto>(x)).ToList(),
+        Page = page,
+        TotalPages = (totalActors / itemsPerPage) + 1,
+        TotalElements = totalActors,
+      };
+
+      return Ok(result);
+    }
+
+    /// <summary>
     /// Returns an actor provided an ID.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    /// <response code="400">Blah.</response>
+    /// <param name="id">Actor's ID</param>
+    /// <returns>One single Actor.</returns>
+    /// <response code="400">Actor was not found.</response>
     [HttpGet("{id}")]
     public ActionResult<ActorDto> GetActor(long id)
     {
