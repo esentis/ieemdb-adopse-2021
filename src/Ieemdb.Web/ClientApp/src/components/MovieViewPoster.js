@@ -1,7 +1,8 @@
 import React from 'react';
 import {Col,Row} from 'react-bootstrap';
-import '../Styles/MovieViewPoster.css'
-import {useUpdatePage} from './Navigate'
+import '../Styles/MovieViewPoster.css';
+import {useUpdatePage} from './Navigate';
+import {useHistory} from 'react-router-dom';
 function RatingStars(rating){
     if (rating.stars/2 < 1){
         return (<div id="divRate">
@@ -102,8 +103,9 @@ function RatingStars(rating){
 }
 function MovieViewPoster(props){
     const setPage=useUpdatePage();
-    console.log(props.id); //key de douleuei gia kapoio logo 
-    const releaseDate = props.releaseDate.toString().substring(0,4);
+    const history=useHistory();
+    const id=props.id; 
+    const releaseDate = props.releaseDate.substring(0,4);
     const genres = props.genres.map((genre) =>
         <p className="movieDescGenre">{genre}</p>
     );
@@ -118,11 +120,15 @@ function MovieViewPoster(props){
         //Otan kanei klik sto SHARE button
         console.log("Click on SHARE button");
     }
+    function backButton(){
+        history.goBack();
+        setPage({name:"Featured"});
+    }
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
             <Row className="top">
-                <button className="buttonReturn" onClick={()=>setPage({name:"Home"})}><i id="return" class="fa fa-arrow-left"></i></button>
+                <button className="buttonReturn" onClick={backButton}><i id="return" class="fa fa-arrow-left"></i></button>
             </Row>
             <Row className="center">
                 <div id="divTitle">

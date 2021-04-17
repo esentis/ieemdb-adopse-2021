@@ -10,12 +10,7 @@ import logo from '../images/imdb-logo2.png';
 
 function LeftSide(){
     const [LoginState,setLoginState]=useState(true);
-<<<<<<< HEAD
-
-    /*const page=usePage();*/   
-=======
    
->>>>>>> 43c3444f2315957844f44fd247f6465180b3cf63
     const setPage=useUpdatePage();
 
     return(
@@ -24,11 +19,7 @@ function LeftSide(){
          <input type='checkbox' id='check'>  
         </input>
 
-<<<<<<< HEAD
-        <img src={logo} alt="IeeMDB" className='logo' onClick={()=>setPage({name:"Home"})}  />
-=======
         <Link to="/" onClick={()=>setPage({name:"Featured"})} ><img src={logo} className='logo' alt=""/></Link>
->>>>>>> 43c3444f2315957844f44fd247f6465180b3cf63
         <Container fluid className="nav-center2">
             <nav>
             <SearchBar/>
