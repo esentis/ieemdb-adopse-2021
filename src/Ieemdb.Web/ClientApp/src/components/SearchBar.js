@@ -7,16 +7,13 @@ import {useHistory} from 'react-router-dom';
 
 
 const SearchBar = () => {
-  
     const [value,setValue]=useState("");
-
     const setPage=useUpdatePage();
     const history=useHistory();
     
     function onChange(e){
       setValue(e.target.value);
     }
-
     function onEnter(e){
        if (e.keyCode===13){
         setPage({name:"SearchView",value:value})

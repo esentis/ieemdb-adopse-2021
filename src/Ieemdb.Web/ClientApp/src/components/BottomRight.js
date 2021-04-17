@@ -6,8 +6,8 @@ import BottomRightCarousel from './BottomRightCarousel';
 const BottomRight=React.memo(()=>{
     return(
         <Col className="column-right">
-                <BottomRightNav/>
-                <BottomRightCarousel/>
+            <BottomRightNav/>
+            <BottomRightCarousel/>
         </Col>
     )});
 

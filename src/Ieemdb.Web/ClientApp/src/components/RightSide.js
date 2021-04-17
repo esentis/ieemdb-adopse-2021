@@ -15,7 +15,6 @@ import UserSettings from './UserSettings';
 
 
 function RightSide(){
-
     const page=usePage();
     var bottomPage="";
     if(page.name==="Featured"||page.name==="Favorites"||page.name==="WatchList")
@@ -46,5 +45,4 @@ function RightSide(){
 
     );
 }
-
 export default RightSide;
