@@ -1,23 +1,34 @@
 import React from 'react'
 import {Col} from 'react-bootstrap';
-import '../Styles/MovieView.css'
+import '../Styles/MovieView.css';
+import { useParams } from "react-router-dom";
+import movies from './Movie_Dataset';
+
+
 
 
 function MovieView(props) {
+    const { id }=useParams();
+    const item=movies.find(movie=>{
+        return movie.id===id;
+    })
+    console.log(item);
     return (
        <Col className='column-right-MovieView'>
        <div style={{color:'white'}}>
-       <p>Title:{props.Title}</p>
-       <p>Poster:{props.Poster}</p>
-       <p>Overview:{props.Overview}</p>
-       <p>ReleaseDate:{props.ReleaseDate}</p>
-       <p>Genres:{props.Genres}</p>
-       <p>Actors:{props.Actors}</p>
-       <p>Writers:{props.Writers}</p>
-       <p>Directors:{props.Directors}</p>
-       <p>Rating:{props.Rating}</p>
-       <p>Duration:{props.Duration}</p>
-       <p>CountryOrigin:{props.CountryOrigin}</p>
+    <div>
+        <p>Title:{item.title}</p>
+       <p>Poster:{item.poster}</p>
+       <p>Overview:{item.overview}</p>
+       <p>ReleaseDate:{item.releaseDate}</p>
+       <p>Genres:{item.genres}</p>
+       <p>Actors:{item.actors}</p>
+       <p>Writers:{item.writers}</p>
+       <p>Directors:{item.directors}</p>
+       <p>Rating:{item.rating}</p>
+       <p>Duration:{item.duration}</p>
+       <p>CountryOrigin:{item.countryOrigin}</p>
+       <p>{item.id}</p></div>
        </div>
        </Col>
     )
