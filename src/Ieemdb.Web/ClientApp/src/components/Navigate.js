@@ -12,10 +12,7 @@ export const useUpdatePage=()=>{
     return useContext(UpdateState);
 }
     function NavigateContextProvider(props){
-        
-        const [page,setPage]=useState({});
-         
-        
+        const [page,setPage]=useState({name:"Featured"});
         const handleClick=(arg)=>{
             setPage(arg);
        }

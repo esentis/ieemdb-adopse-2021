@@ -48,6 +48,7 @@ namespace Esentis.Ieemdb.Web.Helpers.Extensions
         .CreateStartupLogger()
         .Enrich.WithProperty("Application", environment.ApplicationName)
         .Enrich.WithProperty("Environment", environment.EnvironmentName)
+        .Enrich.With<OperationIdEnricher>()
         .WriteTo.Logger(log => log
           .MinimumLevel.ControlledBy(Program.LevelSwitch)
           .Filter.ByExcluding(configuration["Serilog:Seq:Ignored"])
@@ -61,7 +62,7 @@ namespace Esentis.Ieemdb.Web.Helpers.Extensions
             retainedFileCountLimit: 10,
             shared: true,
             flushToDiskInterval: TimeSpan.FromSeconds(1))
-          .WriteTo.ApplicationInsights(telemetry, TelemetryConverter.Traces)
+          .WriteTo.ApplicationInsights(telemetry, new OperationTelemetryConverter(), LogEventLevel.Information)
           .WriteTo.Seq(
             configuration["Seq:Uri"],
             apiKey: configuration["Seq:ApiKey"],

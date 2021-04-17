@@ -2,6 +2,12 @@
   "version": 1,
   "dependencies": {
     ".NETCoreApp,Version=v5.0": {
+      "Bogus": {
+        "type": "Direct",
+        "requested": "[33.0.2, )",
+        "resolved": "33.0.2",
+        "contentHash": "92CcSgl7KLEw7lerMytjY504IPnhmYqDkCgIPm5GVfiZPslRWUcgWvtoNYhKbSU4m/Ms7giKP8OxPAFTFBgC3w=="
+      },
       "Kritikos.PureMapper": {
         "type": "Direct",
         "requested": "[1.0.3, )",
@@ -98,6 +104,16 @@
         "contentHash": "YfEG6UQumR2+L/c2c/mdwNH9vRA2KscsCgKCI/REh8KZL65dfoRSkTzLknJ1ai+WK/GM8EI1eClfAyZCTIMhOQ==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Design": "5.0.5"
+        }
+      },
+      "SendGrid": {
+        "type": "Direct",
+        "requested": "[9.22.0, )",
+        "resolved": "9.22.0",
+        "contentHash": "5vXkfOqPhi6W5/tEmRcTVJakT69SXiCGqVRERYF4ZAtJ4alylzlOqin6w8Xrog0Brf3RL+4BKXI+CwKbFLtteA==",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1",
+          "starkbank-ecdsa": "[1.2.0, 2.0.0)"
         }
       },
       "Serilog.AspNetCore": {
@@ -233,6 +249,12 @@
           "Swashbuckle.AspNetCore.Filters.Abstractions": "7.0.2",
           "Swashbuckle.AspNetCore.SwaggerGen": "5.0.0"
         }
+      },
+      "Swashbuckle.AspNetCore.ReDoc": {
+        "type": "Direct",
+        "requested": "[6.1.2, )",
+        "resolved": "6.1.2",
+        "contentHash": "fmyjLbykzPi+V+XuPCWuMHQJHjPl3Ap8mjIHp7pvDPvZtOsEl3Y04iVjSvd+W8XgIO8EB4Kcb5DcyDrR9ubZWA=="
       },
       "Swashbuckle.AspNetCore.SwaggerGen": {
         "type": "Direct",
@@ -1280,6 +1302,11 @@
           "System.Collections.Concurrent": "4.0.12",
           "System.Threading.Timer": "4.0.1"
         }
+      },
+      "starkbank-ecdsa": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "hP53QPYOOEIR44EK9phz+DYliM6DEieDZxpb8GZzE+++qyrWqUscKcyHCC6L9yu/ehllYtqxtT4qrjWDsuQlUQ=="
       },
       "StyleCop.Analyzers.Unstable": {
         "type": "Transitive",

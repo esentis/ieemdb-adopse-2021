@@ -39,12 +39,6 @@ namespace Esentis.Ieemdb.Web
         logger = host.Services.GetRequiredService<ILogger<Startup>>();
         await host.Services.SeedDatabase();
 
-        var isAzure = host.Services.GetRequiredService<IConfiguration>().GetValue<bool>("AzureDeployment");
-        if (isAzure)
-        {
-          LogCertificates(logger);
-        }
-
         await host.RunAsync();
         return 0;
       }
@@ -67,16 +61,5 @@ namespace Esentis.Ieemdb.Web
         {
           webBuilder.UseStartup<Startup>();
         });
-
-    public static void LogCertificates(Microsoft.Extensions.Logging.ILogger logger)
-    {
-      var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-      foreach (var certificate in store.Certificates)
-      {
-        logger.LogWarning(LogTemplates.AvailableCertificate, certificate);
-      }
-
-      logger.LogInformation("Total certificates: {Certificates}", store.Certificates);
-    }
   }
 }
