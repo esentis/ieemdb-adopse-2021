@@ -6,7 +6,7 @@ import movies from './Movie_Dataset';
 function WatchList() {
     const title='WATCH LIST';
     const items=movies.map(i => <MovieCard 
-        key={i.id}
+        id={i.id}
         Title={i.title} 
         Poster={i.poster} 
         Overview={i.overview}

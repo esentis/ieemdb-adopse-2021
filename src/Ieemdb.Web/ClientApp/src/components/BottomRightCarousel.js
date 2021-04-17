@@ -13,7 +13,7 @@ const responsive = {
 
 function BottomRightCarousel(){
     const items=movies.map(i => <MovieCard 
-        key={i.id}
+        id={i.id}
         Title={i.title} 
         Poster={i.poster} 
         Overview={i.overview}
