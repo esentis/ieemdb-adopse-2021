@@ -1,12 +1,16 @@
 import React from 'react';
 import '../Styles/MovieCard.css';
-import {usePage,useUpdatePage} from './Navigate'
-var svg;
+import {useUpdatePage} from './Navigate'
+import {useHistory} from 'react-router-dom';
+
+
+
 function MovieCard(props){
     const setPage=useUpdatePage();
+    const history=useHistory();
 
     const MovieDetails={name:"MovieView",
-    key:props.id,
+    id:props.id,
     Title:props.Title,
     Poster:props.Poster,
     Overview:props.Overview,
@@ -21,17 +25,16 @@ function MovieCard(props){
 }
 
     function onPosterClick(){
-        //Click on poster open Movie Page
         setPage(MovieDetails);
+        history.push('/Movie/'+props.id);
     }
     return(
         <div>
             <div className="poster">
-                <img src={props.Poster} alt={props.id} height={props.height} width={props.width} onClick={onPosterClick} />
-                {svg}
+                <img src={props.Poster} alt={props.key} height={props.height} width={props.width} onClick={onPosterClick} />
             </div>
             <div>
-                <p className="title" onClick={onPosterClick}>{props.Title}</p>
+            <p className="title" onClick={onPosterClick}>{props.Title}</p>
             </div>
         </div>
     );
