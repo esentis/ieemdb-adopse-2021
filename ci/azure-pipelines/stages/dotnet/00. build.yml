@@ -1,0 +1,166 @@
+parameters:
+- name: linuxImage
+  type: string
+  default: ubuntu-latest
+- name: windowsImage
+  type: string
+  default: windows-latest
+- name: macOsImage
+  type: string
+  default: macOS-latest
+- name: useCache
+  type: boolean
+  default: true
+- name: sdkVersion
+  default: 5.x
+  type: string
+- name: updateAssemblyInfo
+  type: boolean
+  default: false
+- name: assemblyInfoPath
+  type: string
+  default: $(Build.SourcesDirectory)
+- name: assemblyInfoArtifactName
+  type: string
+  default: AssemblyInfo
+- name: configuration
+  type: string
+  default: $(BuildConfiguration)
+- name: buildArgs
+  type: string
+  default: ''
+- name: publishWeb
+  type: boolean
+  default: false
+- name: outputPath
+  type: string
+  default: $(build.artifactStagingDirectory)/publish
+- name: pathtoPublish
+  type: string
+  default: $(build.artifactStagingDirectory)/publish
+- name: publishArgs
+  type: string
+  default: ''
+- name: projectsToPublish
+  type: string
+  default: src/*/*.csproj
+- name: publishArtifactName
+  type: string
+  default: '$(Build.Repository.Name)-$(Build.BuildNumber)'
+- name: projectsToPack
+  type: string
+  default: src/*/*.csproj
+- name: packDirectory
+  type: string
+  default: $(build.artifactStagingDirectory)/nuget
+- name: nugetArtifactName
+  type: string
+  default: 'nuget'
+- name: buildOnWindows
+  type: boolean
+  default: false
+- name: buildOnLinux
+  type: boolean
+  default: false
+- name: buildOnMac
+  type: boolean
+  default: false
+- name: packOnWindows
+  type: boolean
+  default: false
+- name: packOnLinux
+  type: boolean
+  default: false
+- name: packOnMac
+  type: boolean
+  default: false
+- name: publishOnWindows
+  type: boolean
+  default: false
+- name: publishOnLinux
+  type: boolean
+  default: false
+- name: publishOnMac
+  type: boolean
+  default: false
+- name: windowsArch
+  type: string
+  default: win-x64
+- name: linuxArch
+  type: string
+  default: linux-x64
+- name: macOsArch
+  type: string
+  default: osx-x64
+
+stages:
+- stage: Build
+  displayName: Build artifacts
+  dependsOn: Version
+  jobs:
+    - ${{ if parameters.buildOnLinux }}:
+      - template: ../../jobs/dotnet/00. build.yml
+        parameters:
+          image: ${{ parameters.linuxImage }}
+          useCache: ${{ parameters.useCache }}
+          updateAssemblyInfo: ${{ parameters.updateAssemblyInfo }}
+          assemblyInfoPath: ${{ parameters.assemblyInfoPath }}
+          assemblyInfoArtifactName: ${{ parameters.assemblyInfoArtifactName }}
+          sdkVersion: ${{ parameters.sdkVersion }}
+          configuration: ${{ parameters.configuration }}
+          buildArgs: ${{ parameters.buildArgs }}
+          producePublishArtifacts: ${{ parameters.publishOnLinux }}
+          publishArgs:  ${{ parameters.publishArgs }}
+          publishWeb: ${{ parameters.publishWeb }}
+          outputPath: ${{ parameters.outputPath }}
+          projectsToPublish: ${{ parameters.projectsToPublish }}
+          pathtoPublish: ${{ parameters.pathtoPublish }}
+          publishArtifactName: ${{ parameters.publishArtifactName }}-linux
+          producePackedArtifacts: ${{ parameters.packOnLinux }}
+          projectsToPack: ${{ parameters.projectsToPack }}
+          packDirectory: ${{ parameters.packDirectory }}
+          nugetArtifactName: ${{ parameters.nugetArtifactName }}
+    - ${{ if parameters.buildOnWindows }}:
+      - template: ../../jobs/dotnet/00. build.yml
+        parameters:
+          image: ${{ parameters.windowsImage }}
+          useCache: ${{ parameters.useCache }}
+          updateAssemblyInfo: ${{ parameters.updateAssemblyInfo }}
+          assemblyInfoPath: ${{ parameters.assemblyInfoPath }}
+          assemblyInfoArtifactName: ${{ parameters.assemblyInfoArtifactName }}
+          sdkVersion: ${{ parameters.sdkVersion }}
+          configuration: ${{ parameters.configuration }}
+          buildArgs: ${{ parameters.buildArgs }}
+          producePublishArtifacts: ${{ parameters.publishOnWindows }}
+          publishArgs: ${{ parameters.publishArgs }}
+          publishWeb: ${{ parameters.publishWeb }}
+          outputPath: ${{ parameters.outputPath }}
+          projectsToPublish: ${{ parameters.projectsToPublish }}
+          pathtoPublish: ${{ parameters.pathtoPublish }}
+          publishArtifactName: ${{ parameters.publishArtifactName }}-win
+          producePackedArtifacts: ${{ parameters.packOnWindows }}
+          projectsToPack: ${{ parameters.projectsToPack }}
+          packDirectory: ${{ parameters.packDirectory }}
+          nugetArtifactName: ${{ parameters.nugetArtifactName }}
+    - ${{ if parameters.buildOnMac }}:
+      - template: ../../jobs/dotnet/00. build.yml
+        parameters:
+          image: ${{ parameters.macOsImage }}
+          useCache: ${{ parameters.useCache }}
+          updateAssemblyInfo: ${{ parameters.updateAssemblyInfo }}
+          assemblyInfoPath: ${{ parameters.assemblyInfoPath }}
+          assemblyInfoArtifactName: ${{ parameters.assemblyInfoArtifactName }}
+          sdkVersion: ${{ parameters.sdkVersion }}
+          configuration: ${{ parameters.configuration }}
+          buildArgs: ${{ parameters.buildArgs }}
+          producePublishArtifacts: ${{ parameters.publishOnMac }}
+          publishArgs:  ${{ parameters.publishArgs }}
+          publishWeb: ${{ parameters.publishWeb }}
+          outputPath: ${{ parameters.outputPath }}
+          projectsToPublish: ${{ parameters.projectsToPublish }}
+          pathtoPublish: ${{ parameters.pathtoPublish }}
+          publishArtifactName: ${{ parameters.publishArtifactName }}-mac
+          producePackedArtifacts: ${{ parameters.packOnMac }}
+          projectsToPack: ${{ parameters.projectsToPack }}
+          packDirectory: ${{ parameters.packDirectory }}
+          nugetArtifactName: ${{ parameters.nugetArtifactName }}

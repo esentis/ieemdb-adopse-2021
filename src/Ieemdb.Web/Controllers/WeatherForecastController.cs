@@ -4,10 +4,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Collections.Generic;
   using System.Linq;
 
-  using AutoMapper;
-
   using Esentis.Ieemdb.Persistence;
-  using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
 

@@ -9,6 +9,7 @@ namespace Esentis.Ieemdb.Web
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Identity;
   using Esentis.Ieemdb.Web.Helpers;
+  using Esentis.Ieemdb.Web.Helpers.Extensions;
   using Esentis.Ieemdb.Web.Options;
 
   using Kritikos.Configuration.Persistence.Extensions;
@@ -23,6 +24,7 @@ namespace Esentis.Ieemdb.Web
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.AspNetCore.Http;
   using Microsoft.AspNetCore.Identity;
+  using Microsoft.AspNetCore.Identity.UI.Services;
   using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Configuration;
@@ -49,15 +51,18 @@ namespace Esentis.Ieemdb.Web
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddSingleton<TimestampSaveChangesInterceptor>();
+      services.AddSingleton<IPureMapper>(sp => new PureMapper(MappingConfiguration.Mapping));
+      services.AddApplicationInsightsTelemetry();
+
       services.AddHttpContextAccessor();
+      services.AddSingleton<TimestampSaveChangesInterceptor>();
       services.AddSingleton<AuditSaveChangesInterceptor<Guid>>();
+
       services.AddSingleton<IAuditorProvider<Guid>>(sp =>
         new AuditorProvider(sp.GetRequiredService<IHttpContextAccessor>()));
-      services.Configure<JwtOptions>(options => Configuration.GetSection("JWT").Bind(options));
+
       services.AddDbContextPool<IeemdbDbContext>((serviceProvider, options) =>
       {
-        // This is localhost connection string.
         options.UseNpgsql(
             Configuration.GetConnectionString("Ieemdb"))
           .AddInterceptors(
@@ -68,7 +73,18 @@ namespace Esentis.Ieemdb.Web
 
       services.AddDatabaseDeveloperPageExceptionFilter();
       services.AddHostedService<MigrationService<IeemdbDbContext>>();
-      services.AddSingleton<IPureMapper>(sp => new PureMapper(MappingConfiguration.Mapping));
+
+      var sendgrid = Configuration.GetValue<string>("SendGrid:ApiKey");
+      if (string.IsNullOrEmpty(sendgrid))
+      {
+        services.AddSingleton<IEmailSender, DummyEmailSender>();
+      }
+      else
+      {
+        services.AddSingleton<IEmailSender, SendGridEmailSender>(sp => new SendGridEmailSender(sendgrid));
+      }
+
+      services.Configure<JwtOptions>(options => Configuration.GetSection("JWT").Bind(options));
 
       services.AddSwaggerGen(c =>
       {
@@ -88,17 +104,15 @@ namespace Esentis.Ieemdb.Web
           {
             new OpenApiSecurityScheme
             {
-              Reference = new OpenApiReference
-              {
-                Type = ReferenceType.SecurityScheme, Id = "Bearer",
-              },
+              Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer", },
             },
             Array.Empty<string>()
           },
         });
         c.DescribeAllParametersInCamelCase();
         c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
-        c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
+        c.IncludeXmlComments(Path.Combine(
+          AppContext.BaseDirectory,
           $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
       });
 
@@ -114,15 +128,15 @@ namespace Esentis.Ieemdb.Web
             RequireNonAlphanumeric = !isDevelopment,
             RequiredLength = isDevelopment
               ? 4
-              : 12,
+              : 6,
           };
         })
         .AddEntityFrameworkStores<IeemdbDbContext>()
         .AddDefaultUI()
         .AddDefaultTokenProviders();
 
-      // services.AddIdentityServer()
-      //  .AddApiAuthorization<IeemdbUser, IeemdbDbContext>();
+      services.AddIdentityServer()
+        .AddApiAuthorization<IeemdbUser, IeemdbDbContext>();
 
       JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
       services.AddAuthentication(options =>
@@ -142,8 +156,10 @@ namespace Esentis.Ieemdb.Web
             ValidIssuer = Configuration["JWT:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Key"])),
           };
-        });
+        })
+        .AddIdentityServerJwt();
 
+      services.AddCorrelation();
       services.AddControllersWithViews();
       services.AddRazorPages();
 
@@ -181,8 +197,24 @@ namespace Esentis.Ieemdb.Web
 
       app.UseRouting();
 
+      app.UseReDoc(c =>
+      {
+        c.RoutePrefix = "docs";
+        c.DocumentTitle = "Ieemdb API Documentation v1";
+        c.SpecUrl("/swagger/v1/swagger.json");
+        c.ExpandResponses("none");
+        c.RequiredPropsFirst();
+        c.SortPropsAlphabetically();
+        c.HideDownloadButton();
+        c.HideHostname();
+      });
+
       app.UseAuthentication();
+      app.UseIdentityServer();
       app.UseAuthorization();
+
+      app.UseCorrelation();
+
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllerRoute(
@@ -195,7 +227,7 @@ namespace Esentis.Ieemdb.Web
       {
         spa.Options.SourcePath = "ClientApp";
 
-        if (Environment.IsDevelopment())
+        if (Environment.IsDevelopment() && !Configuration.GetValue("AzureDeployment", false))
         {
           spa.UseReactDevelopmentServer(npmScript: "start");
         }

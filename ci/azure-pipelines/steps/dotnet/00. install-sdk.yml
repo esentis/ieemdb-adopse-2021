@@ -1,0 +1,11 @@
+parameters:
+- name: sdkVersion
+  default: 5.x
+  type: string
+
+steps:
+- task: UseDotNet@2
+  displayName: Install .NET SDK ${{ parameters.sdkVersion }}
+  inputs:
+    packageType: sdk
+    version: ${{ parameters.sdkVersion }}

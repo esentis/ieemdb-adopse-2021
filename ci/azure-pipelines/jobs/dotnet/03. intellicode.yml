@@ -1,0 +1,50 @@
+parameters:
+- name: useCache
+  type: boolean
+  default: true
+- name: sdkVersion
+  default: 5.x
+  type: string
+- name: updateAssemblyInfo
+  type: boolean
+  default: false
+- name: assemblyInfoPath
+  type: string
+  default: $(Build.SourcesDirectory)
+- name: assemblyInfoArtifactName
+  type: string
+  default: AssemblyInfo
+- name: configuration
+  type: string
+  default: $(BuildConfiguration)
+- name: buildArgs
+  type: string
+  default: ''
+- name: branch
+  type: string
+  default: master
+
+jobs:
+- job:
+  displayName: Train model
+  pool:
+    vmImage: windows-latest
+  steps:
+    - ${{ if parameters.useCache }}:
+        - template: ../../steps/nuget/00. nuget-cache.yml
+    - template: ../../steps/dotnet/00. install-sdk.yml
+      parameters:
+        sdkVersion: 5.x
+    - template: ../../steps/dotnet/01. dotnet-restore.yml
+    - ${{ if parameters.updateAssemblyInfo }}:
+      - template: ../../steps/general/08. download-build-artifact.yml
+        parameters:
+          downloadPath: ${{ parameters.assemblyInfoPath }}
+          artifactName: ${{ parameters.assemblyInfoArtifactName }}
+    - template: ../../steps/dotnet/02. dotnet-build.yml
+      parameters:
+        configuration: ${{ parameters.configuration }}
+        buildArgs: ${{ parameters.buildArgs }}
+    - template: ../../steps/general/09. intellicode.yml
+      parameters:
+       branch: ${{ parameters.branch }}

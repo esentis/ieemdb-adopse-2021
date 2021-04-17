@@ -1,0 +1,23 @@
+parameters:
+- name: updateAssemblyInfo
+  type: boolean
+  default: false
+
+stages:
+- stage: Version
+  displayName: Set Semantic Version
+  jobs:
+  - job: Version
+    steps:
+      - template: ../../steps/general/01. dotnet-tool.yml
+        parameters:
+          toolName: gitversion.tool
+      - pwsh: ../dotnet-gitversion /output buildserver
+        displayName: Set SemVer from git history
+      - ${{ if parameters.updateAssemblyInfo }}:
+        - pwsh: ../dotnet-gitversion /output json /showvariable SemVer /updateassemblyinfo AssemblyInfo.cs /ensureassemblyinfo
+          displayName: Save SemVer to AssemblyInfo file
+        - template: ../../steps/general/06. publish-build-artifact.yml
+          parameters:
+            pathtoPublish: $(Build.SourcesDirectory)/AssemblyInfo.cs
+            artifactName: AssemblyInfo

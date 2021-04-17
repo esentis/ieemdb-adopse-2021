@@ -67,7 +67,6 @@ namespace Esentis.Ieemdb.Web.Controllers
         TotalElements = totalDirectors,
       };
 
-      // We return OK and the paged results;
       return Ok(result);
     }
 
@@ -83,9 +82,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       var director = Context.Directors.Where(x => x.Id == id).SingleOrDefault();
 
       // If we haven't found a Director we return a not found response.
-#pragma warning disable IDE0046 // Waiting for the new C# version
       if (director == null)
-#pragma warning restore IDE0046 // Convert to conditional expression
       {
         Logger.LogWarning(LogTemplates.NotFound, nameof(Director), id);
         return NotFound($"No {nameof(Director)} with Id {id} found in database");
@@ -169,8 +166,8 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       // Otherwise, we expicitly update the found director with newer values.
       director.Name = dto.Name;
-      director.Bio = dto.bio;
-      director.BirthDate = dto.birthDate;
+      director.Bio = dto.Bio;
+      director.BirthDate = dto.BirthDate;
 
       // And we just save the changes to commit on previous updates.
       await Context.SaveChangesAsync();

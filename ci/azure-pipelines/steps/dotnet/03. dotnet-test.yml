@@ -1,0 +1,18 @@
+parameters:
+- name: configuration
+  type: string
+  default: $(BuildConfiguration)
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: Test Solution
+  inputs:
+    command: test
+    configuration: ${{ parameters.configuration }}
+    publishTestResults: true
+    testRunTitle: Unit Tests
+    # Multiple comma seperated msbuild parameters should be seperated with %2c
+    # VSTS does not need escaped quotes, escape for other platforms
+    arguments: --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat="opencover%2ccobertura" /p:CoverletOutput=$(build.artifactStagingDirectory)/coverage/ /p:MergeWith=$(build.artifactStagingDirectory)/coverage/coverage.json
+    verbosityPack: Minimal
+    verbosityRestore: Minimal

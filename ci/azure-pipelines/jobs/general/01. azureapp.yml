@@ -1,0 +1,43 @@
+parameters:
+- name: environment
+  type: string
+- name: jobName
+  type: string
+  default: production
+- name: subscription
+  type: string
+- name: resourceGroup
+  type: string
+- name: webApp
+  type: string
+- name: slotName
+  type: string
+- name: deployToSlot
+  type: boolean
+  default: false
+- name: artifact
+  type: string
+- name: packagesToPush
+  type: string
+  default: '*.zip'
+
+jobs:
+- deployment: ${{ parameters.jobName }}
+  displayName: Deploy app ${{ parameters.webApp }} ${{ parameters.slotName }}
+  environment: ${{ parameters.environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+          - download: current
+            artifact: ${{ parameters.artifact }}
+          - template: ../../steps/general/10. azureapp.yml
+            parameters:
+              subscription: ${{ parameters.subscription }}
+              resourceGroup: ${{ parameters.resourceGroup }}
+              webApp: ${{ parameters.webApp }}
+              slotName: ${{ parameters.slotName }}
+              deployToSlot: ${{ parameters.deployToSlot }}
+              artifact: ${{ parameters.artifact }}
+              packagesToPush: ${{ parameters.packagesToPush }}
+

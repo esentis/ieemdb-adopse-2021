@@ -35,9 +35,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     private readonly JwtOptions jwtOptions;
 
     // Constructor
-    public AccountController(ILogger<AccountController> logger,
-      IeemdbDbContext ctx, IPureMapper mapper, RoleManager<IeemdbRole> roleManager,
-      UserManager<IeemdbUser> userManager, IOptions<JwtOptions> options)
+    public AccountController(
+      ILogger<AccountController> logger,
+      IeemdbDbContext ctx,
+      IPureMapper mapper,
+      RoleManager<IeemdbRole> roleManager,
+      UserManager<IeemdbUser> userManager,
+      IOptions<JwtOptions> options)
       : base(logger, ctx, mapper)
     {
       this.roleManager = roleManager;
@@ -45,17 +49,15 @@ namespace Esentis.Ieemdb.Web.Controllers
       jwtOptions = options.Value;
     }
 
-    // Here is the registration endpoint, and we allow anonymous browse.
     [HttpPost("")]
     [AllowAnonymous]
     public async Task<ActionResult> RegisterUser([FromBody] UserRegisterDto userRegister)
     {
-      // If the request body is invalid we return a bad request with an appropriate message.
       if (!ModelState.IsValid)
       {
         return BadRequest(ModelState.Values.SelectMany(c => c.Errors));
       }
-      // roleManager.CreateAsync(new IeemdbRole { Name = RoleNames.Member });
+
       var user = new IeemdbUser { Email = userRegister.Email, UserName = userRegister.UserName, };
       var result = await userManager.CreateAsync(user, userRegister.Password);
 
@@ -112,7 +114,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       }
 
       var device = await Context.Devices.Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId)
-           .SingleOrDefaultAsync();
+        .SingleOrDefaultAsync();
       if (device
           == null)
       {
@@ -144,7 +146,9 @@ namespace Esentis.Ieemdb.Web.Controllers
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
         new Claim(ClaimTypes.Name, user.UserName),
         new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-        new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
+        new Claim(
+          JwtRegisteredClaimNames.Iat,
+          DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
           ClaimValueTypes.Integer64),
       };
       claims.AddRange(identityClaims);
@@ -182,15 +186,12 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       var tokenHandler = new JwtSecurityTokenHandler();
       var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-      var jwtSecurityToken = securityToken as JwtSecurityToken;
-      if (jwtSecurityToken == null ||
-          !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
-            StringComparison.InvariantCultureIgnoreCase))
-      {
-        throw new SecurityTokenException("Invalid token");
-      }
-
-      return principal;
+      return securityToken is not JwtSecurityToken jwtSecurityToken ||
+             !jwtSecurityToken.Header.Alg.Equals(
+               SecurityAlgorithms.HmacSha256,
+               StringComparison.InvariantCultureIgnoreCase)
+        ? throw new SecurityTokenException("Invalid token")
+        : principal;
     }
   }
 }

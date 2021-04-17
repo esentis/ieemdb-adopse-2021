@@ -1,4 +1,8 @@
 <Project>
+  <ImportGroup Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))) == 'true'">
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  </ImportGroup>
+
   <PropertyGroup Label="Project">
     <!-- Prepend organization name to default namespace -->
     <RootNamespace>Esentis.$(MSBuildProjectName)</RootNamespace>
@@ -28,7 +32,7 @@
     <!-- Use latest language version supported by the SDK -->
     <LangVersion>latest</LangVersion>
     <!-- Use deterministic builds -->
-    <!-- <Deterministic>true</Deterministic> -->
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
 
   <!-- Sets deterministic source paths for CI builds -->
@@ -98,8 +102,8 @@
   <PropertyGroup Label="Package">
     <PackageId>$(RootNamespace)</PackageId>
     <Company>Esentis</Company>
-    <Authors>Alexandros Esentis</Authors>
-    <Copyright>© Esentis IO. All rights reserved.</Copyright>
+    <Authors>George Leonidis</Authors>
+    <Copyright>© Esentis. All rights reserved.</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <!-- Optional: Embed source files that are not tracked by the source control manager to the PDB -->
@@ -124,7 +128,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.321">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

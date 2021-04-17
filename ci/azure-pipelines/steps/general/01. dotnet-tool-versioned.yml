@@ -1,0 +1,12 @@
+parameters:
+  - name: toolName
+    type: string
+  - name: toolPath
+    type: string
+    default: ..
+  - name: version
+    type: string
+
+steps:
+- pwsh: dotnet tool install --tool-path ${{ parameters.toolPath }} ${{ parameters.toolName }} --version ${{ parameters.version }}
+  displayName: Install ${{ parameters.toolName }}

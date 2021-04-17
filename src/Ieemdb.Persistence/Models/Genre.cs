@@ -6,12 +6,8 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Genre : IeemdbEntity<long>, IAuditable<Guid>
+  public class Genre : EemdbEntity<long>
   {
     public string Name { get; set; }
-
-    public Guid CreatedBy { get; set; }
-
-    public Guid UpdatedBy { get; set; }
   }
 }

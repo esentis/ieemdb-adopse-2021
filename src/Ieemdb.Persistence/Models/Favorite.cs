@@ -7,14 +7,10 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Favorite : IeemdbEntity<long>, IAuditable<Guid>
+  public class Favorite : EemdbEntity<long>
   {
     public IeemdbUser User { get; set; }
 
     public Movie Movie { get; set; }
-
-    public Guid CreatedBy { get; set; }
-
-    public Guid UpdatedBy { get; set; }
   }
 }

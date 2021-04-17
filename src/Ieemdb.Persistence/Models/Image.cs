@@ -6,12 +6,8 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Image : IeemdbEntity<long>, IAuditable<Guid>
+  public class Image : EemdbEntity<long>
   {
     public string Url { get; set; }
-
-    public Guid CreatedBy { get; set; }
-
-    public Guid UpdatedBy { get; set; }
   }
 }

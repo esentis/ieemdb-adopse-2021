@@ -1,0 +1,112 @@
+parameters:
+- name: image
+  type: string
+  default: ubuntu-latest
+- name: useCache
+  type: boolean
+  default: true
+- name: sdkVersion
+  default: 5.x
+  type: string
+- name: updateAssemblyInfo
+  type: boolean
+  default: false
+- name: assemblyInfoPath
+  type: string
+  default: $(Build.SourcesDirectory)
+- name: assemblyInfoArtifactName
+  type: string
+  default: AssemblyInfo
+- name: configuration
+  type: string
+  default: $(BuildConfiguration)
+- name: buildArgs
+  type: string
+  default: ''
+- name: publishCoverage
+  type: boolean
+  default: false
+- name: coverageDirectory
+  type: string
+  default: $(build.artifactStagingDirectory)/coverage/.
+- name: sonarAnalysis
+  type: boolean
+  default: true
+- name: sonarProject
+  type: string
+  default: $(SONAR_PROJECT)
+- name: sonarOnPullRequests
+  type: boolean
+  default: true
+- name: sonarPullRequestProvider
+  type: string
+  values:
+    - github
+    - vsts
+    - bitbucketcloud
+  default: github
+- name: coverageTool
+  default: cobertura
+  type: string
+  values:
+  - cobertura
+  - jacoco
+- name: summaryFile
+  type: string
+  default: '$(build.artifactStagingDirectory)/coverage/coverage.cobertura.xml'
+- name: coverageArtifactName
+  type: string
+  default: $(Build.Repository.Name)-$(Build.BuildNumber)-coverage
+- name: uploadCodeCov
+  type: boolean
+  default: true
+- name: uploadCoveralls
+  type: boolean
+  default: true
+
+jobs:
+- job:
+  displayName: on ${{ parameters.image }}
+  pool:
+    vmImage: ${{ parameters.image }}
+  steps:
+  - checkout: self
+  - ${{ if parameters.useCache }}:
+    - template: ../../steps/nuget/00. nuget-cache.yml
+  - template: ../../steps/dotnet/00. install-sdk.yml
+    parameters:
+      sdkVersion: 5.x
+  - template: ../../steps/dotnet/01. dotnet-restore.yml
+  - ${{ if parameters.updateAssemblyInfo }}:
+    - template: ../../steps/general/08. download-build-artifact.yml
+      parameters:
+        downloadPath: ${{ parameters.assemblyInfoPath }}
+        artifactName: ${{ parameters.assemblyInfoArtifactName }}
+  - ${{ if parameters.sonarAnalysis }}:
+    - template: ../../steps/general/02. sonarscanner-begin.yml
+      parameters:
+        coverageDirectory: ${{ parameters.coverageDirectory }}
+        sonarOnPullRequests: ${{ parameters.sonarOnPullRequests }}
+        sonarPullRequestProvider: ${{ parameters.sonarPullRequestProvider }}
+  - template: ../../steps/dotnet/02. dotnet-build.yml
+    parameters:
+      configuration: ${{ parameters.configuration }}
+      buildArgs: ${{ parameters.buildArgs }}
+  - template: ../../steps/dotnet/03. dotnet-test.yml
+    parameters:
+      configuration: ${{ parameters.configuration }}
+  - ${{ if parameters.publishCoverage }}:
+    - template: ../../steps/general/07. publish-code-coverage.yml
+      parameters:
+        coverageTool: ${{ parameters.coverageTool }}
+        summaryFile: ${{ parameters.summaryFile }}
+    - template: ../../steps/general/06. publish-build-artifact.yml
+      parameters:
+        pathtoPublish: ${{ parameters.coverageDirectory }}
+        artifactName: ${{ parameters.coverageArtifactName }}
+  - ${{ if parameters.sonarAnalysis }}:
+    - template: ../../steps/general/03. sonarscanner-end.yml
+  - ${{ if parameters.uploadCodeCov }}:
+      - template: ../../steps/general/04. codecov.yml
+  - ${{ if parameters.uploadCoveralls }}:
+      - template: ../../steps/general/05. coveralls.yml

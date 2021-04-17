@@ -1,11 +1,9 @@
 namespace Esentis.Ieemdb.Web.Helpers.Extensions
 {
   using System;
-  using System.Collections.Generic;
   using System.IO;
-  using System.Linq;
-  using System.Threading.Tasks;
 
+  using Microsoft.ApplicationInsights.Extensibility;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.Extensions.Configuration;
 
@@ -44,9 +42,13 @@ namespace Esentis.Ieemdb.Web.Helpers.Extensions
     internal static LoggerConfiguration ConfigureLogger(
       this LoggerConfiguration logConfiguration,
       IConfiguration configuration,
-      IWebHostEnvironment environment)
+      IWebHostEnvironment environment,
+      TelemetryConfiguration telemetry)
       => logConfiguration
         .CreateStartupLogger()
+        .Enrich.WithProperty("Application", environment.ApplicationName)
+        .Enrich.WithProperty("Environment", environment.EnvironmentName)
+        .Enrich.With<OperationIdEnricher>()
         .WriteTo.Logger(log => log
           .MinimumLevel.ControlledBy(Program.LevelSwitch)
           .Filter.ByExcluding(configuration["Serilog:Seq:Ignored"])
@@ -59,6 +61,11 @@ namespace Esentis.Ieemdb.Web.Helpers.Extensions
             rollOnFileSizeLimit: true,
             retainedFileCountLimit: 10,
             shared: true,
-            flushToDiskInterval: TimeSpan.FromSeconds(1)));
+            flushToDiskInterval: TimeSpan.FromSeconds(1))
+          .WriteTo.ApplicationInsights(telemetry, new OperationTelemetryConverter(), LogEventLevel.Information)
+          .WriteTo.Seq(
+            configuration["Seq:Uri"],
+            apiKey: configuration["Seq:ApiKey"],
+            controlLevelSwitch: Program.LevelSwitch));
   }
 }

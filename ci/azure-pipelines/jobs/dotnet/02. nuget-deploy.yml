@@ -1,0 +1,31 @@
+parameters:
+- name: environment
+  type: string
+  default: 'Kritikos IO'
+- name: jobName
+  type: string
+  default: kritikos-io
+- name: packagesToPush
+  type: string
+  default: '*.nupkg'
+- name: feedName
+  type: string
+  default: NugetKritikos
+- name: artifact
+  type: string
+  default: nuget
+
+jobs:
+- deployment: ${{ parameters.jobName }}
+  displayName: Push nugets to ${{ parameters.environment }}
+  environment: ${{ parameters.environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+          - download: current
+            artifact: ${{ parameters.artifact }}
+          - template: ../../steps/nuget/01. nuget-push.yml
+            parameters:
+              packagesToPush: $(Pipeline.Workspace)/${{ parameters.artifact }}/${{ parameters.packagesToPush }}
+              feedName: ${{ parameters.feedName }}

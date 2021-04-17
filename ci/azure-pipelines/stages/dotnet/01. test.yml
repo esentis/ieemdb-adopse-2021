@@ -1,0 +1,171 @@
+parameters:
+- name: linuxImage
+  type: string
+  default: ubuntu-latest
+- name: windowsImage
+  type: string
+  default: windows-latest
+- name: macOsImage
+  type: string
+  default: macOS-latest
+- name: useCache
+  type: boolean
+  default: true
+- name: sdkVersion
+  default: 5.x
+  type: string
+- name: updateAssemblyInfo
+  type: boolean
+  default: false
+- name: assemblyInfoPath
+  type: string
+  default: $(Build.SourcesDirectory)
+- name: assemblyInfoArtifactName
+  type: string
+  default: AssemblyInfo
+- name: configuration
+  type: string
+  default: $(BuildConfiguration)
+- name: buildArgs
+  type: string
+  default: ''
+- name: coverageDirectory
+  type: string
+  default: $(build.artifactStagingDirectory)/coverage/.
+- name: sonarOnPullRequests
+  type: boolean
+  default: true
+- name: sonarPullRequestProvider
+  type: string
+  values:
+    - github
+    - vsts
+    - bitbucketcloud
+  default: github
+- name: coverageTool
+  default: cobertura
+  type: string
+  values:
+  - cobertura
+  - jacoco
+- name: summaryFile
+  type: string
+  default: '$(build.artifactStagingDirectory)/coverage/coverage.cobertura.xml'
+- name: coverageArtifactName
+  type: string
+  default: $(Build.Repository.Name)-$(Build.BuildNumber)-coverage
+- name: testOnWindows
+  type: boolean
+  default: false
+- name: testOnLinux
+  type: boolean
+  default: false
+- name: testOnMac
+  type: boolean
+  default: false
+- name: coverageOnWindows
+  type: boolean
+  default: false
+- name: coverageOnLinux
+  type: boolean
+  default: false
+- name: coverageOnMac
+  type: boolean
+  default: false
+- name: sonarOnWindows
+  type: boolean
+  default: false
+- name: sonarOnLinux
+  type: boolean
+  default: false
+- name: sonarOnMac
+  type: boolean
+  default: false
+- name: codecovOnWindows
+  type: boolean
+  default: false
+- name: codecovOnLinux
+  type: boolean
+  default: false
+- name: codecovOnMac
+  type: boolean
+  default: false
+- name: coverallsOnWindows
+  type: boolean
+  default: false
+- name: coverallsOnLinux
+  type: boolean
+  default: false
+- name: coverallsOnMac
+  type: boolean
+  default: false
+
+stages:
+- stage: Test
+  displayName: Run tests
+  dependsOn: Version
+  jobs:
+  - ${{ if parameters.testOnLinux }}:
+    - template: ../../jobs/dotnet/01. test.yml
+      parameters:
+        image: ${{ parameters.linuxImage }}
+        useCache: ${{ parameters.useCache }}
+        sdkVersion: ${{ parameters.sdkVersion }}
+        updateAssemblyInfo: ${{ parameters.updateAssemblyInfo }}
+        assemblyInfoPath: ${{ parameters.assemblyInfoPath }}
+        assemblyInfoArtifactName: ${{ parameters.assemblyInfoArtifactName }}
+        configuration: ${{ parameters.configuration }}
+        buildArgs: ${{ parameters.buildArgs }}
+        publishCoverage: ${{ parameters.coverageOnLinux }}
+        coverageDirectory: ${{ parameters.coverageDirectory }}
+        sonarAnalysis: ${{ parameters.sonarOnLinux }}
+        sonarOnPullRequests: ${{ parameters.sonarOnPullRequests }}
+        sonarPullRequestProvider: ${{ parameters.sonarPullRequestProvider }}
+        coverageTool: ${{ parameters.coverageTool }}
+        summaryFile: ${{ parameters.summaryFile }}
+        coverageArtifactName: ${{ parameters.coverageArtifactName }}
+        uploadCodeCov: ${{ parameters.codecovOnLinux }}
+        uploadCoveralls: ${{ parameters.coverallsOnLinux }}
+  - ${{ if parameters.testOnWindows }}:
+      - template: ../../jobs/dotnet/01. test.yml
+        parameters:
+          image: ${{ parameters.windowsImage }}
+          useCache: ${{ parameters.useCache }}
+          sdkVersion: ${{ parameters.sdkVersion }}
+          updateAssemblyInfo: ${{ parameters.updateAssemblyInfo }}
+          assemblyInfoPath: ${{ parameters.assemblyInfoPath }}
+          assemblyInfoArtifactName: ${{ parameters.assemblyInfoArtifactName }}
+          configuration: ${{ parameters.configuration }}
+          buildArgs: ${{ parameters.buildArgs }}
+          publishCoverage: ${{ parameters.coverageOnWindows }}
+          coverageDirectory: ${{ parameters.coverageDirectory }}
+          sonarAnalysis: ${{ parameters.sonarOnWindows }}
+          sonarOnPullRequests: ${{ parameters.sonarOnPullRequests }}
+          sonarPullRequestProvider: ${{ parameters.sonarPullRequestProvider }}
+          coverageTool: ${{ parameters.coverageTool }}
+          summaryFile: ${{ parameters.summaryFile }}
+          coverageArtifactName: ${{ parameters.coverageArtifactName }}
+          uploadCodeCov: ${{ parameters.codecovOnWindows }}
+          uploadCoveralls: ${{ parameters.coverallsOnWindows }}
+  - ${{ if parameters.testOnMac }}:
+      - template: ../../jobs/dotnet/01. test.yml
+        parameters:
+          image: ${{ parameters.macOsImage }}
+          useCache: ${{ parameters.useCache }}
+          sdkVersion: ${{ parameters.sdkVersion }}
+          updateAssemblyInfo: ${{ parameters.updateAssemblyInfo }}
+          assemblyInfoPath: ${{ parameters.assemblyInfoPath }}
+          assemblyInfoArtifactName: ${{ parameters.assemblyInfoArtifactName }}
+          configuration: ${{ parameters.configuration }}
+          buildArgs: ${{ parameters.buildArgs }}
+          publishCoverage: ${{ parameters.coverageOnMac }}
+          coverageDirectory: ${{ parameters.coverageDirectory }}
+          sonarAnalysis: ${{ parameters.sonarOnMac }}
+          sonarOnPullRequests: ${{ parameters.sonarOnPullRequests }}
+          sonarPullRequestProvider: ${{ parameters.sonarPullRequestProvider }}
+          coverageTool: ${{ parameters.coverageTool }}
+          summaryFile: ${{ parameters.summaryFile }}
+          coverageArtifactName: ${{ parameters.coverageArtifactName }}
+          uploadCodeCov: ${{ parameters.codecovOnMac }}
+          uploadCoveralls: ${{ parameters.coverallsOnMac }}
+
