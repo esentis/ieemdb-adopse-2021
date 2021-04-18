@@ -4,14 +4,12 @@ import SearchBar from './SearchBar';
 import {Link} from 'react-router-dom';
 import '../Styles/NavBar.css'
 import  * as FaIcons  from "react-icons/fa";
-import {useUpdatePage} from './GlobalContext'
 import logo from '../images/imdb-logo2.png';
 
 
 function LeftSide(){
     const [LoginState,setLoginState]=useState(true);
-   
-    const setPage=useUpdatePage();
+
 
     return(
     <Col className="column-left" xl={2} style={{position:'fixed'}} >
