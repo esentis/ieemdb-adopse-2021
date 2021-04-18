@@ -1,10 +1,17 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import TopRight from './TopRight'
 import MovieCard from './MovieCard';
 import movies from './Movie_Dataset';
+import {useUpdatePage} from './GlobalContext';
 
 
 function Favorites() {
+    const setPage=useUpdatePage();
+    useEffect(() => {
+        setPage("2")})
+       
+
+
     const title='FAVORITES';
     const items=movies.map(i => <MovieCard 
         id={i.id}

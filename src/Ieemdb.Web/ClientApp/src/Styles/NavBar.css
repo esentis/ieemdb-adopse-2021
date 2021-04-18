@@ -1,5 +1,5 @@
   .column-left {
-  /* background-image:url("./images/blur-background12.jpg"); */
+  /* background-image:url("../images/blur-background12.jpg"); */
   background-color: #3F2B63;
   height: 100%;
   z-index:1;
@@ -15,6 +15,52 @@
     right: 5%; 
     width: 16.5vw;
   }
+
+
+
+  /* .has-search .form-control {
+    padding-left: 1.575rem;
+    color:#D3D3D3;
+    background: none;
+    border: none;
+}
+
+.form-control::placeholder{
+  color:#D3D3D3;
+  font-size: 1.25rem; 
+}
+.input-group{
+  
+   background: none;
+   border-radius: 50px;
+   border: 2px  solid #D3D3D3;
+   outline: 0;
+}
+
+.advbutt{
+  border-radius:50px;
+  background: none;
+  color:#D3D3D3;
+  border: none;
+  font-size:1rem ;
+  border-left: 2px  solid #D3D3D3;
+
+  
+}
+
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #D3D3D3;
+    font-size: 1.15rem;
+    
+} */
+
 
   .linkClass{
     text-decoration:none;

@@ -1,29 +1,29 @@
 import React,{createContext,useContext,useState} from 'react'
 
-const NavigateContext=createContext();
+const GlobalContext=createContext();
 const UpdateState=createContext();
 
 export const usePage=()=>{
-    return useContext(NavigateContext);
+    return useContext(GlobalContext);
 }
 
 
 export const useUpdatePage=()=>{
     return useContext(UpdateState);
 }
-    function NavigateContextProvider(props){
-        const [page,setPage]=useState({name:"Featured"});
+    function GlobalContextProvider(props){
+        const [page,setPage]=useState("");
         const handleClick=(arg)=>{
             setPage(arg);
        }
 
         return(
-            <NavigateContext.Provider value={page}>
+            <GlobalContext.Provider value={page}>
             <UpdateState.Provider value={handleClick}>
                 {props.children}
             </UpdateState.Provider>  
-            </NavigateContext.Provider>
+            </GlobalContext.Provider>
         )
     }
 
-export default NavigateContextProvider;
+export default GlobalContextProvider;
