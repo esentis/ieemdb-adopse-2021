@@ -1,15 +1,50 @@
 .column-right-MovieView{
-    background-color: #282828;
-    height: 100vh;
-    padding: 0%;
-    width: 80%;
-    margin-left:16.6%;
-    
-    
-    }
-
-    @media (max-width:1199px){
-        .column-right-MovieView{
-          margin-left:0;
-          top:8vh;
-}}
+  background-color: #282828;
+  height: 100vh;
+  padding: 0%;
+  width: 80%;
+  margin-left:16.6%;
+  color:cornsilk;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.MovieViewPoster{
+  background-color: #282828;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 100%;
+  height: fit-content;
+  min-height: 50vh;
+}
+.splitScreen{
+  background-color: #282828;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: fit-content;
+  min-height: 50vh;
+}
+.MovieViewSynopsis, .MovieViewTrailer{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.MovieViewSynopsis{
+  flex-grow: 2;
+}
+.MovieViewTrailer{
+  flex-grow: 1;
+}
+@media (max-width:1199px){
+  .column-right-MovieView{
+    margin-left:0;
+    top:8vh;
+  }
+  .splitScreen {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+}

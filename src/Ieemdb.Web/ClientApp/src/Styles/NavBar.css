@@ -16,7 +16,7 @@
     width: 16.5vw;
   }
 
-  .column-left a{
+  .linkClass{
     text-decoration:none;
     color:#D3D3D3;
     display:block;
@@ -25,11 +25,15 @@
     width: 10vw;
     font-size: 1.20rem;
     right: 2.5vw;
-    
   }
 
-  .column-left a:hover{
+  .column-left a{
+    text-decoration: none;
+  }
+
+  .column-left .linkClass:hover{
     color:white;
+    text-decoration:none;
     /* text-shadow:2px 2px 5px #FFFF99; */
   }
 
