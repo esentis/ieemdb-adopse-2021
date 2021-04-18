@@ -25,7 +25,7 @@ export default function BottomRightNav(){
             </Col>
             <Col>
                 <Nav.Item>
-                    <Nav.Link className="nav-bottom-right-link" onClick={showNewReleases}>New Realeases</Nav.Link>
+                    <Nav.Link className="nav-bottom-right-link" onClick={showNewReleases}>New Releases</Nav.Link>
                 </Nav.Item>
             </Col>
             <Col>
