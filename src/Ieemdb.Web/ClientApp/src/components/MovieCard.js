@@ -31,7 +31,7 @@ function MovieCard(props){
     return(
         <div>
             <div className="poster">
-                <img src={props.Poster} alt={props.key} height={props.height} width={props.width} onClick={onPosterClick} />
+                <img className="img_poster" src={props.Poster} alt={props.key} height={props.height} width={props.width} onClick={onPosterClick} />
             </div>
             <div>
             <p className="title" onClick={onPosterClick}>{props.Title}</p>

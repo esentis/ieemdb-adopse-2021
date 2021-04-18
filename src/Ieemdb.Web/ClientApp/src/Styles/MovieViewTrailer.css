@@ -12,18 +12,16 @@
   padding-top: 1rem;
 }
 .frameTrailer{
-  width: 30vw;
+  width: 33vw;
   height: 39vh;
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 @media (max-width:1199px){
-    .kenoTab{
-  height: 5vh;
-}
-
-.frameTrailer{
-  width: 80vw;
-  height: 30vh;
-}
-
+  .kenoTab{
+    height: 5vh;
+  }
+  .frameTrailer{
+    width: 80vw;
+    height: 30vh;
+  }
 }

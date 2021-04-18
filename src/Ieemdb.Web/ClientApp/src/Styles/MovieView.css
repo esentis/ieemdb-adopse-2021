@@ -1,5 +1,5 @@
 .column-right-MovieView{
-  background-color: #282828;
+  background-color: rgba(41, 44, 52);
   height: 100vh;
   padding: 0%;
   width: 80%;
@@ -10,7 +10,7 @@
   flex-wrap: wrap;
 }
 .MovieViewPoster{
-  background-color: #282828;
+  background-color: rgba(41, 44, 52);
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -19,7 +19,7 @@
   min-height: 50vh;
 }
 .splitScreen{
-  background-color: #282828;
+  background-color: rgba(41, 44, 52);
   display: flex;
   flex-direction: row;
   width: 100%;
