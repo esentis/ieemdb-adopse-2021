@@ -24,15 +24,6 @@ namespace Esentis.Ieemdb.Web.Helpers
       .Map<Writer, WriterDto>(mapper => writer => new WriterDto() { Name = writer.Name, Bio = writer.Bio, Id = writer.Id, BirthDate = writer.BirthDate, })
       .Map<WriterDto, Writer>(mapper => writerDto => new Writer() { Name = writerDto.Name, Bio = writerDto.Bio, Id = writerDto.Id, BirthDate = writerDto.BirthDate, })
       .Map<AddWriterDto, Writer>(mapper => addWriter => new Writer() { Name = addWriter.Name, Bio = addWriter.Bio, BirthDate = addWriter.BirthDate, })
-      .Map<WeatherForecast, MovieDto>(
-        mapper => forecast => new MovieDto
-        {
-          Title = forecast.Summary,
-          Actor = mapper.Resolve<WeatherForecast, ActorDto>().Invoke(forecast),
-        },
-        name: "withActor")
-      .Map<WeatherForecast, ActorDto>(mapper =>
-        forecast => new ActorDto() { Name = forecast.TemperatureC.ToString(), })
       .Map<MovieDto, Movie>(mapper => (dest, source) => UpdateMovie(source, dest))
       .Map<MovieDto, Movie>(mapper => (dest, source) => UpdateMovie(source, dest), name: "v2");
 
