@@ -25,6 +25,8 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public string NormalizedSearch { get; private set; }
 
+    public string TrailerUrl { get; set; }
+
     public TimeSpan Duration { get; set; }
 
     public string Plot { get; set; }
