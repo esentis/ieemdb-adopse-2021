@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import {Col} from 'react-bootstrap';
 import { useParams } from "react-router-dom";
 import '../Styles/MovieView.css' 
@@ -6,7 +6,11 @@ import MovieViewPoster from './MovieViewPoster';
 import MovieViewTrailer from './MovieViewTrailer';
 import MovieViewSynopsis from './MovieViewSynopsis';
 import movies from './Movie_Dataset';
+import {useUpdatePage} from './GlobalContext'
 function MovieView() {
+    const setPage=useUpdatePage();
+    useEffect(() => {
+        setPage("1")})
     const { id }=useParams();
     const item=movies.find(movie=>{
         return movie.id===id;

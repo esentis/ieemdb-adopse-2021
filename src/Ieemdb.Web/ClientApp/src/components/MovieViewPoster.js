@@ -1,7 +1,6 @@
 import React from 'react';
 import {Col,Row} from 'react-bootstrap';
 import '../Styles/MovieViewPoster.css';
-import {useUpdatePage} from './Navigate';
 import {useHistory} from 'react-router-dom';
 function RatingStars(rating){
     if (rating.stars/2 < 1){
@@ -102,7 +101,6 @@ function RatingStars(rating){
     }
 }
 function MovieViewPoster(props){
-    const setPage=useUpdatePage();
     const history=useHistory();
     const id=props.id; 
     const releaseDate = props.releaseDate.substring(0,4);
@@ -122,7 +120,6 @@ function MovieViewPoster(props){
     }
     function backButton(){
         history.goBack();
-        setPage({name:"Featured"});
     }
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>

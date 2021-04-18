@@ -1,6 +1,6 @@
 import React from 'react';
 import '../Styles/MovieCard.css';
-import {useUpdatePage} from './Navigate'
+import {useUpdatePage} from './GlobalContext'
 import {useHistory} from 'react-router-dom';
 
 
