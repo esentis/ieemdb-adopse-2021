@@ -9,14 +9,26 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   public class Writer : EemdbEntity<long>, ISearchable
   {
-    private string name = string.Empty;
+    private string fName = string.Empty;
 
-    public string Name
+    private string lName = string.Empty;
+
+    public string FirstName
     {
-      get => name;
+      get => fName;
       set
       {
-        name = value;
+        fName = value;
+        NormalizedSearch = value.NormalizeSearch();
+      }
+    }
+
+    public string LastName
+    {
+      get => lName;
+      set
+      {
+        lName = value;
         NormalizedSearch = value.NormalizeSearch();
       }
     }

@@ -13,21 +13,24 @@ namespace Esentis.Ieemdb.Web
 
     public static readonly Faker<ActorDto> ActorProvider =
       new Faker<ActorDto>()
-        .RuleFor(e => e.Name, f => f.Person.FullName)
+        .RuleFor(e => e.FirstName, f => f.Person.FirstName)
+        .RuleFor(e => e.LastName, f => f.Person.LastName)
         .RuleFor(e => e.BirthDate, f => f.Date.Past())
         .RuleFor(e => e.Bio, f => f.Lorem.Sentence(5, 20))
         .RuleFor(e => e.Id, f => f.IndexFaker);
 
     public static readonly Faker<DirectorDto> DirectorProvider =
       new Faker<DirectorDto>()
-        .RuleFor(e => e.Name, f => f.Person.FullName)
+        .RuleFor(e => e.FirstName, f => f.Person.FirstName)
+        .RuleFor(e => e.LastName, f => f.Person.LastName)
         .RuleFor(e => e.BirthDate, f => f.Date.Past())
         .RuleFor(e => e.Bio, f => f.Lorem.Sentence(5, 20))
         .RuleFor(e => e.Id, f => f.IndexFaker);
 
     public static readonly Faker<WriterDto> WriterProvider =
       new Faker<WriterDto>()
-        .RuleFor(e => e.Name, f => f.Person.FullName)
+        .RuleFor(e => e.FirstName, f => f.Person.FirstName)
+        .RuleFor(e => e.LastName, f => f.Person.LastName)
         .RuleFor(e => e.BirthDate, f => f.Date.Past())
         .RuleFor(e => e.Bio, f => f.Lorem.Sentence(5, 20))
         .RuleFor(e => e.Id, f => f.IndexFaker);
