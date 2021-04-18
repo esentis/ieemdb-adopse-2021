@@ -15,10 +15,12 @@ namespace Esentis.Ieemdb.Web.Controllers
 
   using Kritikos.PureMap.Contracts;
 
+  using Microsoft.AspNetCore.Cors;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
+  [EnableCors("AllowAll")]
   [Route("api/movie")]
   public class MovieController : BaseController<MovieController>
   {
