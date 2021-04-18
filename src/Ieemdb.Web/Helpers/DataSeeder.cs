@@ -101,33 +101,5 @@ namespace Esentis.Ieemdb.Web.Helpers
         }
       }
     }
-
-    private static async Task SeedMovies(IeemdbDbContext ctx)
-    {
-      var moviesCount = await ctx.Movies.CountAsync();
-      if (moviesCount > 0)
-      {
-        return;
-      }
-
-      var actors = (await ctx.Actors.ToListAsync()).ToArray();
-      var movies = Fakers.MovieProvider.Generate(10);
-
-      ctx.Movies.AddRange(movies);
-
-      List<MovieActor> movieActors = new();
-
-      foreach (var movie in movies)
-      {
-        for (var i = 0; i < Random.Next(0, 4); i++)
-        {
-          movieActors.Add(new MovieActor { Movie = movie, Actor = actors[Random.Next(0, actors.Length - 1)], });
-        }
-      }
-
-      ctx.MovieActors.AddRange(movieActors);
-
-      await ctx.SaveChangesAsync();
-    }
   }
 }

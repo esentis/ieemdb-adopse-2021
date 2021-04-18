@@ -5,6 +5,8 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Linq;
   using System.Threading.Tasks;
 
+  using Bogus;
+
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Models;
@@ -20,6 +22,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   [Route("api/movie")]
   public class MovieController : BaseController<MovieController>
   {
+
     public MovieController(ILogger<MovieController> logger, IeemdbDbContext ctx, IPureMapper mapper)
       : base(logger, ctx, mapper)
     {
@@ -66,6 +69,18 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       // We return OK and the paged results;
       return Ok(result);
+    }
+
+    [HttpGet()]
+    public async Task<ActionResult<ICollection<MovieDto>>> GetAllMovies(
+      [Range(1, 100)] int itemsPerPage = 20,
+      int page = 1)
+    {
+      var toSkip = itemsPerPage * (page - 1);
+
+      var x = Fakers.MovieProvider.Generate(20);
+
+      return Ok(x);
     }
   }
 }
