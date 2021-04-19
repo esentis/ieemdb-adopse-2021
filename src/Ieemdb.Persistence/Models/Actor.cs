@@ -5,7 +5,7 @@ namespace Esentis.Ieemdb.Persistence.Models
   using Esentis.Ieemdb.Persistence.Abstractions;
   using Esentis.Ieemdb.Persistence.Helpers;
 
-  public class Actor : EemdbEntity<long>, ISearchable
+  public class Actor : EemdbEntity<long>, ISearchableNames
   {
     private string fName = string.Empty;
 
@@ -17,7 +17,7 @@ namespace Esentis.Ieemdb.Persistence.Models
       set
       {
         fName = value;
-        NormalizedSearch = value.NormalizeSearch();
+        NormalizedFirstNameSearch = value.NormalizeSearch();
       }
     }
 
@@ -27,11 +27,13 @@ namespace Esentis.Ieemdb.Persistence.Models
       set
       {
         lName = value;
-        NormalizedSearch = value.NormalizeSearch();
+        NormalizedLastNameSearch = value.NormalizeSearch();
       }
     }
 
-    public string NormalizedSearch { get; private set; } = string.Empty;
+    public string NormalizedFirstNameSearch { get; private set; } = string.Empty;
+
+    public string NormalizedLastNameSearch { get; private set; } = string.Empty;
 
     public DateTimeOffset BirthDate { get; set; }
 
