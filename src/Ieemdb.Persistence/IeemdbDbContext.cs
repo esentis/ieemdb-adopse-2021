@@ -55,11 +55,11 @@ namespace Esentis.Ieemdb.Persistence
     {
       base.OnModelCreating(builder);
       builder.Entity<Actor>()
-        .HasIndex(e => e.NormalizedLastNameSearch)
+        .HasIndex(e => e.NormalizedSearch)
         .IsTsVectorExpressionIndex("english");
 
       builder.Entity<Director>()
-        .HasIndex(e => e.NormalizedLastNameSearch)
+        .HasIndex(e => e.NormalizedSearch)
         .IsTsVectorExpressionIndex("english");
 
       builder.Entity<Movie>()
@@ -67,7 +67,7 @@ namespace Esentis.Ieemdb.Persistence
         .IsTsVectorExpressionIndex("english");
 
       builder.Entity<Writer>()
-        .HasIndex(e => e.NormalizedLastNameSearch)
+        .HasIndex(e => e.NormalizedSearch)
         .IsTsVectorExpressionIndex("english");
 
       builder.Entity<MovieActor>(e =>

@@ -7,19 +7,20 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Writer : EemdbEntity<long>, ISearchableNames
+  public class Writer : EemdbEntity<long>, ISearchable
   {
     private string fName = string.Empty;
 
     private string lName = string.Empty;
 
+    private string bio = string.Empty;
     public string FirstName
     {
       get => fName;
       set
       {
         fName = value;
-        NormalizedFirstNameSearch = value.NormalizeSearch();
+        NormalizedFirstName = value.NormalizeSearch();
       }
     }
 
@@ -29,17 +30,27 @@ namespace Esentis.Ieemdb.Persistence.Models
       set
       {
         lName = value;
-        NormalizedLastNameSearch = value.NormalizeSearch();
+        NormalizedLastName = value.NormalizeSearch();
       }
     }
 
-    public string NormalizedFirstNameSearch { get; private set; } = string.Empty;
+    public string NormalizedFirstName { get; private set; } = string.Empty;
 
-    public string NormalizedLastNameSearch { get; private set; } = string.Empty;
+    public string NormalizedLastName { get; private set; } = string.Empty;
 
     public DateTimeOffset BirthDate { get; set; }
 
-    public string Bio { get; set; }
+    public string Bio
+    {
+      get => bio;
+      set
+      {
+        bio = value;
+        NormalizedSearch = value.NormalizeSearch();
+      }
+    }
+
+    public string NormalizedSearch { get; private set; } = string.Empty;
 
     public bool Featured { get; set; }
   }

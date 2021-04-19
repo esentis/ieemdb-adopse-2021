@@ -5,11 +5,13 @@ namespace Esentis.Ieemdb.Persistence.Models
   using Esentis.Ieemdb.Persistence.Abstractions;
   using Esentis.Ieemdb.Persistence.Helpers;
 
-  public class Actor : EemdbEntity<long>, ISearchableNames
+  public class Actor : EemdbEntity<long>, ISearchable
   {
     private string fName = string.Empty;
 
     private string lName = string.Empty;
+
+    private string bio = string.Empty;
 
     public string FirstName
     {
@@ -17,7 +19,7 @@ namespace Esentis.Ieemdb.Persistence.Models
       set
       {
         fName = value;
-        NormalizedFirstNameSearch = value.NormalizeSearch();
+        NormalizedFirstName = value.NormalizeSearch();
       }
     }
 
@@ -27,17 +29,27 @@ namespace Esentis.Ieemdb.Persistence.Models
       set
       {
         lName = value;
-        NormalizedLastNameSearch = value.NormalizeSearch();
+        NormalizedLastName = value.NormalizeSearch();
       }
     }
 
-    public string NormalizedFirstNameSearch { get; private set; } = string.Empty;
+    public string NormalizedFirstName { get; private set; } = string.Empty;
 
-    public string NormalizedLastNameSearch { get; private set; } = string.Empty;
+    public string NormalizedLastName { get; private set; } = string.Empty;
 
     public DateTimeOffset BirthDate { get; set; }
 
-    public string Bio { get; set; } = string.Empty;
+    public string Bio
+    {
+      get => bio;
+      set
+      {
+        bio = value;
+        NormalizedSearch = value.NormalizeSearch();
+      }
+    }
+
+    public string NormalizedSearch { get; private set; } = string.Empty;
 
     public bool Featured { get; set; }
   }
