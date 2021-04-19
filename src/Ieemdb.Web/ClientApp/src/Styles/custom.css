@@ -1,14 +1,14 @@
-/* Provide sufficient contrast against white background */
-code {
-  color: #E01A76;
+body{
+  background-color: rgba(41, 44, 52);
 }
-
+code {
+  color: rgba(41, 44, 52);
+}
 .btn-primary {
   color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+  background-color: rgba(41, 44, 52);
+  border-color: rgba(41, 44, 52);
 }
-
 .column-right {
   background-image: linear-gradient(rgba(41, 44, 52, 0), rgba(41, 44, 52, 0.3), rgba(41, 44, 52, 0.6), rgba(41, 44, 52, 0.9), rgba(41, 44, 52, 0.99), rgba(41, 44, 52), rgba(41, 44, 52), rgba(41, 44, 52), rgba(41, 44, 52)), url('https://wallpaperaccess.com/full/3658607.jpg');
   height: 50vh;
@@ -16,9 +16,7 @@ code {
   background-attachment: fixed;
   margin-left:16.6%;
   width: 80%;
-  
 }
-
 .nav-center{
   margin: 0;
   position: absolute;
@@ -27,23 +25,22 @@ code {
   transform: translateY(-50%);
   text-align: center;
 }
-
 .nav-bottom-right{
   margin: 0;
-  text-align: center;
   width: 100%;
-  height: 10vh;
-  color: #ede6c4;
-  font-family: "Arial";
-  font-Size: 1rem;
   font-Weight: bold;
-  text-Shadow: 1px 5px 5px rgba(127, 113, 47), 0 0 20px rgba(127, 113, 47), 0 0 30px rgba(48, 43, 18, 1);
 }
-
+.nav-bottom-right-link{
+  color: rgb(255, 255, 255);
+  font-family: Arial;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 4vh;
+  margin-bottom: 2vh;
+}
 @media (max-width:1199px){
   .column-right{
     margin-left:0;
     top: 7vh;
   }
 }
-
