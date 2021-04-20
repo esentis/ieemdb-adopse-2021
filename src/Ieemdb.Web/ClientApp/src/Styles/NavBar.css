@@ -107,6 +107,7 @@
   border-radius: 10px;
   cursor: pointer;
   margin-right:15vw;
+  filter: drop-shadow(2px 2px 3px #000000);
 } 
 .fa-cog{
   color:#ffffff;
