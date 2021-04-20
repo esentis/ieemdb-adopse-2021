@@ -4,7 +4,7 @@ import SearchBar from './SearchBar';
 import {Link} from 'react-router-dom';
 import '../Styles/NavBar.css'
 import  * as FaIcons  from "react-icons/fa";
-import logo from '../images/imdb-logo2.png';
+import logo from '../images/imdb_logo.png';
 
 
 function LeftSide(){
