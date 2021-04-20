@@ -98,15 +98,10 @@
 }
 .logo{
   width:10vw;
-  border: 0;
-  outline: 0;
-  background:none;
   position: relative;
-  top:2vh;
-  display: block;
-  border-radius: 10px;
+  left: 2vw;
+  top: 3vh;
   cursor: pointer;
-  margin-right:15vw;
   filter: drop-shadow(2px 2px 3px #000000);
 } 
 .fa-cog{
@@ -186,17 +181,17 @@
     font-size: 1rem;
   }
   .inputClass{
-    width: auto;
+    width: 50%;
     top:-1vh; 
+    margin-top: 3vh;
     left: 10vw;
   }
   .advButton{
     bottom:1vh;
     height:2rem ;
     position: relative;
-    width: auto;
+    width: 30%;
     display: inline;
-    margin-top: 3vh;
     margin-left: 12vw;
   } 
   .column-left nav :not(.fa-cog,.advButton,.inputClass){
