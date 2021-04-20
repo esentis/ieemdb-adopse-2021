@@ -11,8 +11,6 @@ namespace Esentis.Ieemdb.Persistence.Models
   {
     private string title = string.Empty;
 
-    private string country = string.Empty;
-
     public string Title
     {
       get => title;
@@ -33,17 +31,7 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public DateTimeOffset ReleaseDate { get; set; }
 
-    public string CountryOrigin
-    {
-      get => country;
-      set
-      {
-        country = value;
-        NormalizedCountry = country.NormalizeSearch();
-      }
-    }
-
-    public string NormalizedCountry { get; private set; }
+    public Country CountryOrigin { get; set; }
 
     public bool Featured { get; set; }
   }
