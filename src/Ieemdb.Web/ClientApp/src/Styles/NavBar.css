@@ -7,7 +7,7 @@
   margin: 0;
   position: relative;
   padding: 10px;
-  top: 20%;
+  top: 10vh;
   z-index: 0;
   right: 5%; 
   width: 16.5vw;
@@ -97,17 +97,12 @@
   font-size: 0.9rem;
 }
 .logo{
-  width:6vw; 
-  height:7vh;
-  border: 0;
-  outline: 0;
-  background:none;
+  width:10vw;
   position: relative;
-  top:10vh;
-  display: block;
-  border-radius: 10px;
+  left: 2vw;
+  top: 3vh;
   cursor: pointer;
-  margin-right:15vw;
+  filter: drop-shadow(2px 2px 3px #000000);
 } 
 .fa-cog{
   color:#ffffff;
@@ -160,8 +155,12 @@
     margin: 0;
     width: 100%;
   }
-  .logo{display: none;}
-  .fa-cog{display: none;}
+  .logo{
+    display: none;
+  }
+  .fa-cog{
+    display: none;
+  }
   .column-left a{
     font-size: 1.1rem;
     top:10px;
@@ -175,7 +174,6 @@
     border-radius: 0;
     margin-left:0;
     padding: 0;
-    margin-top: 5%;
     text-align: left;
   }
   ::placeholder{
@@ -183,19 +181,18 @@
     font-size: 1rem;
   }
   .inputClass{
-    width: auto;
+    width: 50%;
     top:-1vh; 
+    margin-top: 3vh;
     left: 10vw;
   }
   .advButton{
     bottom:1vh;
     height:2rem ;
-    margin-left: 2.5rem;
     position: relative;
-    width: auto;
+    width: 30%;
     display: inline;
-    margin-top: 3vh;
-    margin-left: 10vh;
+    margin-left: 12vw;
   } 
   .column-left nav :not(.fa-cog,.advButton,.inputClass){
     width: 100vw;
