@@ -107,7 +107,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <summary>
     /// Returns an actor provided an ID.
     /// </summary>
-    /// <param name="id">Actor's ID</param>
+    /// <param name="id">Actor's ID.</param>
     /// <returns>One single Actor.</returns>
     /// <response code="400">Actor was not found.</response>
     [HttpGet("{id}")]
@@ -185,7 +185,8 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound($"No {nameof(Actor)} with Id {id} found in database");
       }
 
-      actor.Name = dto.Name;
+      actor.FirstName = dto.FirstName;
+      actor.LastName = dto.LastName;
       actor.Bio = dto.Bio;
       actor.BirthDate = dto.BirthDate;
 
