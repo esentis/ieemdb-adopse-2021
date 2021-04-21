@@ -165,7 +165,8 @@ namespace Esentis.Ieemdb.Web.Controllers
       }
 
       // Otherwise, we expicitly update the found director with newer values.
-      director.Name = dto.Name;
+      director.FirstName = dto.FirstName;
+      director.LastName = dto.LastName;
       director.Bio = dto.Bio;
       director.BirthDate = dto.BirthDate;
 
