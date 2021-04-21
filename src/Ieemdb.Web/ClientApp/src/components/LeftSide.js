@@ -23,6 +23,7 @@ function LeftSide(){
             <SearchBar/>
             <span>{LoginState ? <Link to='/AdvancedSearch'><button className='advButton'>Advanced</button></Link> : ""}</span>
             <ul>
+            {LoginState ? <Link className='linkClass AdvLink' to='/AdvancedSearch' name='Favorites'><span>Advanced Search</span></Link>:" "}
             {LoginState ? <Link className='linkClass' to='/Favorites' name='Favorites'>
             <FaIcons.FaStar className='fa-cog' />
             <span>Favorites</span>
