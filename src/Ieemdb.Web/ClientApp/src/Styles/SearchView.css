@@ -1,13 +1,52 @@
 .column-right-SearchView{
-    background-color: #282828;
-    height: 100vh;
+    background-color: rgba(41, 44, 52);
     padding: 0%;
     width: 80%;
-    margin-left:16.6%
+    margin-left:16.6%;
+    position: relative;
+    min-height: 100vh;
     }
+
+    .ResultTitle{
+      font-size: 1.65rem;
+      margin-left: 5vw;
+      margin-bottom: 3vh;
+      margin-top: 2vh;
+      text-shadow: 2px 2px 5px rgb(0, 0, 0);
+      font-weight: 300;
+    }
+
+    .ResultsLength{
+      padding: 8px 16px;
+      color: white;
+      background-color: rgb(59, 94, 189);
+      border-radius: 30px;
+      font-size: 1.12rem;   
+      margin-left: 8vw;
+      display: inline-block;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+      text-shadow: 2px 2px 5px rgb(0, 0, 0);}
+
+      .ListStyle{
+        list-style-type: none;
+        margin:0;
+      }
+
+
+
 
     @media (max-width:1199px){
         .column-right-SearchView{
           margin-left:0;
-          top:8vh;
-}}
+          top:8vh;}
+}
+
+@media (max-width:650px){
+  .ResultTitle{
+    font-size: 1.45rem;
+  }
+  .ResultsLength{
+    font-size:0.90rem;
+    margin-left: 2vw;
+  }
+}
