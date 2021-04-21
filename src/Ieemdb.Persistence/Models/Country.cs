@@ -11,15 +11,15 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   public class Country : EemdbEntity<long>, ISearchable
   {
-    private string country = string.Empty;
+    private string cname = string.Empty;
 
     public string CountryOrigin
     {
-      get => country;
+      get => cname;
       set
       {
-        country = value;
-        NormalizedSearch = country.NormalizeSearch();
+        cname = value;
+        NormalizedSearch = cname.NormalizeSearch();
       }
     }
 

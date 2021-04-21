@@ -31,8 +31,6 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public DateTimeOffset ReleaseDate { get; set; }
 
-    public Country CountryOrigin { get; set; }
-
     public bool Featured { get; set; }
   }
 }
