@@ -13,7 +13,8 @@ import {BrowserRouter as Router} from 'react-router-dom';
 import './Styles/custom.css'
 
 export default class App extends Component{
-  static displayName = App.name; 
+  static displayName = App.name;
+  static token;
   render () {
     return (
       <Container fluid>
@@ -32,4 +33,3 @@ export default class App extends Component{
     );
           }
         }
-    
