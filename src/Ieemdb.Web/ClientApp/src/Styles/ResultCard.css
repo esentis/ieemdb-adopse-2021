@@ -1,0 +1,50 @@
+.result-card {
+    display: flex;
+    margin-bottom: 5vh;
+    margin-left: 3vw;
+    
+  }
+  
+  .result-card .poster-wrapper img,
+  .filler-poster {
+    width: auto;
+    height:25vh;
+    margin-right: 0.78125vw;
+    display: block;
+    color: transparent;
+    border: 0.1rem solid black;
+    background-color: black;
+  }
+  
+  .result-card .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .result-card .info .title1 {
+    font-size: 2.25rem;
+    font-weight: 300;
+    margin: 0;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+  }
+  
+  .result-card .info .release-date {
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin-top: 70px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+  }
+
+
+  @media (max-width:650px){
+    .result-card .info .title1 {
+      font-size: 1.35rem;
+    }
+    .result-card .info .release-date {
+      font-size: 1rem;
+    }
+    .result-card{
+      margin-left: -3vw;
+    }
+  }
