@@ -14,7 +14,6 @@ import './Styles/custom.css'
 
 export default class App extends Component{
   static displayName = App.name;
-  static token;
   render () {
     return (
       <Container fluid>
