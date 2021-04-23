@@ -84,5 +84,34 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       return Ok(x);
     }
+
+    /// <summary>
+    /// This controller sets the list of featured movies.
+    /// </summary>
+    /// <param name="featuredIdList"></param>
+    /// <returns></returns>
+    [HttpPost("")]
+    public async Task<ActionResult> AddFeaturedMovie([FromBody] List<long> featuredIdList)
+    {
+      var movie = new Movie();
+      foreach (var id in featuredIdList)
+      {
+        movie = Context.Movies.Where(x => x.Id == id).SingleOrDefault();
+        if (movie == null)
+        {
+          Logger.LogWarning(LogTemplates.NotFound, nameof(Movie), id);
+          return NotFound($"No {nameof(Movie)} with Id {id} found in database");
+        }
+        else
+        {
+          movie.Featured = true;
+
+          await Context.SaveChangesAsync();
+          Logger.LogInformation(LogTemplates.Updated, nameof(Movie), movie);
+        }
+      }
+
+      return NoContent();
+    }
   }
 }
