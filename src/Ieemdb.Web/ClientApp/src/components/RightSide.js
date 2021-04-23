@@ -32,7 +32,7 @@ function RightSide(){
      <Route path={'/Movie/:id'} children={<MovieView/>} />
      <Route path='/AdvancedSearch' children={<AdvancedSearchView/>} />
      <Route path='/UserSettings' children={<UserSettings />} />
-     <Route path='/Search' children={<SearchView/>} />
+     <Route path={'/:SearchType/:value'} children={<SearchView/>} />
         </Switch>
         </Row>
             <Row>
