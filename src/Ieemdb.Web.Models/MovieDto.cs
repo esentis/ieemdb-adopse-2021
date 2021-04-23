@@ -25,7 +25,7 @@ namespace Esentis.Ieemdb.Web.Models
 
     public DateTimeOffset ReleaseDate { get; set; }
 
-    public string Country { get; set; }
+    public CountryDto Country { get; set; }
 
     public List<ActorDto> Actors { get; set; }
 
