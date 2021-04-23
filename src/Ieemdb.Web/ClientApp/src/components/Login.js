@@ -14,12 +14,6 @@ function Login(props) {
     const [passwordLogin, setPasswordLogin] = useState("");
     const [deviceName, setDeviceName] = useState("");
 
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [birthDate, setBirthDate] = useState("");
-    const [bio, setBio] = useState("");
-
-
   const handleSubmitRegister = async (evt) => {
     evt.preventDefault();
     alert(`Submitting Name ${userName} ${password} ${email}`);
