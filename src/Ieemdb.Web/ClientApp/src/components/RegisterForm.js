@@ -20,36 +20,37 @@ function RegisterForm() {
       console.log(res.status);
       if (res.status == 200) {
         //do some
+        window.alert("Check your email inbox for confirmation");
       }
     });
   }
   return (
-    <form onSubmit={handleSubmitRegister}>
-      <label>
+    <form className="centeredFields" onSubmit={handleSubmitRegister}>
+      <label className="centeredText">
         UserNameReg:
-            <input
+      </label>
+        <input
           type="text"
           value={userName}
           onChange={e => setUserName(e.target.value)}
         />
-      </label>
-      <label>
+      <label className="centeredText">
         PasswordReg:
+      </label>
             <input
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
-      </label>
-      <label>
+      <label className="centeredText">
         Email:
-          <input
+      </label>
+      <input
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
-      </label>
-      <input type="submit" value="Register" />
+      <p className="buttonAlign"><input type="submit" value="Register" /></p>
     </form>
   );
 }

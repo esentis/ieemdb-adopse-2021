@@ -1,5 +1,10 @@
-body {
-
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
 .text {
@@ -10,7 +15,23 @@ body {
   color: cornsilk;
 }
 
-.centered{
+.centeredText{
     width:100%;
     text-align:center;
+    padding-top:1rem;
+    padding-bottom:1rem;
 }
+
+.centeredFields {
+    text-align: center;
+}
+
+.buttonAlign {
+    padding-top: 2rem;
+}
+
+.centerSwitchButton {
+    position: absolute;
+    text-align:center;
+}
+

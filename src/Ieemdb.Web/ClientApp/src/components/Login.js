@@ -6,6 +6,7 @@ import { useUpdatePage } from './GlobalContext';
 import { useLoginState } from './GlobalContext';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
+import '../Styles/Forms.css';
 
 
 function Login(props) {
@@ -22,19 +23,19 @@ function Login(props) {
 
   function DecideButton() {
     if (stateRegister == false) {
-      return <Button onClick={changeForm}>Register here</Button>;
+      return <Button block onClick={changeForm}>Register here</Button>;
     }
     else {
-      return <Button onClick={changeForm}>Login here</Button>;
+      return <Button block onClick={changeForm}>Login here</Button>;
     }
   }
 
   function DecideP() {
     if (stateRegister == false) {
-      return <p>Don't have an account?</p>;
+      return <p className="centeredText">Don't have an account?</p>;
     }
     else {
-      return <p>Already have an account?</p>;
+      return <p className="centeredText">Already have an account?</p>;
     }
   }
 
@@ -48,9 +49,11 @@ function Login(props) {
     
     return (
       <Col className='column-right-Login'>
-        <DecideForm />
-        <DecideP />
-        <DecideButton/>
+        <div className='center'>
+          <DecideForm />
+          <DecideP />
+          <DecideButton />
+        </div>
       </Col>
      )
 }

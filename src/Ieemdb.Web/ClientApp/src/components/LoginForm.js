@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
-import '../Styles/Forms.css'
-import { Row, Col } from 'react-bootstrap';
+import '../Styles/Forms.css';
+import auth from './auth';
 
 function LoginForm() {
   const [userNameLogin, setUserNameLogin] = useState("");
@@ -22,30 +22,35 @@ function LoginForm() {
       console.log(res.status);
       if (res.status == 200) {
         //local storage to token
+        auth.login(); // o xrhsths einai authenticated
         localStorage.setItem('token', res.data.accessToken);
       }
     });
+
+    if (auth.isAuthenticated()) {
+      //show menu buttons kai pane sto main page
+    }
   }
 
   return (
-    <form onSubmit={handleSubmitLogin}>
-      <label className="centered">
-        Username :
-            <input
+    <form className="centeredFields" onSubmit={handleSubmitLogin}>
+      <label className="centeredText">
+        Username
+       </label>
+      <input
           type="text"
           value={userNameLogin}
           onChange={e => setUserNameLogin(e.target.value)}
-        />
-        </label>
-      <label className="centered">
-        Password :
-            <input
+      />
+      <label className="centeredText">
+        Password
+      </label>
+      <input
           type="password"
           value={passwordLogin}
           onChange={e => setPasswordLogin(e.target.value)}
-        />
-      </label>
-      <input type="submit" value="Login" />
+      />
+      <p className="buttonAlign"><input type="submit" value="Login" /></p>
     </form>
   );
 }
