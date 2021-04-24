@@ -14,11 +14,13 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Options;
+  using Esentis.Ieemdb.Web.Views.Emails;
 
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Identity;
+  using Microsoft.AspNetCore.Identity.UI.Services;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
@@ -32,6 +34,8 @@ namespace Esentis.Ieemdb.Web.Controllers
   {
     private readonly RoleManager<IeemdbRole> roleManager;
     private readonly UserManager<IeemdbUser> userManager;
+    private readonly RazorViewToStringRenderer renderer;
+    private readonly IEmailSender emailSender;
     private readonly JwtOptions jwtOptions;
 
     // Constructor
@@ -41,11 +45,15 @@ namespace Esentis.Ieemdb.Web.Controllers
       IPureMapper mapper,
       RoleManager<IeemdbRole> roleManager,
       UserManager<IeemdbUser> userManager,
-      IOptions<JwtOptions> options)
+      IOptions<JwtOptions> options,
+      IEmailSender sender,
+      RazorViewToStringRenderer renderer)
       : base(logger, ctx, mapper)
     {
       this.roleManager = roleManager;
       this.userManager = userManager;
+      this.renderer = renderer;
+      emailSender = sender;
       jwtOptions = options.Value;
     }
 
@@ -61,10 +69,36 @@ namespace Esentis.Ieemdb.Web.Controllers
       var user = new IeemdbUser { Email = userRegister.Email, UserName = userRegister.UserName, };
       var result = await userManager.CreateAsync(user, userRegister.Password);
 
+      var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+      var body = await renderer.RenderViewToStringAsync(
+        "/Views/Emails/ConfirmAccountEmail.cshtml",
+        new ConfirmAccountViewModel { ConfirmUrl = token, });
+      await emailSender.SendEmailAsync(user.Email, "Email  Confirmation", body);
+
       await userManager.AddToRoleAsync(user, RoleNames.Member);
       return !result.Succeeded
         ? Conflict(result.Errors)
         : Ok();
+    }
+
+    [HttpPost("confirm")]
+    public async Task<ActionResult> ConfirmEmail(string emall, string token)
+    {
+      var user = await userManager.FindByEmailAsync(emall);
+      var result = await userManager.ConfirmEmailAsync(user, token);
+
+      return !result.Succeeded
+        ? Conflict(result.Errors)
+        : Ok();
+    }
+
+    [HttpPost("emailToken")]
+    public async Task<ActionResult> RequestEmailConfirm(string email)
+    {
+      var user = await userManager.FindByEmailAsync(email);
+      var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+      var callbackUrl = Url.Page("/Identity/Account/ConfirmEmail", null, new { token }, protocol: Request.Scheme);
+      return Ok(callbackUrl);
     }
 
     [HttpPost("login")]
