@@ -90,26 +90,12 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="featuredIdList"></param>
     /// <returns></returns>
-    [HttpPost("")]
+    [HttpPost("featured")]
     public async Task<ActionResult> AddFeaturedMovie([FromBody] List<long> featuredIdList)
     {
-      var movie = new Movie();
-      foreach (var id in featuredIdList)
-      {
-        movie = Context.Movies.Where(x => x.Id == id).SingleOrDefault();
-        if (movie == null)
-        {
-          Logger.LogWarning(LogTemplates.NotFound, nameof(Movie), id);
-          return NotFound($"No {nameof(Movie)} with Id {id} found in database");
-        }
-        else
-        {
-          movie.Featured = true;
+      Context.Movies.Where(m => featuredIdList.Contains(m.Id)).ToList().ForEach(mv => mv.Featured = true);
 
-          await Context.SaveChangesAsync();
-          Logger.LogInformation(LogTemplates.Updated, nameof(Movie), movie);
-        }
-      }
+      await Context.SaveChangesAsync();
 
       return NoContent();
     }
