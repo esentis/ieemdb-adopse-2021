@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
+import '../Styles/Forms.css'
+import { Row, Col } from 'react-bootstrap';
 
 function LoginForm() {
   const [userNameLogin, setUserNameLogin] = useState("");
@@ -13,7 +15,7 @@ function LoginForm() {
     axios.post('https://localhost:5001/api/account/login', {
       userName: userNameLogin,
       password: passwordLogin,
-      deviceName: deviceName
+      deviceName: 'fdsfadsfas' //na perasw deviceName
     }).then(function (res) {
       console.log(res);
       console.log(res.data.accessToken);
@@ -27,31 +29,23 @@ function LoginForm() {
 
   return (
     <form onSubmit={handleSubmitLogin}>
-      <label>
-        UserNameLogin:
+      <label className="centered">
+        Username :
             <input
           type="text"
           value={userNameLogin}
           onChange={e => setUserNameLogin(e.target.value)}
         />
-      </label>
-      <label>
-        PasswordLogin:
+        </label>
+      <label className="centered">
+        Password :
             <input
-          type="text"
+          type="password"
           value={passwordLogin}
           onChange={e => setPasswordLogin(e.target.value)}
         />
       </label>
-      <label>
-        Device:
-            <input
-          type="text"
-          value={deviceName}
-          onChange={e => setDeviceName(e.target.value)}
-        />
-      </label>
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Login" />
     </form>
   );
 }

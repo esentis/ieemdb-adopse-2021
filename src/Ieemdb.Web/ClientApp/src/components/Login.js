@@ -22,19 +22,19 @@ function Login(props) {
 
   function DecideButton() {
     if (stateRegister == false) {
-      return <Button onClick={changeForm}>Login</Button>;
+      return <Button onClick={changeForm}>Register here</Button>;
     }
     else {
-      return <Button onClick={changeForm}>Register</Button>;
+      return <Button onClick={changeForm}>Login here</Button>;
     }
   }
 
   function DecideP() {
     if (stateRegister == false) {
-      return <p>Don't have an account? Register HERE:</p>;
+      return <p>Don't have an account?</p>;
     }
     else {
-      return <p>Already have an account? Login HERE:</p>;
+      return <p>Already have an account?</p>;
     }
   }
 

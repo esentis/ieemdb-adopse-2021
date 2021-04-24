@@ -10,10 +10,17 @@ function RegisterForm() {
   const handleSubmitRegister = async (evt) => {
     evt.preventDefault();
 
-    axios.post('https://localhost:5001/api/account/login', {
+    axios.post('https://localhost:5001/api/account/', {
       userName,
       email,
       password
+    }).then(function (res) {
+      console.log(res);
+      console.log(res.data.accessToken);
+      console.log(res.status);
+      if (res.status == 200) {
+        //do some
+      }
     });
   }
   return (
@@ -29,7 +36,7 @@ function RegisterForm() {
       <label>
         PasswordReg:
             <input
-          type="text"
+          type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
@@ -37,12 +44,12 @@ function RegisterForm() {
       <label>
         Email:
           <input
-          type="text"
+          type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
       </label>
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Register" />
     </form>
   );
 }

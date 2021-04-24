@@ -1,0 +1,16 @@
+body {
+
+}
+
+.text {
+  order: 2;
+  flex-grow: 1;
+  font-family: Arial;
+  font-size: 1rem;
+  color: cornsilk;
+}
+
+.centered{
+    width:100%;
+    text-align:center;
+}
