@@ -105,7 +105,7 @@ function MovieViewPoster(props){
     const id=props.id; 
     const releaseDate = props.releaseDate.substring(0,4);
     const genres = props.genres.map((genre) =>
-        <p className="movieDescGenre" alt={id}>{genre}</p>
+        <p className="movieDescGenre">{genre}</p>
     );
     const rating = props.rating;
     const durationHours = Math.floor(props.duration / 50);
@@ -121,6 +121,20 @@ function MovieViewPoster(props){
     function backButton(){
         history.goBack();
     }
+
+    function HandleReleaseDate(e){
+        const ReleaseDate=e.target.innerHTML;
+        history.push('/ReleaseDate/'+ReleaseDate)
+    }
+    
+    function HandleGenres(e){
+        const Genre=e.target.innerHTML;
+        history.push('/Genre/'+Genre)
+    }
+
+
+
+
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
@@ -138,8 +152,8 @@ function MovieViewPoster(props){
             </Row>
             <Row className="bottom">
                 <div id="divDesc">
-                    <p className="movieDesc">{releaseDate}</p>
-                    <p className="movieDescGenres">{genres}</p>
+                    <p className="movieDesc" onClick={HandleReleaseDate} >{releaseDate}</p>
+                    <p className="movieDescGenres" onClick={HandleGenres}  >{genres}</p>
                     {durationMinutes > 0
                         ? <p className="movieDesc">{durationHours} hours and {durationMinutes} minutes</p>
                         : <p className="movieDesc">{durationHours} hours</p>
