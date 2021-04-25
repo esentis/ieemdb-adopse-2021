@@ -7,6 +7,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Security.Claims;
   using System.Text;
   using System.Threading.Tasks;
+  using System.Web;
 
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;
@@ -70,9 +71,11 @@ namespace Esentis.Ieemdb.Web.Controllers
       var result = await userManager.CreateAsync(user, userRegister.Password);
 
       var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+      var url = HttpUtility.HtmlEncode(
+        $"{Request.Scheme}://{Request.Host}{Request.PathBase}/api/account/confirm?email={userRegister.Email}&token={token}");
       var body = await renderer.RenderViewToStringAsync(
         "/Views/Emails/ConfirmAccountEmail.cshtml",
-        new ConfirmAccountViewModel { ConfirmUrl = token, });
+        new ConfirmAccountViewModel { ConfirmUrl = url, });
       await emailSender.SendEmailAsync(user.Email, "Email  Confirmation", body);
 
       await userManager.AddToRoleAsync(user, RoleNames.Member);
@@ -81,10 +84,11 @@ namespace Esentis.Ieemdb.Web.Controllers
         : Ok();
     }
 
+    [AllowAnonymous]
     [HttpPost("confirm")]
-    public async Task<ActionResult> ConfirmEmail(string emall, string token)
+    public async Task<ActionResult> ConfirmEmail(string email, string token)
     {
-      var user = await userManager.FindByEmailAsync(emall);
+      var user = await userManager.FindByEmailAsync(email);
       var result = await userManager.ConfirmEmailAsync(user, token);
 
       return !result.Succeeded
