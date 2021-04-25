@@ -1,0 +1,12 @@
+@using Esentis.Ieemdb.Web.Views.Shared
+@model Esentis.Ieemdb.Web.Views.Emails.ConfirmAccountViewModel;
+
+@{
+  ViewData["EmailTitle"] = "Welcome";
+}
+
+<p>A new account has been created</p>
+
+<br/>
+
+@await Html.PartialAsync("EmailButton", new EmailButtonViewModel("Confirm  Account", Model.ConfirmUrl))

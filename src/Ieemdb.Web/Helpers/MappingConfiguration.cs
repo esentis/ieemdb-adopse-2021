@@ -29,6 +29,7 @@ namespace Esentis.Ieemdb.Web.Helpers
 
     private static Movie UpdateMovie(Movie movie, MovieDto dto)
     {
+      movie.Duration = dto.Duration;
       return movie;
     }
   }
