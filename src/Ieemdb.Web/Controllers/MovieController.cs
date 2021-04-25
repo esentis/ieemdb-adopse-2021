@@ -20,7 +20,6 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
-  [EnableCors("AllowAll")]
   [Route("api/movie")]
   public class MovieController : BaseController<MovieController>
   {

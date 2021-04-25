@@ -165,14 +165,6 @@ namespace Esentis.Ieemdb.Web
 
       services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
 
-      services.AddCors(options =>
-      {
-        options.AddPolicy("AllowAll",
-          builder =>
-          {
-            builder.AllowAnyOrigin();
-          });
-      });
     }
 
     public void Configure(IApplicationBuilder app)
@@ -205,7 +197,6 @@ namespace Esentis.Ieemdb.Web
       app.UseSpaStaticFiles();
 
       app.UseRouting();
-      app.UseCors();
       app.UseReDoc(c =>
       {
         c.RoutePrefix = "docs";
