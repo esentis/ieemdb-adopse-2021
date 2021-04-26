@@ -128,11 +128,26 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// This controller sets the list of featured movies.
     /// </summary>
     /// <param name="featuredIdList"></param>
-    /// <returns></returns>
+    /// <returns>No Content.</returns>
     [HttpPost("featured")]
     public async Task<ActionResult> AddFeaturedMovie([FromBody] List<long> featuredIdList)
     {
       Context.Movies.Where(m => featuredIdList.Contains(m.Id)).ToList().ForEach(mv => mv.Featured = true);
+
+      await Context.SaveChangesAsync();
+
+      return NoContent();
+    }
+
+    /// <summary>
+    /// This controller sets the list of featured movies.
+    /// </summary>
+    /// <param name="featuredIdList"></param>
+    /// <returns>No Content.</returns>
+    [HttpPost("unfeatured")]
+    public async Task<ActionResult> RemoveFeaturedMovie([FromBody] List<long> UnfeaturedIdList)
+    {
+      Context.Movies.Where(m => UnfeaturedIdList.Contains(m.Id)).ToList().ForEach(mv => mv.Featured = false);
 
       await Context.SaveChangesAsync();
 
