@@ -1,9 +1,11 @@
 namespace Esentis.Ieemdb.Persistence.Models
 {
   using System;
+  using System.Collections.Generic;
 
   using Esentis.Ieemdb.Persistence.Abstractions;
   using Esentis.Ieemdb.Persistence.Helpers;
+  using Esentis.Ieemdb.Persistence.Joins;
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
@@ -32,5 +34,7 @@ namespace Esentis.Ieemdb.Persistence.Models
     public DateTimeOffset ReleaseDate { get; set; }
 
     public bool Featured { get; set; }
+
+    public List<MovieActor> MovieActors { get; set; }
   }
 }

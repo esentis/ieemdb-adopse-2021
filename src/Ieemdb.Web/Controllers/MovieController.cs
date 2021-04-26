@@ -3,6 +3,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Collections.Generic;
   using System.ComponentModel.DataAnnotations;
   using System.Linq;
+  using System.Threading;
   using System.Threading.Tasks;
 
   using Bogus;
@@ -15,12 +16,12 @@ namespace Esentis.Ieemdb.Web.Controllers
 
   using Kritikos.PureMap.Contracts;
 
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Cors;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
-  [EnableCors("AllowAll")]
   [Route("api/movie")]
   public class MovieController : BaseController<MovieController>
   {
@@ -80,9 +81,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     {
       var toSkip = itemsPerPage * (page - 1);
 
-      var x = Fakers.MovieProvider.Generate(20);
+      var movies = await Context.Movies.Include(x => x.MovieActors).ToListAsync();
 
-      return Ok(x);
+      return Ok(movies);
     }
 
     /// <summary>
@@ -128,15 +129,27 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// This controller sets the list of featured movies.
     /// </summary>
     /// <param name="featuredIdList"></param>
-    /// <returns>No Content.</returns>
+    /// <response code="200">All Kateuxein. </response>
+    /// <response code="404">Couldn't match all id's to movies. </response>
     [HttpPost("featured")]
-    public async Task<ActionResult> AddFeaturedMovie([FromBody] List<long> featuredIdList)
+    public async Task<ActionResult<List<MovieDto>>> AddFeaturedMovie([FromBody] long[] featuredIdList, CancellationToken cancellationToken = default)
     {
-      Context.Movies.Where(m => featuredIdList.Contains(m.Id)).ToList().ForEach(mv => mv.Featured = true);
+      var movies = await Context.Movies.Where(m => featuredIdList.Contains(m.Id)).ToListAsync(cancellationToken);
+      var temp = featuredIdList.Where(x => movies.All(y => y.Id != x)).ToArray();
 
-      await Context.SaveChangesAsync();
+      if (temp.Any())
+      {
+        return NotFound($"Couldn't find results for the given id's {string.Join(", ", temp)}");
+      }
 
-      return NoContent();
+      foreach (var item in movies)
+      {
+        item.Featured = true;
+      }
+
+      await Context.SaveChangesAsync(cancellationToken);
+
+      return Ok(movies.Select(x => Mapper.Map<Movie, MovieDto>(x)));
     }
 
     /// <summary>
