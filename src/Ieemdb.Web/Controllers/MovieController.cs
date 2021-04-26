@@ -44,7 +44,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         .FullTextSearch(query)
         .OrderBy(x => x.Id);
 
-      // We calculate how many actors are in database.
+      // We calculate how many movies are in database.
       var totalMovies = await moviesQuery.CountAsync();
 
       // If page provided doesn't exist we return bad request.
@@ -83,6 +83,45 @@ namespace Esentis.Ieemdb.Web.Controllers
       var x = Fakers.MovieProvider.Generate(20);
 
       return Ok(x);
+    }
+
+    /// <summary>
+    /// This controller gets the list of featured movies.
+    /// </summary>
+    /// <param name="itemsPerPage">Define how many items shall be returned. </param>
+    /// <param name="page">Choose which page of the results shall be returned.</param>
+    /// <returns></returns>
+    [HttpGet("featured")]
+    public async Task<ActionResult<ICollection<MovieDto>>> GetAllFeaturedMovies(int itemsPerPage = 20, int page = 1)
+      {
+      var toSkip = itemsPerPage * (page - 1);
+
+      var moviesQuery = Context.Movies
+        .TagWith("Retrieving all featured movies")
+        .Where(x => x.Featured.Equals(true))
+        .OrderBy(x => x.Id);
+
+      var totalMovies = await moviesQuery.CountAsync();
+
+      if (page > ((totalMovies / itemsPerPage) + 1))
+      {
+        return BadRequest("Page doesn't exist");
+      }
+
+      var pagedMovies = await moviesQuery
+        .Skip(toSkip)
+        .Take(itemsPerPage)
+        .ToListAsync();
+
+      var result = new PagedResult<MovieDto>
+      {
+        Results = pagedMovies.Select(x => Mapper.Map<Movie, MovieDto>(x)).ToList(),
+        Page = page,
+        TotalPages = (totalMovies / itemsPerPage) + 1,
+        TotalElements = totalMovies,
+      };
+
+      return Ok(result);
     }
 
     /// <summary>
