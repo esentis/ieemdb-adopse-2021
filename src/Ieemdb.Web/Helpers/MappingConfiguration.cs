@@ -24,6 +24,7 @@ namespace Esentis.Ieemdb.Web.Helpers
       .Map<Writer, WriterDto>(mapper => writer => new WriterDto() { FirstName = writer.FirstName, LastName = writer.LastName, Bio = writer.Bio, Id = writer.Id, BirthDate = writer.BirthDate, })
       .Map<WriterDto, Writer>(mapper => writerDto => new Writer() { FirstName = writerDto.FirstName, LastName = writerDto.LastName, Bio = writerDto.Bio, Id = writerDto.Id, BirthDate = writerDto.BirthDate, })
       .Map<AddWriterDto, Writer>(mapper => addWriter => new Writer() { FirstName = addWriter.FirstName, LastName = addWriter.LastName, Bio = addWriter.Bio, BirthDate = addWriter.BirthDate, })
+      .Map<Movie, MovieDto>(mapper => movie => new MovieDto() { Id = movie.Id, Title = movie.Title, Plot = movie.Plot, TrailerUrl = movie.TrailerUrl, Duration = movie.Duration, Featured = movie.Featured, ReleaseDate = movie.ReleaseDate })
       .Map<MovieDto, Movie>(mapper => (dest, source) => UpdateMovie(source, dest))
       .Map<MovieDto, Movie>(mapper => (dest, source) => UpdateMovie(source, dest), name: "v2");
 
