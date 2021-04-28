@@ -9,14 +9,14 @@ function RegisterForm() {
 
   const handleSubmitRegister = async (evt) => {
     evt.preventDefault();
+    const url = 'https://' + window.location.host + '/api/account/';
 
-    axios.post('https://localhost:5001/api/account/', {
+    axios.post(url, {
       userName,
       email,
       password
     }).then(function (res) {
       console.log(res);
-      console.log(res.data.accessToken);
       console.log(res.status);
       if (res.status == 200) {
         //do some

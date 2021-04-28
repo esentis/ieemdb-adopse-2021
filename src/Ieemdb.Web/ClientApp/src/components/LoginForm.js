@@ -11,15 +11,16 @@ function LoginForm() {
 
   const handleSubmitLogin = async (evt) => {
     evt.preventDefault();
+    const url = 'https://' + window.location.host + '/api/account/login';
 
-    axios.post('https://localhost:5001/api/account/login', {
+    axios.post(url, {
       userName: userNameLogin,
       password: passwordLogin,
       deviceName: 'fdsfadsfas' //na perasw deviceName
     }).then(function (res) {
       console.log(res);
-      console.log(res.data.accessToken);
-      console.log(res.status);
+      //console.log(res.data.accessToken);
+      //console.log(res.status);
       if (res.status == 200) {
         //local storage to token
         auth.login(); // o xrhsths einai authenticated
@@ -29,6 +30,7 @@ function LoginForm() {
 
     if (auth.isAuthenticated()) {
       //show menu buttons kai pane sto main page
+      console.log(localStorage.getItem('token'));
     }
   }
 
