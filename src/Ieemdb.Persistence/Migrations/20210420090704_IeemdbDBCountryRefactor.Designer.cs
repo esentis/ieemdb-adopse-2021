@@ -3,15 +3,17 @@ using System;
 using Esentis.Ieemdb.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Esentis.Ieemdb.Persistence.Migrations
 {
     [DbContext(typeof(IeemdbDbContext))]
-    partial class IeemdbDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210420090704_IeemdbDBCountryRefactor")]
+    partial class IeemdbDBCountryRefactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -564,6 +566,9 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<long?>("CountryOriginId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -602,6 +607,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CountryOriginId");
 
                     b.HasIndex("NormalizedSearch")
                         .HasAnnotation("Npgsql:TsVectorConfig", "english");
@@ -1769,6 +1776,15 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Movie", b =>
+                {
+                    b.HasOne("Esentis.Ieemdb.Persistence.Models.Country", "CountryOrigin")
+                        .WithMany()
+                        .HasForeignKey("CountryOriginId");
+
+                    b.Navigation("CountryOrigin");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Rating", b =>
