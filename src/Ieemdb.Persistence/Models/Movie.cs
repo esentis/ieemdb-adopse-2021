@@ -12,6 +12,7 @@ namespace Esentis.Ieemdb.Persistence.Models
   public class Movie : EemdbEntity<long>, ISearchable
   {
     private string title = string.Empty;
+    private string plot = string.Empty;
 
     public string Title
     {
@@ -19,22 +20,31 @@ namespace Esentis.Ieemdb.Persistence.Models
       set
       {
         title = value;
-        NormalizedSearch = title.NormalizeSearch();
+        NormalizedTitle = title.NormalizeSearch();
       }
     }
 
-    public string NormalizedSearch { get; private set; }
+    public string NormalizedTitle { get; private set; }
 
     public string TrailerUrl { get; set; }
 
     public TimeSpan Duration { get; set; }
 
-    public string Plot { get; set; }
+    public string Plot
+    {
+      get => plot;
+      set
+      {
+        plot = value;
+        NormalizedSearch = value.NormalizeSearch();
+      }
+    }
+
+    public string NormalizedSearch { get; set; }
 
     public DateTimeOffset ReleaseDate { get; set; }
 
     public bool Featured { get; set; }
 
-    public List<MovieActor> MovieActors { get; set; }
   }
 }
