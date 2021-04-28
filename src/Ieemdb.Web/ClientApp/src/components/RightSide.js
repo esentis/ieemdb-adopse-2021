@@ -11,6 +11,7 @@ import SearchView from "./SearchView";
 import AdvancedSearchView from "./AdvancedSearchView";
 import {Switch,Route} from 'react-router-dom';
 import UserSettings from './UserSettings';
+import Home from "./Home"
 
 
 
@@ -32,17 +33,15 @@ function RightSide(){
      <Route path={'/Movie/:id'} children={<MovieView/>} />
      <Route path='/AdvancedSearch' children={<AdvancedSearchView/>} />
      <Route path='/UserSettings' children={<UserSettings />} />
-     <Route path={'/:SearchType/:value'} children={<SearchView/>} />
+     <Route path={'/:SearchType/value=:value?'} children={<SearchView/>} />
+     <Route path={'/:SearchType/MovieTitle=:MovieTitle? ActorName=:ActorName? DirectorName=:DirectorName? WriterName=:WriterName? Duration=:Duration? Genres=:Genres? FromRating=:FromRating? ToRating=:ToRating? FromDate=:FromDate? ToDate=:ToDate?'} 
+     children={<SearchView/>} />
         </Switch>
         </Row>
             <Row>
               {bottomPage}
             </Row>
     </Col>
-
-
-  
-
     );
 }
 export default RightSide;
