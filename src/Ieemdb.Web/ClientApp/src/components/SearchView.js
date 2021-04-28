@@ -11,8 +11,17 @@ import '../Styles/Paginate.css'
 
 
 function SearchView() {
-    const { value }=useParams();
-    const { SearchType }=useParams();
+    var SearchValue=""
+    var { value,SearchType,MovieTitle,ActorName,DirectorName,WriterName,Duration,Genres,FromRating,ToRating,FromDate,ToDate }=useParams();
+    if(value==undefined){
+        value=null
+    }
+    console.log(SearchType,value,MovieTitle,ActorName,DirectorName,WriterName,Duration,Genres,FromRating,ToRating,FromDate,ToDate)
+    if(SearchType=="AdvancedSearchResults"){
+        SearchValue="AdvancedSearch"
+
+    }else{SearchValue=value}
+    
 
     const [currentPage,setCurrentPage]=useState(0);
     const [postersPerPage,setPostersPerPage]=useState(10);
@@ -36,7 +45,7 @@ function SearchView() {
        <Col className='column-right-SearchView'>
        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
        <div style={{color:'white'}}>
-       <p className="ResultTitle">Results for "{value}" <span className="ResultsLength">{movies.length} Movies</span></p>
+       <p className="ResultTitle">Results for "{SearchValue}"<span className="ResultsLength">{movies.length} Movies</span></p>
        <Results results={currentPosters} />
        <Paginate previousLabel={<i className="fa fa-chevron-left"></i>}
                   nextLabel={<i className="fa fa-chevron-right"></i>}

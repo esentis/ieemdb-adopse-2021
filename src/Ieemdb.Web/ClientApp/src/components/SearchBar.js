@@ -14,7 +14,7 @@ const SearchBar = () => {
     }
     function onEnter(e){
        if (e.keyCode===13){
-        history.push('/Search/'+value);
+        history.push('/Search/value='+value);
       }
     }
 
