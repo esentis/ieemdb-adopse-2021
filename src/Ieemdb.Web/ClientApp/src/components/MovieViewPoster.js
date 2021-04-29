@@ -108,7 +108,7 @@ function MovieViewPoster(props){
                 </div>
                 <div id="divFavorShare">
                     <button className="buttonLove" onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
-                    <button className="buttonShare" onClick={popupReview}><i className="fa fa-star"></i>  REVIEWS</button>
+                    <button className="buttonReview" onClick={popupReview}><i className="fa fa-star"></i>  REVIEWS</button>
                 </div>
             </Row>
             <Row className="bottom">

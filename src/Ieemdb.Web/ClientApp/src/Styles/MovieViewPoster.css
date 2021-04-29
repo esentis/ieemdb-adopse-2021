@@ -86,7 +86,7 @@
 .buttonLove:hover {
   background-color: #e7e7e7;
 }
-.buttonShare {
+.buttonReview {
     background-color: transparent;
     opacity: inherit;
     color: white;
@@ -102,7 +102,7 @@
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     text-shadow: 2px 2px 5px rgb(0, 0, 0);
 }
-.buttonShare:hover {
+.buttonReview:hover {
   background-color: #e7e7e7;
   color: #282828;
 }
