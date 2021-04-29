@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {Col,Row} from 'react-bootstrap';
 import BottomRight from "./BottomRight";
 import Favorites from './Favorites';
@@ -9,24 +9,32 @@ import Login from './Login';
 import MovieView from "./MovieView";
 import SearchView from "./SearchView";
 import AdvancedSearchView from "./AdvancedSearchView";
-import {Switch,Route} from 'react-router-dom';
+import {Switch,Route, Redirect} from 'react-router-dom';
 import UserSettings from './UserSettings';
 
 
 
-function RightSide(){
-    const page=usePage();
+function RightSide() {
+  const page = usePage();
     var bottomPage="";
     if(page==="2")
    {
         bottomPage=<BottomRight />
     }
+
+    function checkRoutes() {
+      if (localStorage.getItem('token') !== null) {
+        return true;
+      }
+      return false;
+    }
+
     return(
     <Col>
         <Row>   
-   <Switch>
-     <Route path='/' exact children={<Featured/>}/>
-     <Route path='/Favorites' children={<Favorites/>} />
+          <Switch>
+     <Route path='/' exact children={< Featured />} />
+     <Route path='/Favorites' children={<Favorites />} />
      <Route path='/WatchList' children={<WatchList/>} />
      <Route path='/Login' children={<Login/>} />
      <Route path={'/Movie/:id'} children={<MovieView/>} />

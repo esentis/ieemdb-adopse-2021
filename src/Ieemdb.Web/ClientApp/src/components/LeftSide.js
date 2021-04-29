@@ -11,7 +11,11 @@ import {useLoginState,useChangeLoginState} from './GlobalContext';
 function LeftSide(){
     const isLoggedIn=useLoginState();
     const setLoginState=useChangeLoginState();
-    
+
+    function logoutClick() {
+      setLoginState(false);
+      localStorage.clear();
+    }
 
     return(
     <Col className="column-left" xl={2} style={{position:'fixed'}} >
@@ -34,17 +38,17 @@ function LeftSide(){
             <FaIcons.FaList className='fa-cog' />
             <span>Watch List</span>
             </Link> :" " }
-            {isLoggedIn?<div>
-            <Link className='linkClass' to='/UserSettings'>
-            <FaIcons.FaUserCog className='fa-cog' />
-            <span>Settings</span>
-            </Link>
-            <Link className='linkClass' to='#' onClick={()=>setLoginState("false")}>
-            <FaIcons.FaSignOutAlt className='fa-cog'  />
-            <span>Logout</span>
-            </Link>
-            </div>: 
-            <Link className='linkClass' to='/Login' onClick={()=>setLoginState("true")}>
+              {isLoggedIn ? <div>
+                <Link className='linkClass' to='/UserSettings'>
+                  <FaIcons.FaUserCog className='fa-cog' />
+                  <span>Settings</span>
+                </Link>
+                <Link className='linkClass' to='#' onClick={logoutClick}>
+                  <FaIcons.FaSignOutAlt className='fa-cog' />
+                  <span>Logout</span>
+                </Link>
+              </div> :
+                <Link className='linkClass' to='/Login'>
             <FaIcons.FaSignInAlt className='fa-cog'/>
             <span>Login</span>
             </Link>}

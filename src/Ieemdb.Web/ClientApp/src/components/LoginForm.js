@@ -3,11 +3,16 @@ import { useState } from 'react';
 import axios from 'axios';
 import '../Styles/Forms.css';
 import auth from './auth';
+import { useHistory } from 'react-router-dom';
+import { useLoginState, useChangeLoginState } from './GlobalContext';
+
 
 function LoginForm() {
   const [userNameLogin, setUserNameLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("")
   const [deviceName, setDeviceName] = useState("");
+  const history = useHistory();
+  const isLoggedIn = useChangeLoginState();
 
   const handleSubmitLogin = async (evt) => {
     evt.preventDefault();
@@ -22,16 +27,12 @@ function LoginForm() {
       //console.log(res.data.accessToken);
       //console.log(res.status);
       if (res.status == 200) {
-        //local storage to token
-        auth.login(); // o xrhsths einai authenticated
         localStorage.setItem('token', res.data.accessToken);
+        isLoggedIn(true);
+        history.push("/");
       }
     });
 
-    if (auth.isAuthenticated()) {
-      //show menu buttons kai pane sto main page
-      console.log(localStorage.getItem('token'));
-    }
   }
 
   return (
