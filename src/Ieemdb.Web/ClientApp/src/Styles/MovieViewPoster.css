@@ -7,16 +7,9 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    justify-content: flex-center;
     align-items: stretch;
 }
-.top{
-    flex-grow: 18;
-}
-.center{
-    flex-grow: 1;
-}
-.bottom{
+.dtop{
     flex-grow: 1;
 }
 .buttonReturn{
@@ -46,26 +39,29 @@
     max-width: 130vh;
     margin-bottom: 0px;
 }
-#divTitle, #divFavorShare{
+.dcenter{
+    flex-grow: 20;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 10px;
+    flex-direction: row;
 }
 #divTitle{
-    flex-grow: 98;
-    padding-left: 2%;
-    margin-right: 10px;
-    align-content: flex-end;
+    flex-grow: 10;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: flex-start;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    align-items: flex-end;
 }
-#divFavorShare{
+#divFavorReview{
     flex-grow: 1;
-    text-align: right;
-    padding-right: 30px;
-    padding-left: 30px;
-    align-content: flex-end;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: norap;
     justify-content: center;
+    align-items: flex-end;
+    margin-right: 40px;
 }
 .buttonLove {
     background-color: transparent;
@@ -105,6 +101,10 @@
 .buttonReview:hover {
   background-color: #e7e7e7;
   color: #282828;
+}
+.dbottom{
+    flex-grow: 1;
+    align-items: center;
 }
 #divDesc, #divRate{
     display: flex;
@@ -166,7 +166,7 @@
 #popRev{
     background-color: rgba(41, 44, 52);
     width:100%;
-    height:100%;
+    height:90%;
 }
 #popHeader{
     display: flex;
@@ -218,7 +218,7 @@
 }
 #popBody{
     background-color: rgba(41, 44, 52);
-    height: 91%;
+    height: 75vh;
     overflow-y: auto;
     overflow-x: hidden;
     border-radius: 1rem;
@@ -373,7 +373,7 @@
         font-size: 1.5rem;     
     }
     #popBody{
-        height: 72vh;
+        height: 62vh;
     }
     #add_review{
         flex-direction: column;
@@ -391,5 +391,9 @@
     }
     .reviewInput{
         height: 110px;
+    }
+    #divFavorReview{
+        margin-bottom: 20px;
+        margin-right: 0px;
     }
 }

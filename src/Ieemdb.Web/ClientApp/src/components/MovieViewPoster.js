@@ -82,36 +82,30 @@ function MovieViewPoster(props){
     function backButton(){
         history.goBack();
     }
-
     function HandleReleaseDate(e){
         const ReleaseDate=e.target.innerHTML;
         history.push('/ReleaseDate/'+ReleaseDate)
     }
-    
     function HandleGenres(e){
         const Genre=e.target.innerHTML;
         history.push('/Genre/'+Genre)
     }
-
-
-
-
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-            <Row className="top">
+            <Row className="dtop">
                 <button className="buttonReturn" onClick={backButton}><i id="return" className="fa fa-arrow-left"></i></button>
             </Row>
-            <Row className="center">
+            <Row className="dcenter">
                 <div id="divTitle">
                     <p className="movieTitle">{props.title}</p>
                 </div>
-                <div id="divFavorShare">
+                <div id="divFavorReview">
                     <button className="buttonLove" onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
                     <button className="buttonReview" onClick={popupReview}><i className="fa fa-star"></i>  REVIEWS</button>
                 </div>
             </Row>
-            <Row className="bottom">
+            <Row className="dbottom">
                 <div id="divDesc">
                     <p className="movieDesc" onClick={HandleReleaseDate} >{releaseDate}</p>
                     <p className="movieDescGenres" onClick={HandleGenres}  >{genres}</p>
@@ -122,7 +116,7 @@ function MovieViewPoster(props){
                 </div>
                 <RatingStars stars={rating}/>
             </Row>
-            <Modal keyboard='true' visible={opre} width="90%" height="90%" effect="fadeInRight" onClickAway={popupReview}>
+            <Modal keyboard='true' visible={opre} width="90%" height="80%" effect="fadeInRight" onClickAway={popupReview}>
                 <div id="popRev">  
                     <div id="popHeader"> 
                         <button className="buttonClose" onClick={popupReview}><i id="return" className="fa fa-close"></i></button>
@@ -133,6 +127,48 @@ function MovieViewPoster(props){
                     </div>
                     <hr className="line"/>
                     <div id="popBody">
+                        <div id="review">
+                            <div id="review1">
+                                <p className="revWriter">Petros Apostolopoulos</p>
+                                <div className="revStars2">
+                                    <p className="rating">1/5</p>
+                                    <ReactStars {...{value: 1, size: 30, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
+                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
+                                            filledIcon: <i className="fa fa-star" />}} />
+                                </div>
+                            </div>
+                            <div id="review2">
+                                <p className="revComment">Our comprehensive guidiuyie tooo CSS flexbox layout. This complete guide explains everything about flexbox, focusing on all the different possible properties for the parent element (the flex container) and the child elements (the flex items). It also includes history, demos, patterns, and a browser support chart.</p>
+                            </div>
+                        </div>
+                        <div id="review">
+                            <div id="review1">
+                                <p className="revWriter">Petros Apostolopoulos</p>
+                                <div className="revStars2">
+                                    <p className="rating">1/5</p>
+                                    <ReactStars {...{value: 1, size: 30, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
+                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
+                                            filledIcon: <i className="fa fa-star" />}} />
+                                </div>
+                            </div>
+                            <div id="review2">
+                                <p className="revComment">Our comprehensive guidiuyie tooo CSS flexbox layout. This complete guide explains everything about flexbox, focusing on all the different possible properties for the parent element (the flex container) and the child elements (the flex items). It also includes history, demos, patterns, and a browser support chart.</p>
+                            </div>
+                        </div>
+                        <div id="review">
+                            <div id="review1">
+                                <p className="revWriter">Petros Apostolopoulos</p>
+                                <div className="revStars2">
+                                    <p className="rating">1/5</p>
+                                    <ReactStars {...{value: 1, size: 30, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
+                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
+                                            filledIcon: <i className="fa fa-star" />}} />
+                                </div>
+                            </div>
+                            <div id="review2">
+                                <p className="revComment">Our comprehensive guidiuyie tooo CSS flexbox layout. This complete guide explains everything about flexbox, focusing on all the different possible properties for the parent element (the flex container) and the child elements (the flex items). It also includes history, demos, patterns, and a browser support chart.</p>
+                            </div>
+                        </div>
                         <div id="review">
                             <div id="review1">
                                 <p className="revWriter">Petros Apostolopoulos</p>
