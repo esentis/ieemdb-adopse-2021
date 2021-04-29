@@ -96,6 +96,10 @@
   font-family: Arial;
   font-size: 0.9rem;
 }
+
+.AdvLink{
+  display: none;
+}
 .logo{
   width:10vw;
   position: relative;
@@ -153,7 +157,7 @@
     transition: all .5s;
     height:8vh;
     margin: 0;
-    width: 100%;
+    width: 100vw;
   }
   .logo{
     display: none;
@@ -187,25 +191,25 @@
     left: 10vw;
   }
   .advButton{
-    bottom:1vh;
-    height:2rem ;
-    position: relative;
-    width: 30%;
-    display: inline;
-    margin-left: 12vw;
+    display: none;
   } 
+
+  .AdvLink{
+    display: block;
+  }
+
   .column-left nav :not(.fa-cog,.advButton,.inputClass){
     width: 100vw;
   }  
   .nav-center2 {
-    left:100%;
+    left:100vw;
   }
   #check:checked ~ .nav-center2{
-    left:0;
+    left:-3vw;
     display: block;
     background-color:rgba(0,0,0,0.6);
     top: 7%;
     z-index: 1;
-    width: 100%;
+    width: 100vw;
   } 
 }  

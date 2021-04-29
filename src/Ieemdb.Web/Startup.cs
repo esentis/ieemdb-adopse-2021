@@ -7,6 +7,7 @@ namespace Esentis.Ieemdb.Web
   using System.Text;
 
   using Esentis.Ieemdb.Persistence;
+  using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Helpers.Extensions;
@@ -55,6 +56,7 @@ namespace Esentis.Ieemdb.Web
       services.AddApplicationInsightsTelemetry();
 
       services.AddHttpContextAccessor();
+      services.AddScoped<RazorViewToStringRenderer>();
       services.AddSingleton<TimestampSaveChangesInterceptor>();
       services.AddSingleton<AuditSaveChangesInterceptor<Guid>>();
 
@@ -120,6 +122,7 @@ namespace Esentis.Ieemdb.Web
         {
           var isDevelopment = Environment.IsDevelopment();
           c.User.RequireUniqueEmail = !isDevelopment;
+
           c.Password = new PasswordOptions
           {
             RequireDigit = !isDevelopment,
@@ -165,14 +168,6 @@ namespace Esentis.Ieemdb.Web
 
       services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
 
-      services.AddCors(options =>
-      {
-        options.AddPolicy("AllowAll",
-          builder =>
-          {
-            builder.AllowAnyOrigin();
-          });
-      });
     }
 
     public void Configure(IApplicationBuilder app)
@@ -205,7 +200,6 @@ namespace Esentis.Ieemdb.Web
       app.UseSpaStaticFiles();
 
       app.UseRouting();
-      app.UseCors();
       app.UseReDoc(c =>
       {
         c.RoutePrefix = "docs";

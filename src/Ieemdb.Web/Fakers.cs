@@ -35,6 +35,10 @@ namespace Esentis.Ieemdb.Web
         .RuleFor(e => e.Bio, f => f.Lorem.Sentence(5, 20))
         .RuleFor(e => e.Id, f => f.IndexFaker);
 
+    public static readonly Faker<CountryDto> CountryProvider =
+      new Faker<CountryDto>()
+        .RuleFor(e => e.Name, f => f.Person.FirstName);
+
     public static readonly Faker<GenreDto> GenreProvider =
       new Faker<GenreDto>()
         .RuleFor(e => e.Name, f => f.Random.Word());
@@ -58,12 +62,8 @@ namespace Esentis.Ieemdb.Web
         .RuleFor(e => e.Rating, f => f.Random.Double(0, 10))
         .RuleFor(e => e.Genres, f => GenreProvider.Generate(3))
         .RuleFor(e => e.ReleaseDate, f => f.Date.Past(5))
-        .RuleFor(e => e.Country, f => f.Random.Word())
         .RuleFor(e => e.Actors, f => ActorProvider.Generate(5))
         .RuleFor(e => e.Directors, f => DirectorProvider.Generate(2))
-        .RuleFor(e => e.Writers, f => WriterProvider.Generate(3))
-        .RuleFor(e => e.Posters, f => ImageProvider.Generate(4))
-        .RuleFor(e => e.Screenshots, f => ImageProvider.Generate(4))
-        .RuleFor(e => e.Banners, f => BannerProvider.Generate(2));
+        .RuleFor(e => e.Writers, f => WriterProvider.Generate(3));
   }
 }

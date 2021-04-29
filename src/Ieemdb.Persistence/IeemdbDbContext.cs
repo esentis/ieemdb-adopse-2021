@@ -29,9 +29,9 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Genre> Genres { get; set; }
 
-    public DbSet<Image> Images { get; set; }
-
     public DbSet<Movie> Movies { get; set; }
+
+    public DbSet<Country> Countries { get; set; }
 
     public DbSet<Rating> Ratings { get; set; }
 
@@ -41,13 +41,15 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<MovieDirector> MovieDirectors { get; set; }
 
-    public DbSet<MoviePoster> MoviePosters { get; set; }
+    public DbSet<Poster> Posters { get; set; }
 
-    public DbSet<MovieScreenshot> MovieScreenshots { get; set; }
+    public DbSet<Screenshot> Screenshots { get; set; }
 
     public DbSet<MovieWriter> MovieWriters { get; set; }
 
     public DbSet<MovieGenre> MovieGenres { get; set; }
+
+    public DbSet<MovieCountry> MovieCountries { get; set; }
 
     public DbSet<Device> Devices { get; set; }
 
@@ -60,6 +62,10 @@ namespace Esentis.Ieemdb.Persistence
 
       builder.Entity<Director>()
         .HasIndex(e => e.NormalizedSearch)
+        .IsTsVectorExpressionIndex("english");
+
+      builder.Entity<Movie>()
+        .HasIndex(e => e.NormalizedTitle)
         .IsTsVectorExpressionIndex("english");
 
       builder.Entity<Movie>()
@@ -122,30 +128,17 @@ namespace Esentis.Ieemdb.Persistence
         e.HasKey("MovieId", "GenreId");
       });
 
-      builder.Entity<MoviePoster>(e =>
+      builder.Entity<MovieCountry>(e =>
       {
         e.HasOne(mv => mv.Movie)
           .WithMany()
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
-        e.HasOne(mv => mv.Poster)
+        e.HasOne(mv => mv.Country)
           .WithMany()
-          .HasForeignKey("PosterId")
+          .HasForeignKey("CountryId")
           .OnDelete(DeleteBehavior.Restrict);
-        e.HasKey("MovieId", "PosterId");
-      });
-
-      builder.Entity<MovieScreenshot>(e =>
-      {
-        e.HasOne(mv => mv.Movie)
-          .WithMany()
-          .HasForeignKey("MovieId")
-          .OnDelete(DeleteBehavior.Restrict);
-        e.HasOne(mv => mv.Screenshot)
-          .WithMany()
-          .HasForeignKey("ScreenshotId")
-          .OnDelete(DeleteBehavior.Restrict);
-        e.HasKey("MovieId", "ScreenshotId");
+        e.HasKey("MovieId", "CountryId");
       });
     }
   }
