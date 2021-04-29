@@ -25,7 +25,7 @@ export const useUpdatePage=()=>{
         const handleClick=(arg)=>{
             setPage(arg);
        }
-
+       
        const [isLoggedIn,setIsLoggedIn]=useState(false);
 
         useEffect(()=>{

@@ -13,7 +13,7 @@ namespace Esentis.Ieemdb.Persistence.Models
   {
     private string cname = string.Empty;
 
-    public string CountryOrigin
+    public string Name
     {
       get => cname;
       set
