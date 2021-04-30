@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import {Container,Col} from 'react-bootstrap';
 import SearchBar from './SearchBar';
 import {Link} from 'react-router-dom';

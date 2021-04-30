@@ -124,12 +124,12 @@ function MovieViewPoster(props){
 
     function HandleReleaseDate(e){
         const ReleaseDate=e.target.innerHTML;
-        history.push('/ReleaseDate/'+ReleaseDate)
+        history.push('/ReleaseDate/value='+ReleaseDate)
     }
     
     function HandleGenres(e){
         const Genre=e.target.innerHTML;
-        history.push('/Genre/'+Genre)
+        history.push('/Genre/value='+Genre)
     }
 
 
@@ -155,8 +155,8 @@ function MovieViewPoster(props){
                     <p className="movieDesc" onClick={HandleReleaseDate} >{releaseDate}</p>
                     <p className="movieDescGenres" onClick={HandleGenres}  >{genres}</p>
                     {durationMinutes > 0
-                        ? <p className="movieDesc">{durationHours} hours and {durationMinutes} minutes</p>
-                        : <p className="movieDesc">{durationHours} hours</p>
+                        ? <p className="movieDesc" style={{cursor:'auto'}}>{durationHours} hours and {durationMinutes} minutes</p>
+                        : <p className="movieDesc" style={{cursor:'auto'}}>{durationHours} hours</p>
                     }
                 </div>
                 <RatingStars stars={rating}/>
