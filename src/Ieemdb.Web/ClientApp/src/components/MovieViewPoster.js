@@ -64,7 +64,7 @@ function MovieViewPoster(props){
     const [opre, setopre] = useState(false);
     const [starrev, setstarrev] = useState('0');
     const history=useHistory();
-    const id=props.id; 
+    /*const id=props.id;*/
     const releaseDate = props.releaseDate.substring(0,4);
     const genres = props.genres.map((genre) =>
         <p className="movieDescGenre">{genre}</p>

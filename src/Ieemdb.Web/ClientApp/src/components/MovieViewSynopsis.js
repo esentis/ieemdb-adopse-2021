@@ -2,7 +2,7 @@ import React from 'react';
 import {Row,Col} from 'react-bootstrap';
 import '../Styles/MovieViewSynopsis.css';
 function MovieViewSynopsis(props){
-    const id=props.id;
+    /*const id=props.id;*/
     const overview=props.overview;
     const directors = props.directors.map((directors) =>
         <span className="span">{directors} </span>

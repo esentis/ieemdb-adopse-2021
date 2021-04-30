@@ -13,18 +13,18 @@ import '../Styles/Paginate.css'
 function SearchView() {
     var SearchValue=""
     var { value,SearchType,MovieTitle,ActorName,DirectorName,WriterName,Duration,Genres,FromRating,ToRating,FromDate,ToDate }=useParams();
-    if(value==undefined){
+    if(value===undefined){
         value=null
     }
     console.log(SearchType,value,MovieTitle,ActorName,DirectorName,WriterName,Duration,Genres,FromRating,ToRating,FromDate,ToDate)
-    if(SearchType=="AdvancedSearchResults"){
+    if(SearchType==="AdvancedSearchResults"){
         SearchValue="AdvancedSearch"
 
     }else{SearchValue=value}
     
 
     const [currentPage,setCurrentPage]=useState(0);
-    const [postersPerPage,setPostersPerPage]=useState(10);
+    const [postersPerPage/*,setPostersPerPage*/]=useState(10);
 
     const setPage=useUpdatePage();
     useEffect(() => {
