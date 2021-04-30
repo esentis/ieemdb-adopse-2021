@@ -11,39 +11,33 @@ import SearchView from "./SearchView";
 import AdvancedSearchView from "./AdvancedSearchView";
 import {Switch,Route, Redirect} from 'react-router-dom';
 import UserSettings from './UserSettings';
-import Home from "./Home"
+import {useLoginState} from './GlobalContext';
 
 
 
 function RightSide() {
   const page = usePage();
-    var bottomPage="";
+  const isLoggedIn=useLoginState();
+  var bottomPage="";
     if(page==="2")
    {
         bottomPage=<BottomRight />
-    }
-
-    function checkRoutes() {
-      if (localStorage.getItem('token') !== null) {
-        return true;
-      }
-      return false;
     }
 
     return(
     <Col>
         <Row>   
           <Switch>
-     <Route path='/' exact children={< Featured />} />
-     <Route path='/Favorites' children={<Favorites />} />
-     <Route path='/WatchList' children={<WatchList/>} />
-     <Route path='/Login' children={<Login/>} />
+     <Route path='/' exact children={<Featured />} />
+            <Route path='/Favorites' children={isLoggedIn ?<Favorites />:<Redirect push to="/Login" />} />
+            <Route path='/WatchList' children={isLoggedIn ? <WatchList /> : <Redirect push to="/Login" />} />
+     <Route path='/Login' children={isLoggedIn?<Redirect push to="/" />:<Login/>} />
      <Route path={'/Movie/:id'} children={<MovieView/>} />
-     <Route path='/AdvancedSearch' children={<AdvancedSearchView/>} />
-     <Route path='/UserSettings' children={<UserSettings />} />
+            <Route path='/AdvancedSearch' children={isLoggedIn ? <AdvancedSearchView /> : <Redirect push to="/Login" />} />
+            <Route path='/UserSettings' children={isLoggedIn ? <UserSettings /> : <Redirect push to="/Login" />} />
      <Route path={'/:SearchType/value=:value?'} children={<SearchView/>} />
      <Route path={'/:SearchType/MovieTitle=:MovieTitle? ActorName=:ActorName? DirectorName=:DirectorName? WriterName=:WriterName? Duration=:Duration? Genres=:Genres? FromRating=:FromRating? ToRating=:ToRating? FromDate=:FromDate? ToDate=:ToDate?'} 
-     children={<SearchView/>} />
+              children={ isLoggedIn ? <SearchView /> : <Redirect push to="/Login" />} />
         </Switch>
         </Row>
             <Row>
