@@ -1,4 +1,4 @@
-import React,{createContext,useContext,useState} from 'react'
+import React,{createContext,useContext,useEffect,useState} from 'react'
 
 const GlobalContext=createContext();
 const UpdateState=createContext();
@@ -28,14 +28,24 @@ export const useUpdatePage=()=>{
        
        const [isLoggedIn,setIsLoggedIn]=useState(false);
 
-       function ChangeLoginState(){
-           setIsLoggedIn(!isLoggedIn);
-       }
+        useEffect(()=>{
+            if(localStorage.getItem('token')!==null){
+                setIsLoggedIn(true)}
+        })
 
+        window.onstorage = () => {
+            if(localStorage.getItem('token')!==null){
+                setIsLoggedIn(true)}
+            else{setIsLoggedIn(false);}
+        }
+           
+
+       
+            
         return(
             <GlobalContext.Provider value={page}>
             <UpdateState.Provider value={handleClick}>
-            <UpdateLoginState.Provider value={ChangeLoginState}>
+            <UpdateLoginState.Provider value={setIsLoggedIn}>
             <LoginState.Provider value={isLoggedIn}>
                 {props.children}
                 </LoginState.Provider>

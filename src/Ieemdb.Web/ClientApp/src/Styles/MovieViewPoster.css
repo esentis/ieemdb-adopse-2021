@@ -123,9 +123,11 @@
     margin-left: 20px;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     text-shadow: 2px 2px 5px rgb(0, 0, 0);
+    cursor: pointer;
 }
 .movieDescGenres{
     height: 40px;
+    cursor: pointer;
 }
 .movieDescGenre{
     padding: 8px 16px;

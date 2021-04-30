@@ -1,13 +1,133 @@
 .column-right-AdvancedSearch{
-    background-color: #282828;
-    height: 100vh;
+    background-color: rgba(41, 44, 52);
+    min-height: 100vh;
+    position: relative;
     padding: 0%;
     width: 80%;
-    margin-left:16.6%
+    margin-left:16.6%;
+    font-family: Arial, Helvetica, sans-serif;
     }
+
+    .AdvancedForm{
+      position: relative;
+      display: block;
+      margin-left: 18.8vw;
+      width: 45vw;
+      border: 0.5px solid rgb(57, 60, 71);;
+      border-radius: 10px;
+      text-align: center;
+      justify-content: center;
+      background-color:rgb(40, 42, 49); ; 
+    }
+
+    .AdvancedForm p{
+      margin-top: 8vh;
+    }
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.spanClass{
+  text-align: center;
+  margin-left: 1vw;
+  margin-right: 1vw;
+  font-size:1.25rem ;
+  color:white;
+}
+
+.SearchButton{
+  position: relative;
+  width: 20vw;
+  background: transparent;
+  color: #D3D3D3;
+  border-radius: 30px;
+  border:2px solid white;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 3vw;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  text-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+
+.SearchButton:hover{background-color: #e7e7e7;
+  color: #282828;}
+
+    .AdvancedForm input{
+      width: 20vw;
+      box-sizing: border-box;
+      background-color: transparent;
+      border: 2px solid white;
+      position:relative;
+      border: none; 
+      border-bottom: 2px  solid #D3D3D3 ;
+      display:inline-block ;
+      outline: none;
+      color:#D3D3D3;
+      justify-content: center;
+      text-shadow: 2px 2px 5px rgb(0, 0, 0); 
+    }
+
+    .GenresSelector{
+    display:inline-block;
+    width: 20vw;
+    margin-top: 5vh;
+    color:"black"
+    }
+
+    .RatingDatesSelector{
+    display:inline-block;
+    width: 8.5vw;
+    margin-top: 3vh;
+    color:"black"
+    }
+     
+    @media (max-width:1780px){
+      .AdvancedForm{
+        width: 60vw;
+        margin-left:10vw ;
+      }
+
+      .AdvancedForm input ,.GenresSelector{
+        width: 40vw;
+      }
+      .AdvancedForm .RatingDatesSelector{
+        width:17vw ;
+      }
+
+      .AdvancedForm .SearchButton{
+        width: 40vw;
+      }}
 
     @media (max-width:1199px){
         .column-right-AdvancedSearch{
           margin-left:0;
-          top:8vh;
-}}
+          top:8vh;}
+          .AdvancedForm{
+            margin-left:18.8vw;
+          }}
+          
+          @media (max-width:890px){
+            .AdvancedForm{
+              border:0;
+              background:none;
+              justify-content: center;
+              margin-left: 3vw;
+            }
+            .AdvancedForm{
+              width: 90vw;
+            }
+            .AdvancedForm input ,.GenresSelector{
+              width: 80vw;
+            }
+            .AdvancedForm .RatingDatesSelector{
+              width:37vw ;
+            }
+            .AdvancedForm .SearchButton{
+              width: 80vw;
+            }
+          }
+          
+
+

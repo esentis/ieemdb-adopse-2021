@@ -72,11 +72,11 @@
   background: none;
   border: none; 
   border-bottom: 2px  solid #D3D3D3 ;
-  background: none;
   width:8vw;
   color: #D3D3D3;
   outline: none; 
   font-family: Arial;
+  /* margin-left: 0.5vw; */
 }
 ::placeholder{
   color:#D3D3D3;
@@ -153,6 +153,7 @@
     width: 7%;
   }
   .column-left{
+    background: none;
     background-color: #282828;
     transition: all .5s;
     height:8vh;

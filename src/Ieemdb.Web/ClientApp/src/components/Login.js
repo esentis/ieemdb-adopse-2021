@@ -49,7 +49,7 @@ function Login(props) {
     
     return (
       <Col className='column-right-Login'>
-        <div className='center'>
+        <div className='center-Form'>
           <DecideForm />
           <DecideP />
           <DecideButton />
