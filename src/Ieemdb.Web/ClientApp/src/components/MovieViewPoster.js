@@ -117,16 +117,16 @@ function MovieViewPoster(props){
                 <RatingStars stars={rating}/>
             </Row>
             <Modal keyboard='true' visible={opre} width="90%" height="80%" effect="fadeInRight" onClickAway={popupReview}>
-                <div id="popRev">  
-                    <div id="popHeader"> 
-                        <button className="buttonClose" onClick={popupReview}><i id="return" className="fa fa-close"></i></button>
-                        <p className="revTitle">Review for {props.title} ({releaseDate})</p>
-                        <div className="revStars">
-                            <RatingStars stars={rating}/>
-                        </div>
-                    </div>
-                    <hr className="line"/>
+                <div id="popRev">
                     <div id="popBody">
+                        <div id="popHeader"> 
+                            <button className="buttonClose" onClick={popupReview}><i id="return" className="fa fa-close"></i></button>
+                            <p className="revTitle">Review for {props.title} ({releaseDate})</p>
+                            <div className="revStars">
+                                <RatingStars stars={rating}/>
+                            </div>
+                        </div>
+                        <hr className="line"/>
                         <div id="review">
                             <div id="review1">
                                 <p className="revWriter">Petros Apostolopoulos</p>

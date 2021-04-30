@@ -215,7 +215,7 @@
 }
 #popBody{
     background-color: rgba(41, 44, 52);
-    height: 75vh;
+    height: 82vh;
     overflow-y: auto;
     overflow-x: hidden;
     border-radius: 1rem;
@@ -368,9 +368,6 @@
         text-align: center; 
         margin-top: 10px; 
         font-size: 1.5rem;     
-    }
-    #popBody{
-        height: 62vh;
     }
     #add_review{
         flex-direction: column;
