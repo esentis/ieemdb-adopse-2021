@@ -59,12 +59,12 @@ function AdvancedSearchView() {
         if(inputs.MovieTitle!==""||inputs.ActorName!==""||inputs.DirectorName!==""||inputs.WriterName!==""||inputs.Duration!==""
         ||Genres!==""||Rating1!==""||Date1!=="")
         {
-        if(Rating1!=="" && Rating2==""){
+        if(Rating1 !== "" && Rating2 === ""){
             setErrorMessage("You must fill in the \"To\" Rating ")
             OpenSnackBar();
 
         }
-        else if(Date1!=="" && Date2==""){
+        else if(Date1 !== "" && Date2 === ""){
             setErrorMessage("You must fill in the \"To\" Date ")
             OpenSnackBar();
         }else {
@@ -85,7 +85,7 @@ function AdvancedSearchView() {
 
         function handleGenre(value){
             setGenres([value.map(obj=>obj.label)]);
-            if(value.length==0){
+            if(value.length===0){
                 setGenres("")
             }}
 

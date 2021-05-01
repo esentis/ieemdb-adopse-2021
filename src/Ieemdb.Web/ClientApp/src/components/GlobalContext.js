@@ -31,7 +31,7 @@ export const useUpdatePage=()=>{
         useEffect(()=>{
             if(localStorage.getItem('token')!==null){
                 setIsLoggedIn(true)}
-        })
+        },[])
 
         window.onstorage = () => {
             if(localStorage.getItem('token')!==null){

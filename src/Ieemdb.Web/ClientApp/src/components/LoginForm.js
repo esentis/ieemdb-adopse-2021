@@ -1,16 +1,15 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import '../Styles/Forms.css';
-import auth from './auth';
+/*import auth from './auth';*/
 import { useHistory } from 'react-router-dom';
-import { useLoginState, useChangeLoginState } from './GlobalContext';
+import {/*useLoginState,*/ useChangeLoginState } from './GlobalContext';
 
 
 function LoginForm() {
   const [userNameLogin, setUserNameLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("")
-  const [deviceName, setDeviceName] = useState("");
+  /*const [deviceName, setDeviceName] = useState("");*/
   const history = useHistory();
   const isLoggedIn = useChangeLoginState();
 
@@ -26,7 +25,7 @@ function LoginForm() {
       console.log(res);
       //console.log(res.data.accessToken);
       //console.log(res.status);
-      if (res.status == 200) {
+      if (res.status === 200) {
         localStorage.setItem('token', res.data.accessToken);
         isLoggedIn(true);
         history.push("/");

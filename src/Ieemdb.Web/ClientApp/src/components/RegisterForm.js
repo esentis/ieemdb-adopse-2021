@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 function RegisterForm() {
@@ -18,7 +17,7 @@ function RegisterForm() {
     }).then(function (res) {
       console.log(res);
       console.log(res.status);
-      if (res.status == 200) {
+      if (res.status === 200) {
         //do some
         window.alert("Check your email inbox for confirmation");
       }
