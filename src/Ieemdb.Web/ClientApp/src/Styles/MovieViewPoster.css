@@ -272,7 +272,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
     order: 0;
-    flex-grow: 1;
+    flex-grow: 6;
     margin-right: 10px;
     display: flex;
     flex-direction: column;
@@ -281,7 +281,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
     order: 1;
-    flex-grow: 6;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
@@ -292,23 +292,6 @@
     text-shadow: 1px 1px 1px rgb(255, 255, 255);
     font-weight: bold;
 }
-.nameInput{
-    order: 0;
-    background-color: #282828;
-    border-radius: 0.7rem;
-    padding: 0.2rem 1.5rem;
-    color: #e7e7e7;
-    width: 100%;
-}
-.surnameInput{
-    order: 1;
-    background-color: #282828;
-    border-radius: 0.7rem;
-    padding: 0.2rem 1.5rem;
-    color: #e7e7e7;
-    width: 100%;
-    margin-top: 5px;
-}
 .reviewInput{
     order: 1;
     background-color: #282828;
@@ -316,7 +299,7 @@
     padding: 0.2rem 1.5rem;
     color: #e7e7e7;
     width: 100%;
-    height: 75px;
+    height: 90px;
 }
 .reviewSubmit{
     order: 2;
@@ -325,8 +308,6 @@
     padding: 0.2rem 1.5rem;
     color: #e7e7e7;
     font-size: 20px;
-    width: 30%;
-    margin-top: 10px;
     width: 100%;
 }
 .emptyRow{
@@ -343,7 +324,6 @@
 .revStars3{
     order: 2;
     justify-content: center;
-    margin-top: 5px;
     display: flex;
     flex-wrap: wrap;
     flex-flow: row;
@@ -382,9 +362,6 @@
     .col2Rev{
         margin-top: 0px;
         margin-right: 0px;
-    }
-    .reviewInput{
-        height: 110px;
     }
     #divFavorReview{
         margin-bottom: 20px;
