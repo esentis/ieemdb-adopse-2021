@@ -1,14 +1,15 @@
 .column-right-Login{
-    background-color: #282828;
-    color: white;
-    height: 100vh;
-    padding: 0%;
-    width: 80%;
-    margin-left:16.6%
-    }
-
-    @media (max-width:1199px){
-        .column-right-Login{
-          margin-left:0;
-          top:8vh;
-}}
+  background-image: linear-gradient(rgba(41, 44, 52, 0), rgba(41, 44, 52, 0.3), rgba(41, 44, 52, 0.4), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.6), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.8), rgba(41, 44, 52, 0.9), rgba(41, 44, 52, 0.99), rgba(41, 44, 52), rgba(41, 44, 52), rgba(41, 44, 52), rgba(41, 44, 52)), url('https://wallpaperaccess.com/full/3658607.jpg');
+  color: white;
+  height: 100vh;
+  padding: 0%;
+  width: 80%;
+  margin-left: 16.6%
+}
+@media (max-width:1199px){
+  .column-right-Login{
+    margin-left: 0px;
+    margin-top: 8vh;
+    width: 100%;
+  }
+}
