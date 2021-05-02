@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import '../Styles/Forms.css';
 function RegisterForm() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-
   const handleSubmitRegister = async (evt) => {
     evt.preventDefault();
     const url = 'https://' + window.location.host + '/api/account/';
-
     axios.post(url, {
       userName,
       email,
@@ -24,34 +22,18 @@ function RegisterForm() {
     });
   }
   return (
-    <form className="centeredFields" onSubmit={handleSubmitRegister}>
-      <label className="centeredText">
-        UserNameReg:
-      </label>
-        <input
-          type="text"
-          value={userName}
-          onChange={e => setUserName(e.target.value)}
-        />
-      <label className="centeredText">
-        PasswordReg:
-      </label>
-            <input
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-      <label className="centeredText">
-        Email:
-      </label>
-      <input
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-      <p className="buttonAlign"><input type="submit" value="Register" /></p>
-    </form>
+    <div className="backForm">
+      <label className="formTitle">Create a new account</label>
+      <form className="divForm" onSubmit={handleSubmitRegister}>
+        <label className="formText">Username</label>
+        <input className="formInput" type="text" placeholder="Username" value={userName} onChange={e => setUserName(e.target.value)}/>
+        <label className="formText">Email</label>
+        <input className="formInput" type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
+        <label className="formText">Password</label>
+        <input className="formInput" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
+        <input className="formButton" type="submit" value="Register" />
+      </form>
+    </div>
   );
 }
-
 export default RegisterForm;

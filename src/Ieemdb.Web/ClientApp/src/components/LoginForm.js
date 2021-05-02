@@ -4,19 +4,15 @@ import '../Styles/Forms.css';
 /*import auth from './auth';*/
 import { useHistory } from 'react-router-dom';
 import {/*useLoginState,*/ useChangeLoginState } from './GlobalContext';
-
-
 function LoginForm() {
   const [userNameLogin, setUserNameLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("")
   /*const [deviceName, setDeviceName] = useState("");*/
   const history = useHistory();
   const isLoggedIn = useChangeLoginState();
-
   const handleSubmitLogin = async (evt) => {
     evt.preventDefault();
     const url = 'https://' + window.location.host + '/api/account/login';
-
     axios.post(url, {
       userName: userNameLogin,
       password: passwordLogin,
@@ -31,30 +27,18 @@ function LoginForm() {
         history.push("/");
       }
     });
-
   }
-
   return (
-    <form className="centeredFields" onSubmit={handleSubmitLogin}>
-      <label className="centeredText">
-        Username
-       </label>
-      <input
-          type="text"
-          value={userNameLogin}
-          onChange={e => setUserNameLogin(e.target.value)}
-      />
-      <label className="centeredText">
-        Password
-      </label>
-      <input
-          type="password"
-          value={passwordLogin}
-          onChange={e => setPasswordLogin(e.target.value)}
-      />
-      <p className="buttonAlign"><input type="submit" value="Login" /></p>
-    </form>
+    <div className="backForm">
+      <label className="formTitle">Login to your account</label>
+      <form className="divForm" onSubmit={handleSubmitLogin}>
+        <label className="formText">Username</label>
+        <input className="formInput" type="text" placeholder="Your username here" value={userNameLogin} onChange={e => setUserNameLogin(e.target.value)}/>
+        <label className="formText">Password</label>
+        <input className="formInput" type="password" placeholder="Your password here" value={passwordLogin} onChange={e => setPasswordLogin(e.target.value)}/>
+        <input className="formButton" type="submit" value="Login" />
+      </form>
+    </div>
   );
 }
-
 export default LoginForm;
