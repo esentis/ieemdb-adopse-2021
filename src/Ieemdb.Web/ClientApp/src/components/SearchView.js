@@ -22,7 +22,6 @@ function SearchView() {
 
     }else{SearchValue=value}
     
-
     const [currentPage,setCurrentPage]=useState(0);
     const [postersPerPage,setPostersPerPage]=useState(10);
 
@@ -47,7 +46,7 @@ function SearchView() {
        <div style={{color:'white'}}>
        <p className="ResultTitle">Results for "{SearchValue}"<span className="ResultsLength">{movies.length} Movies</span></p>
        <Results results={currentPosters} />
-       <Paginate previousLabel={<i className="fa fa-chevron-left"></i>}
+       {movies.length>10 && <Paginate previousLabel={<i className="fa fa-chevron-left"></i>}
                   nextLabel={<i className="fa fa-chevron-right"></i>}
                   breakLabel={".."}
                   pageCount={pageCount}
@@ -56,7 +55,7 @@ function SearchView() {
                   onPageChange={handlePageClick}
                   containerClassName={"pagination"}
                   subContainerClassName={"pages pagination"}
-                  activeClassName={"active"}/>  
+                  activeClassName={"active"}/> }
        </div>
        </Col>
     )
