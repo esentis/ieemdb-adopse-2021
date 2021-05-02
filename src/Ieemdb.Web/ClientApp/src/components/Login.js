@@ -3,7 +3,7 @@ import { useState } from 'react';
 import {Col,Button} from 'react-bootstrap';
 import '../Styles/Login.css';
 import { useUpdatePage } from './GlobalContext';
-import { useLoginState } from './GlobalContext';
+/*import { useLoginState } from './GlobalContext';*/
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import '../Styles/Forms.css';
@@ -13,7 +13,7 @@ function Login(props) {
   const [stateRegister, setStateRegister] = useState(false);
 
   function DecideForm() {
-    if (stateRegister == false) {
+    if (stateRegister === false) {
       return <LoginForm />;
     }
     else {
@@ -22,7 +22,7 @@ function Login(props) {
   }
 
   function DecideButton() {
-    if (stateRegister == false) {
+    if (stateRegister === false) {
       return <Button block onClick={changeForm}>Register here</Button>;
     }
     else {
@@ -31,7 +31,7 @@ function Login(props) {
   }
 
   function DecideP() {
-    if (stateRegister == false) {
+    if (stateRegister === false) {
       return <p className="centeredText">Don't have an account?</p>;
     }
     else {

@@ -13,6 +13,8 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public double Rate { get; set; }
 
+    public string Review { get; set; }
+
     public Movie Movie { get; set; }
   }
 }
