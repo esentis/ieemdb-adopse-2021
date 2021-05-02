@@ -1,24 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Row,Col} from 'react-bootstrap';
 import '../Styles/MovieViewSynopsis.css';
+import Modal from 'react-awesome-modal';
 function MovieViewSynopsis(props){
     /*const id=props.id;*/
+    const [opre, setopre] = useState(false);
+    const [name, setName] = useState("");
     const overview=props.overview;
     const directors = props.directors.map((directors) =>
-        <span className="span">{directors} </span>
+      <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors} </span>
     );
     const actors = props.actors.map((actors) =>
-        <span className="span">{actors} </span>
+      <span className="spanName" onClick={() => onActorClick(actors)}>{actors} </span>
     );
     const writers = props.writers.map((writers) =>
-        <span className="span">{writers} </span>
+      <span className="spanName" onClick={() => onWriterClick(writers)}>{writers} </span>
     );
     const countryOrigin = props.countryOrigin.map((countryOrigin) =>
-        <span className="span">{countryOrigin} </span>
+      <span>{countryOrigin} </span>
     );
     function onWatchlistButtonClick(){
         //Otan kanei click sto ADD TO WATCHLIST button
         console.log("Click on ADD TO WATCHLIST button");
+    }
+    function popupToggle() {
+      setopre(current => !current);
+    }
+    function onActorClick(actors) {
+      setName(actors);
+      popupToggle();
+    }
+    function onDirectorClick(directors) {
+      setName(directors);
+      popupToggle();
+    }
+    function onWriterClick(writers) {
+      setName(writers);
+      popupToggle();
     }
     return(
         <Col>
@@ -49,7 +67,13 @@ function MovieViewSynopsis(props){
                     <p className="text">{countryOrigin}</p>
                 </Col>
             </Row>
+            <Modal visible={opre} width="60%" height="40%" effect="fadeInRight" onClickAway={popupToggle}>
+              <div className="popUpHeader">
+                <p className="popUpName">{name}</p>
+              </div>
+            </Modal>
         </Col>
+
     );
 }
 export default MovieViewSynopsis;

@@ -43,3 +43,31 @@
     font-size: 1rem;
     color:cornsilk;
 }
+
+.spanName:hover {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+
+.popUpHeader {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  align-content: flex-start;
+}
+
+.popUpName {
+  font-family: Arial;
+  font-size: 2rem;
+  color: white;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 5px rgb(0, 0, 0);
+  font-weight: bold;
+  order: 1;
+  flex-grow: 10;
+  margin-bottom: 0px;
+  text-align: center;
+}
