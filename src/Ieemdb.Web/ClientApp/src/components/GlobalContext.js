@@ -6,9 +6,14 @@ const LoginState=createContext();
 const UpdateLoginState=createContext();
 const Role=createContext();
 const UpdateRole=createContext();
+const CheckLogin=createContext();
 
 export const usePage=()=>{
     return useContext(GlobalContext);
+}
+
+export const useCheckLogin=()=>{
+    return useContext(CheckLogin);
 }
 
 export const useChangeLoginState=()=>{
@@ -49,6 +54,13 @@ export const useUpdateRole=()=>{
                 setIsLoggedIn(true)}
             else{setIsLoggedIn(false);}
         }
+
+        const CheckLoginState=()=>{
+            console.log("checkLogin")
+            if(localStorage.getItem('token')!==null){
+              return true;
+            }else{return false}
+          }
            
 
        
@@ -59,9 +71,11 @@ export const useUpdateRole=()=>{
             <UpdateLoginState.Provider value={setIsLoggedIn}>
             <LoginState.Provider value={isLoggedIn}>
             <Role.Provider value={role}>
+            <CheckLogin.Provider value={CheckLoginState}>
             <UpdateRole.Provider value={setRole}>
                 {props.children}
                 </UpdateRole.Provider>
+                </CheckLogin.Provider>
                 </Role.Provider>
                 </LoginState.Provider>
                 </UpdateLoginState.Provider>
