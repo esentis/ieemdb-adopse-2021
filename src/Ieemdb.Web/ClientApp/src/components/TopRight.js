@@ -9,25 +9,29 @@ const responsive = {
     1024: { items: 4 },
 };
 function TopRight(props){
+    var itemsLength=false;
     const title = props.title;
     const items = props.items;
     const [activeIndex, setActiveIndex] = useState(0);
     const slidePrev = () => setActiveIndex(activeIndex - 1);
     const slideNext = () => setActiveIndex(activeIndex + 1);
     const syncActiveIndex = ({ item }) => setActiveIndex(item);
+    if(items.length>4){
+        itemsLength=true;
+    }
     return(
-        <Col className="column-right">
+        <Col className={props.ColClassName}>
             <div className="carousel">
                 <div className="title1">
                     <h1 className="title2">{title}</h1>
                 </div>
                 <div className="div_style">
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-                    <button className="button_arrow" onClick={slidePrev}><i id="arrow" className="fa fa-arrow-left"></i></button>
+                    {itemsLength && <button className="button_arrow" onClick={slidePrev}><i id="arrow" className="fa fa-arrow-left"></i></button>}
                     <div className="carousel_style">
                         <AliceCarousel
                             activeIndex={activeIndex}
-                            infinite
+                            infinite={itemsLength}
                             autoPlayStrategy="none"
                             animationType="fadeout"
                             mouseTracking
@@ -38,7 +42,7 @@ function TopRight(props){
                             onSlideChanged={syncActiveIndex}
                         />
                     </div>
-                    <button className="button_arrow" onClick={slideNext}><i id="arrow" className="fa fa-arrow-right"></i></button>
+                    {itemsLength&& <button className="button_arrow" onClick={slideNext}><i id="arrow" className="fa fa-arrow-right"></i></button>}
                 </div>  
             </div>
         </Col>
