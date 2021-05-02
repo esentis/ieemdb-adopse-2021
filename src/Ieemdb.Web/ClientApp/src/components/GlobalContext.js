@@ -56,7 +56,6 @@ export const useUpdateRole=()=>{
         }
 
         const CheckLoginState=()=>{
-            console.log("checkLogin")
             if(localStorage.getItem('token')!==null){
               return true;
             }else{return false}

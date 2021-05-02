@@ -22,7 +22,7 @@ function LoginForm() {
       password: passwordLogin,
       deviceName: 'fdsfadsfas' //na perasw deviceName
     }).then(function (res) {
-      console.log(res);
+      // console.log(res);
       //console.log(res.data.accessToken);
       //console.log(res.status);
       if (res.status === 200) {

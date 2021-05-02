@@ -39,7 +39,7 @@ function LeftSide(){
             <FaIcons.FaList className='fa-cog' />
             <span>Watch List</span>
             </Link> :" " }
-            {isLoggedIn&&Role=="Admin" ? <Link className='linkClass' to='/AdminPanel' name='Favorites'>
+            {isLoggedIn&&Role==="Admin" ? <Link className='linkClass' to='/AdminPanel' name='Favorites'>
             <FaIcons.FaUserLock className='fa-cog' />
             <span>Admin Panel</span>
             </Link> :" " }
