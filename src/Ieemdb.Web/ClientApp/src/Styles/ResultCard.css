@@ -2,6 +2,7 @@
     display: flex;
     margin-bottom: 5.5vh;
     margin-left: 3vw;
+    width: 40vw;
     
   }
   
@@ -24,27 +25,58 @@
   
   .result-card .info .title1 {
     font-size: 2.25rem;
+    display: block;
     font-weight: 300;
-    margin: 0;
     text-shadow: 2px 2px 5px rgb(0, 0, 0);
+    text-align: left;
   }
   
   .result-card .info .release-date {
     font-size: 1.25rem;
     font-weight: 300;
-    margin-top: 70px;
+    margin-top: 3.470vh;
     text-shadow: 2px 2px 5px rgb(0, 0, 0);
   }
 
+  .addToFeaturedButton{
+    padding: 0.5rem 1rem;
+    margin: 10px;
+    width: 100%;
+    background-color: rgb(59, 94, 189);
+    border-radius: 0.7rem;
+    color: white;
+    transition-duration: 0.4s;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+    border: 0rem;
+    width: 20vw;
+  }
+  .addToFeaturedButton:hover{
+    background-color: white;
+    color: rgb(59, 94, 189);
+  }
 
-  @media (max-width:650px){
+  .addToFeaturedButton:disabled{
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  
+
+
+  @media (max-width:895px){
     .result-card .info .title1 {
       font-size: 1.35rem;
     }
     .result-card .info .release-date {
       font-size: 1rem;
+      margin-top:5.4vh ;
     }
     .result-card{
       margin-left: -3vw;
+      width: 100%;
+    }
+    .addToFeaturedButton{
+      width: 45vw;
     }
   }
