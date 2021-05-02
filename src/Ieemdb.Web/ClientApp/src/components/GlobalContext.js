@@ -4,6 +4,8 @@ const GlobalContext=createContext();
 const UpdateState=createContext();
 const LoginState=createContext();
 const UpdateLoginState=createContext();
+const Role=createContext();
+const UpdateRole=createContext();
 
 export const usePage=()=>{
     return useContext(GlobalContext);
@@ -20,8 +22,17 @@ export const useLoginState=()=>{
 export const useUpdatePage=()=>{
     return useContext(UpdateState);
 }
+
+export const useRole=()=>{
+    return useContext(Role);
+}
+
+export const useUpdateRole=()=>{
+    return useContext(UpdateRole);
+}
     function GlobalContextProvider(props){
         const [page,setPage]=useState("");
+        const [role,setRole]=useState("Admin");
         const handleClick=(arg)=>{
             setPage(arg);
        }
@@ -47,7 +58,11 @@ export const useUpdatePage=()=>{
             <UpdateState.Provider value={handleClick}>
             <UpdateLoginState.Provider value={setIsLoggedIn}>
             <LoginState.Provider value={isLoggedIn}>
+            <Role.Provider value={role}>
+            <UpdateRole.Provider value={setRole}>
                 {props.children}
+                </UpdateRole.Provider>
+                </Role.Provider>
                 </LoginState.Provider>
                 </UpdateLoginState.Provider>
             </UpdateState.Provider>  
