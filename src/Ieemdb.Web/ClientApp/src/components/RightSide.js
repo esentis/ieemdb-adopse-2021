@@ -11,13 +11,15 @@ import SearchView from "./SearchView";
 import AdvancedSearchView from "./AdvancedSearchView";
 import {Switch,Route, Redirect} from 'react-router-dom';
 import UserSettings from './UserSettings';
-import {useLoginState} from './GlobalContext';
+import {useRole,useCheckLogin} from './GlobalContext';
+import AdminPanel from './AdminPanel';
 
 
 
 function RightSide() {
   const page = usePage();
-  const isLoggedIn=useLoginState();
+  const CheckLoginState=useCheckLogin();
+  const Role=useRole();
   var bottomPage="";
     if(page==="2")
    {
@@ -28,16 +30,17 @@ function RightSide() {
     <Col>
         <Row>   
           <Switch>
-     <Route path='/' exact children={<Featured />} />
-            <Route path='/Favorites' children={isLoggedIn ?<Favorites />:<Redirect push to="/Login" />} />
-            <Route path='/WatchList' children={isLoggedIn ? <WatchList /> : <Redirect push to="/Login" />} />
-     <Route path='/Login' children={isLoggedIn?<Redirect push to="/" />:<Login/>} />
-     <Route path={'/Movie/:id'} children={<MovieView/>} />
-            <Route path='/AdvancedSearch' children={isLoggedIn ? <AdvancedSearchView /> : <Redirect push to="/Login" />} />
-            <Route path='/UserSettings' children={isLoggedIn ? <UserSettings /> : <Redirect push to="/Login" />} />
-     <Route path={'/:SearchType/value=:value?'} children={<SearchView/>} />
-     <Route path={'/:SearchType/MovieTitle=:MovieTitle? ActorName=:ActorName? DirectorName=:DirectorName? WriterName=:WriterName? Duration=:Duration? Genres=:Genres? FromRating=:FromRating? ToRating=:ToRating? FromDate=:FromDate? ToDate=:ToDate?'} 
-              children={ isLoggedIn ? <SearchView /> : <Redirect push to="/Login" />} />
+            <Route path='/' exact children={<Featured />} />
+            <Route path='/Favorites' children={CheckLoginState() ? <Favorites />:<Redirect push to="/Login" />} />
+            <Route path='/WatchList' children={CheckLoginState() ? <WatchList /> : <Redirect push to="/Login" />} />
+            <Route path='/Login' children={CheckLoginState() ? <Redirect push to="/" />:<Login/>} />
+            <Route path={'/Movie/:id'} children={<MovieView/>} />
+            <Route path='/AdvancedSearch' children={CheckLoginState() ? <AdvancedSearchView /> : <Redirect push to="/Login" />} />
+            <Route path='/UserSettings' children={CheckLoginState() ? <UserSettings /> : <Redirect push to="/Login" />} />
+            <Route path={'/:SearchType/value=:value?'} children={<SearchView/>} />
+            <Route path={'/AdminPanel'} children={CheckLoginState() && Role==='Admin'? <AdminPanel /> : <Redirect push to="/Login" /> } />
+            <Route path={'/:SearchType/MovieTitle=:MovieTitle? ActorName=:ActorName? DirectorName=:DirectorName? WriterName=:WriterName? Duration=:Duration? Genres=:Genres? FromRating=:FromRating? ToRating=:ToRating? FromDate=:FromDate? ToDate=:ToDate?'} 
+              children={ CheckLoginState() ? <SearchView /> : <Redirect push to="/Login" />} />
         </Switch>
         </Row>
             <Row>

@@ -30,8 +30,9 @@ function MovieCard(props){
     }
     return(
         <div>
-            <div className="poster">
+            <div className={props.posterClass}>
                 <img className="img_poster" src={props.Poster} alt={props.key} height={props.height} width={props.width} onClick={onPosterClick} />
+                {props.flag?<div onClick={()=>props.onClick(props.id)} className="overlay">Remove from Featured</div>:""}
             </div>
             <div>
             <p className="title" onClick={onPosterClick}>{props.Title}</p>

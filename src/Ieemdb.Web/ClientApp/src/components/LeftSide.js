@@ -5,12 +5,13 @@ import {Link} from 'react-router-dom';
 import '../Styles/NavBar.css'
 import  * as FaIcons  from "react-icons/fa";
 import logo from '../images/imdb_logo.png';
-import {useLoginState,useChangeLoginState} from './GlobalContext';
+import {useLoginState,useChangeLoginState,useRole} from './GlobalContext';
 
 
 function LeftSide(){
     const isLoggedIn=useLoginState();
     const setLoginState=useChangeLoginState();
+    const Role=useRole();
 
     function logoutClick() {
       setLoginState(false);
@@ -37,6 +38,10 @@ function LeftSide(){
             {isLoggedIn ? <Link className='linkClass' to='/WatchList' name='WatchList'>
             <FaIcons.FaList className='fa-cog' />
             <span>Watch List</span>
+            </Link> :" " }
+            {isLoggedIn&&Role==="Admin" ? <Link className='linkClass' to='/AdminPanel' name='Favorites'>
+            <FaIcons.FaUserLock className='fa-cog' />
+            <span>Admin Panel</span>
             </Link> :" " }
               {isLoggedIn ? <div>
                 <Link className='linkClass' to='/UserSettings'>
