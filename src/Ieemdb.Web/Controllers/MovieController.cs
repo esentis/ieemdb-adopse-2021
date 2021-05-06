@@ -91,6 +91,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         resultDtos.Add(new MovieDto
         {
           Actors = actorsDto,
+          Plot = pagedMovie.Plot,
           Directors = directorsDto,
           Writers = writersDto,
           Genres = genresDto,
