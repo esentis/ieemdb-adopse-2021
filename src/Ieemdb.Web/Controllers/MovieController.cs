@@ -91,13 +91,14 @@ namespace Esentis.Ieemdb.Web.Controllers
         resultDtos.Add(new MovieDto
         {
           Actors = actorsDto,
+          Plot = pagedMovie.Plot,
           Directors = directorsDto,
           Writers = writersDto,
           Genres = genresDto,
           Countries = countriesDto,
           Posters = posters,
           Screenshots = screenshots,
-          Featured = false,
+          Featured = pagedMovie.Featured,
           Title = pagedMovie.Title,
           TrailerUrl = pagedMovie.TrailerUrl,
           Duration = pagedMovie.Duration,
