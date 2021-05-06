@@ -23,7 +23,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
-  [Microsoft.AspNetCore.Components.Route("api/rating")]
+  [Route("api/rating")]
   public class RatingController : BaseController<RatingController>
   {
 
