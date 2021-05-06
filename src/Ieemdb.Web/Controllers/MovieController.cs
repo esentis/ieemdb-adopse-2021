@@ -45,7 +45,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       // We prepare the query without executing it.
       var moviesQuery = Context.Movies
         .TagWith($"Searching for movies with {query}")
-        .Where(x => EF.Functions.ToTsVector("english", x.NormalizedSearch).Matches(query) || EF.Functions.ToTsVector("english", x.NormalizedTitle).Matches(query))
+        .Where(x => EF.Functions.ToTsVector("english", x.NormalizedSearch).Matches(query) || EF.Functions.ToTsVector("english", x.NormalizedTitle).Matches(query) || x.NormalizedTitle.Contains(query.NormalizeSearch()))
 
         .OrderBy(x => x.Id);
 
@@ -86,7 +86,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
         var posters = await Context.Posters.Where(x => x.Movie == pagedMovie).Select(x => x.Url).ToListAsync();
 
-        var screenshots = await Context.Screenshots.Where(x => x.Movie == pagedMovie).Select(x=>x.Url).ToListAsync();
+        var screenshots = await Context.Screenshots.Where(x => x.Movie == pagedMovie).Select(x => x.Url).ToListAsync();
 
         resultDtos.Add(new MovieDto
         {
@@ -287,6 +287,24 @@ namespace Esentis.Ieemdb.Web.Controllers
       await Context.SaveChangesAsync();
 
       return NoContent();
+    }
+
+    /// <summary>
+    /// Get a single movie provided the ID.
+    /// </summary>
+    /// <param name="id">Movie's unique ID. </param>
+    /// <returns>Movie</returns>
+    [HttpGet("{id}")]
+    public async Task<ActionResult> GetMovie(long id)
+    {
+      var movie = await Context.Movies.Where(m => m.Id == id).SingleOrDefaultAsync();
+
+      if (movie == null)
+      {
+        return NotFound("Movie not found");
+      }
+
+      return Ok(Mapper.Map<Movie, MovieDto>(movie));
     }
   }
 }
