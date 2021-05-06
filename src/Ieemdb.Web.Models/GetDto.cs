@@ -22,7 +22,7 @@ namespace Esentis.Ieemdb.Web.Models
     [Required][PasswordPropertyText] string Password,
     [Required] string DeviceName);
 
-  public record UserBindingDto(string AccessToken, DateTimeOffset ExpiresIn, Guid RefreshToken);
+  public record UserBindingDto(string AccessToken, DateTimeOffset ExpiresIn, Guid RefreshToken, string role);
 
   public record UserRefreshTokenDto(string ExpiredToken, Guid RefreshToken);
 }
