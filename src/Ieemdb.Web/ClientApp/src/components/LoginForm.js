@@ -5,7 +5,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 /*import auth from './auth';*/
 import { useHistory } from 'react-router-dom';
-import {/*useLoginState,*/ useChangeLoginState } from './GlobalContext';
+import {/*useLoginState,*/ useChangeLoginState,useUpdateRole} from './GlobalContext';
 function LoginForm() {
   const [userNameLogin, setUserNameLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("")
@@ -18,6 +18,7 @@ function LoginForm() {
         
     function CloseSnackBar(){setOpen(false)};    
     const isLoggedIn = useChangeLoginState();
+    const updateRole=useUpdateRole();
     const handleSubmitLogin = async (evt) => {
     evt.preventDefault();
     const url = 'https://' + window.location.host + '/api/account/login';
@@ -33,6 +34,8 @@ function LoginForm() {
         localStorage.setItem('username',userNameLogin);
         isLoggedIn(true);
         history.push("/");
+        updateRole(res.data.role);
+        localStorage.setItem('role',res.data.role);
       }
     })
     .catch(error=>{
