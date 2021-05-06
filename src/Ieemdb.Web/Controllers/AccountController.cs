@@ -133,7 +133,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       await Context.SaveChangesAsync();
 
-      var dto = new UserBindingDto(token, accessTokenExpiration, refreshToken);
+      var dto = new UserBindingDto(token, accessTokenExpiration, refreshToken,userManager.GetRolesAsync(user).Result.FirstOrDefault());
 
       return Ok(dto);
     }
@@ -168,7 +168,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       device.RefreshToken = Guid.NewGuid();
       await Context.SaveChangesAsync();
 
-      var result = new UserBindingDto(token, accessTokenExpiration, Guid.Parse(token));
+      var result = new UserBindingDto(token, accessTokenExpiration, Guid.Parse(token), userManager.GetRolesAsync(user).Result.FirstOrDefault());
 
       return Ok(result);
     }
