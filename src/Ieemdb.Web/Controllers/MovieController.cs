@@ -98,7 +98,7 @@ namespace Esentis.Ieemdb.Web.Controllers
           Countries = countriesDto,
           Posters = posters,
           Screenshots = screenshots,
-          Featured = false,
+          Featured = pagedMovie.Featured,
           Title = pagedMovie.Title,
           TrailerUrl = pagedMovie.TrailerUrl,
           Duration = pagedMovie.Duration,
