@@ -12,6 +12,5 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public Uri Url { get; set; }
 
-    public Movie Movie { get; set; }
   }
 }

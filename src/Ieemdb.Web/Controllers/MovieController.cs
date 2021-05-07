@@ -62,7 +62,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("Movie not found");
       }
 
-      var movieDto = Mapper.Map<Movie, MovieDto>(movie);
+      var movieDto = Mapper.Map<Movie, MovieDto>(movie, "complete");
       return Ok(movieDto);
     }
 
@@ -165,7 +165,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       var directorIds = dto.DirectorIds.Distinct().OrderBy(x => x).ToList();
       var writerIds = dto.WriterIds.Distinct().OrderBy(x => x).ToList();
       var genreIds = dto.GenreIds.Distinct().OrderBy(x => x).ToList();
-      var posterUrls = dto.PosterUrls.Distinct().ToList();
+      var posterUrls = dto.PosterUrl.Distinct().ToList();
       var screenshotUrls = dto.ScreenshotUrls.Distinct().ToList();
       var countryIds = dto.CountryIds.Distinct().OrderBy(x => x).ToList();
 
@@ -213,6 +213,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       var movie = new Movie
       {
+        PosterUrl = dto.PosterUrl,
         Featured = false,
         Duration = dto.Duration,
         Plot = dto.Plot,
@@ -226,7 +227,6 @@ namespace Esentis.Ieemdb.Web.Controllers
       var movieWriters = writers.Select(x => new MovieWriter { Writer = x, Movie = movie }).ToList();
       var movieGenres = genres.Select(x => new MovieGenre { Genre = x, Movie = movie }).ToList();
       var movieCountries = countries.Select(x => new MovieCountry { Country = x, Movie = movie }).ToList();
-      var posters = posterUrls.Select(x => new Poster { Movie = movie, Url = x }).ToList();
       var screenshots = screenshotUrls.Select(x => new Screenshot { Movie = movie, Url = x }).ToList();
 
       Context.MovieActors.AddRange(movieActors);
@@ -234,7 +234,6 @@ namespace Esentis.Ieemdb.Web.Controllers
       Context.MovieWriters.AddRange(movieWriters);
       Context.MovieGenres.AddRange(movieGenres);
       Context.MovieCountries.AddRange(movieCountries);
-      Context.Posters.AddRange(posters);
       Context.Screenshots.AddRange(screenshots);
       Context.Movies.Add(movie);
 

@@ -111,6 +111,7 @@ namespace Esentis.Ieemdb.Web.Helpers
           Id = movie.Id,
           Title = movie.Title,
           Plot = movie.Plot,
+          PosterUrl = movie.PosterUrl,
           TrailerUrl = movie.TrailerUrl,
           Duration = movie.Duration,
           Featured = movie.Featured,
@@ -120,6 +121,7 @@ namespace Esentis.Ieemdb.Web.Helpers
             movie.MovieDirectors.Select(x => mapper.Resolve<Director, DirectorDto>().Invoke(x.Director)).ToList(),
           Writers = movie.MovieWriters.Select(x => mapper.Resolve<Writer, WriterDto>().Invoke(x.Writer)).ToList(),
           Genres = movie.MovieGenres.Select(x => mapper.Resolve<Genre, GenreDto>().Invoke(x.Genre)).ToList(),
+          Countries = movie.MovieCountries.Select(x=> mapper.Resolve<Country, CountryDto>().Invoke(x.Country)).ToList(),
         },
         name: "complete")
       .Map<UpdateMovieDto, Movie>(mapper => (source, destination) => UpdateMovie(source, destination, mapper))

@@ -48,6 +48,8 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public bool Featured { get; set; }
 
+    public string PosterUrl { get; set; }
+
     public IReadOnlyCollection<MovieGenre> MovieGenres { get; set; }
       = new List<MovieGenre>(0);
 
@@ -60,7 +62,14 @@ namespace Esentis.Ieemdb.Persistence.Models
     public IReadOnlyCollection<MovieWriter> MovieWriters { get; set; }
       = new List<MovieWriter>(0);
 
+    public IReadOnlyCollection<MovieCountry> MovieCountries { get; set; }
+      = new List<MovieCountry>(0);
+
     public IReadOnlyCollection<Rating> Ratings { get; set; }
       = new List<Rating>(0);
+
+    public IReadOnlyCollection<Screenshot> Screenshots { get; set; }
+      = new List<Screenshot>(0);
+
   }
 }
