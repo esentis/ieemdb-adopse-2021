@@ -1,0 +1,375 @@
+.backStyle{
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+.dtop{
+    flex-grow: 1;
+}
+.buttonReturn{
+    background-color: transparent;
+    border: 0px;
+    height: 10px;
+    padding-top: 30px;
+    padding-left: 30px;
+    padding-bottom: 70px;
+    font-size: 30px;
+    color: white;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+.buttonReturn:hover{
+    color: rgb(59, 94, 189);
+}
+.movieTitle{
+    font-family: Arial;
+    font-size: 2.5rem;
+    width: 90%;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+    font-weight: bold;
+    line-height: normal;
+    max-width: 130vh;
+    margin-bottom: 0px;
+}
+.dcenter{
+    flex-grow: 20;
+    display: flex;
+    flex-direction: row;
+}
+#divTitle{
+    flex-grow: 10;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    align-items: flex-end;
+}
+#divFavorReview{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: norap;
+    justify-content: center;
+    align-items: flex-end;
+    margin-right: 40px;
+}
+.buttonLove {
+    background-color: transparent;
+    opacity: inherit;
+    color: rgb(255, 79, 154);
+    border: 2px solid #e7e7e7;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    display: inline-block;
+    font-size: 1.2rem;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 4rem;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+    margin-right: 2vh;
+}
+.buttonLove:hover {
+  background-color: #e7e7e7;
+}
+.buttonReview {
+    background-color: transparent;
+    opacity: inherit;
+    color: white;
+    border: 2px solid #e7e7e7;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    display: inline-block;
+    font-size: 1.2rem;
+    font-family: Arial;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 4rem;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+.buttonReview:hover {
+  background-color: #e7e7e7;
+  color: #282828;
+}
+.dbottom{
+    flex-grow: 1;
+    align-items: center;
+}
+#divDesc, #divRate{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+#divDesc{
+    flex-grow: 6;
+    justify-content: flex-start;
+}
+.movieDesc{
+    padding: 0.5rem 1rem;
+    color: white;
+    background-color: rgb(59, 94, 189);
+    border-radius: 4rem;
+    margin-left: 20px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+    cursor: pointer;
+}
+.movieDescGenres{
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.movieDescGenre{
+    padding: 8px 16px;
+    color: white;
+    background-color: rgb(59, 94, 189);
+    border-radius: 30px;   
+    margin-left: 20px;
+    display: inline-block;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+#divRate{
+    flex-grow: 2;
+    justify-content: center;
+    align-items: flex-end;
+    display: flex;
+}
+.rating{
+    order: 0;
+    font-size: 30px;
+    font-family: Monospace;
+    color: white;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+    margin-bottom: 5px;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+#popRev{
+    background-color: rgba(41, 44, 52);
+    width:100%;
+    height:90%;
+}
+#popHeader{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    align-content: flex-start;
+}
+.buttonClose{
+    background-color: transparent;
+    border: 0px;
+    height: 10px;
+    font-size: 30px;
+    color: white;
+    order: 0;
+    flex-grow: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+}
+.buttonClose:hover{
+    color: rgb(59, 94, 189);
+}
+.revTitle{
+    font-family: Arial;
+    font-size: 2rem;
+    color: white;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 5px rgb(0, 0, 0);
+    font-weight: bold;
+    order: 1;
+    flex-grow: 10;
+    margin-bottom: 0px;
+    text-align: center;
+}
+.revStars{
+    order: 2;
+    flex-grow: 1;
+}
+.line{
+    background-color: white;
+    width: 98%;
+    box-shadow: 2px 2px 5px rgb(0, 0, 0);
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+#popBody{
+    background-color: rgba(41, 44, 52);
+    height: 82vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 1rem;
+}
+#review{
+    background-color: #e7e7e7;
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 2rem;
+    padding: 0.2rem 1.5rem;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+#review1{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    align-content: flex-start;
+}
+.revWriter{
+    font-family: Arial;
+    font-size: 1.2rem;
+    color: #282828;
+    text-shadow: 1px 1px 1px rgb(255, 255, 255);
+    font-weight: bold;
+    margin-right: 2vw;
+    justify-content: flex-start;
+    margin-bottom: 0px;
+}
+.revComment{
+    font-family: Arial;
+    font-size: 1rem;
+    color: #282828;
+    margin-bottom: 10px;
+}
+#add_review{
+    background-color: #e7e7e7;
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 2rem;
+    padding: 0.2rem 1.5rem;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.col1Rev{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    order: 0;
+    flex-grow: 6;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.col2Rev{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    order: 1;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.addRevTitle{
+    font-family: Arial;
+    font-size: 1.2rem;
+    color: #282828;
+    text-shadow: 1px 1px 1px rgb(255, 255, 255);
+    font-weight: bold;
+}
+.reviewInput{
+    order: 1;
+    background-color: #282828;
+    border-radius: 0.7rem;
+    padding: 0.2rem 1.5rem;
+    color: #e7e7e7;
+    width: 100%;
+    height: 90px;
+}
+.reviewSubmit{
+    order: 2;
+    background-color: #282828;
+    border-radius: 0.7rem;
+    padding: 0.2rem 1.5rem;
+    color: #e7e7e7;
+    font-size: 20px;
+    width: 100%;
+}
+.emptyRow{
+    order: 0;
+    margin-top: 28px;
+}
+.revStars2{
+    order: 2;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex-flow: row;
+}
+.revStars3{
+    order: 2;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    flex-flow: row;
+}
+@media (max-width:1199px){
+    #divDesc{
+        justify-content: center;
+    }
+    #divTitle{
+        justify-content: center;
+    }
+    .movieTitle{
+        text-align: center;
+    }
+    #popHeader{
+        justify-content: flex-end;
+    }
+    .buttonClose{
+        margin-top: 0px;
+    }
+    .revTitle{
+        text-align: center; 
+        margin-top: 10px; 
+        font-size: 1.5rem;     
+    }
+    #add_review{
+        flex-direction: column;
+    }
+    .emptyRow{
+        display: none;
+    }
+    .col1Rev{
+        margin-bottom: 0px;
+        margin-right: 0px;
+    }
+    .col2Rev{
+        margin-top: 0px;
+        margin-right: 0px;
+    }
+    #divFavorReview{
+        margin-bottom: 20px;
+        margin-right: 0px;
+    }
+}
+@media (max-width:452px){
+    .movieDescGenres{
+        margin-bottom: 60px;
+    }
+}

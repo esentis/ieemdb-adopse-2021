@@ -1,12 +1,17 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import TopRight from './TopRight'
 import MovieCard from './MovieCard';
 import movies from './Movie_Dataset';
+import {useUpdatePage} from './GlobalContext'
 
 function WatchList() {
+    const setPage=useUpdatePage();
+    useEffect(() => {
+        setPage("2")})
+    
     const title='WATCH LIST';
     const items=movies.map(i => <MovieCard 
-        key={i.id}
+        id={i.id}
         Title={i.title} 
         Poster={i.poster} 
         Overview={i.overview}
@@ -19,10 +24,13 @@ function WatchList() {
         Duration={i.duration}
         CountryOrigin={i.countryOrigin}
         height={"250vh"} 
-        width={'auto'} />)
+        width={'auto'}
+        posterClass='poster'
+        flag={false} />)
     return (
         <TopRight title={title}
-                  items={items} />
+                  items={items}
+                  ColClassName={"column-right"}  />
     )
 }
 

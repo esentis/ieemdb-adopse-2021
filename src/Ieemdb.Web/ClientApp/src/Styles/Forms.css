@@ -1,0 +1,133 @@
+.center-Form {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.backForm{
+  display: block;
+  width: 25vw;
+}
+.formTitle{
+  order: 0;
+  color: rgb(255, 255, 255);
+  padding-bottom: 40px;
+  text-align: center;
+  font-family: Arial;
+  font-size: 2.5rem;
+  width: 100%;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 5px rgb(0, 0, 0);
+  font-weight: bold;
+  line-height: normal;
+}
+.divForm {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: rgb(255, 255, 255);
+  padding: 40px;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  border-radius: 2rem;
+  width: 100%;
+}
+.formText{
+  color: rgba(41, 44, 52);
+  text-align: center;
+  margin-bottom: 0px;
+  border: 0rem;
+  font-family: Arial;
+}
+.formInput{
+  width: 100%;
+  border-radius: 0.7rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-bottom: 2px solid rgb(59, 94, 189);
+  margin-bottom: 30px;
+  font-family: Arial;
+}
+.formButton{
+  width: 100%;
+  background-color: rgb(59, 94, 189);
+  border-radius: 0.7rem;
+  color: white;
+  transition-duration: 0.4s;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  text-shadow: 2px 2px 5px rgb(0, 0, 0);
+  border: 0rem;
+  padding: 0.5rem 1rem;
+  margin-top: 20px;
+  font-family: Arial;
+}
+.formButton:disabled{
+    pointer-events: none;
+    opacity: 0.5;
+}
+.formInput:focus{
+  border-radius: 0rem;
+  border: 0px;
+}
+.divChangeForm{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: baseline;
+  width: 100%;
+  margin-top: 40px;
+}
+.buttonChangeForm{
+  order: 0;
+  background-color: white;
+  border-radius: 0.7rem;
+  color: rgb(59, 94, 189);
+  transition-duration: 0.4s;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  text-shadow: 2px 2px 5px rgb(138, 138, 138);
+  border: 0rem;
+  padding: 0.5rem 1rem;
+  width: fit-content;
+  font-family: Arial;
+}
+
+
+.snackbar{
+  margin-top:4.5vw;
+  position: absolute;
+  left: 50%;
+  width: 80vw;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+@media (max-width:1199px){
+  .center-Form {
+    top: 45%;
+  }
+  .formTitle{
+    padding-top: 0px;
+    padding-bottom: 20px;
+    font-size: 2rem;
+  }
+  .divForm{
+    padding: 20px;
+  }
+  .formButton{
+    margin-top: 0px;
+  }
+  .divChangeForm{
+    margin-top: 20px;
+  }
+
+  .backForm{
+    width: 85vw;
+  }
+  .snackbar{
+    width: 100vw;
+    margin-top: 15vw;
+  }
+}

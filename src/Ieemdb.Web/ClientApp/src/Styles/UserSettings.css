@@ -1,0 +1,41 @@
+.column-right-User{
+    background-color: #282828;
+    height: 100vh;
+    padding: 0%;
+    width: 80%;
+    margin-left:16.6%
+    }
+
+    .center-SnackBar{
+      margin-top:4.5vw;
+      position: absolute;
+      left: 50%;
+      width: 80vw;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+
+    .backForm-userSettings{
+      display: block;
+      width: 25vw;
+    }
+
+    .submitButton:disabled{
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    @media (max-width:1199px){
+        .column-right-User{
+          margin-left:0;
+          top:8vh;}
+
+          .backForm-userSettings{
+            width: 85vw;
+          }
+
+          .center-SnackBar{
+           margin-top: 15vw;
+           width: 100vw;
+          }
+}

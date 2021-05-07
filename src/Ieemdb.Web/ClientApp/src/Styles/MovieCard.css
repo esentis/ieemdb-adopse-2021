@@ -5,19 +5,22 @@
     align-items: center;
     margin: auto;
 }
-img {
+
+.poster-Admin{
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+}
+.img_poster {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    border: 2px solid black;
+    border: 0.1rem solid black;
     box-shadow: 0 0 1rem black;
+    background-color: black;
 }
-/* svg {
-    position: absolute;
-    bottom: 43%;
-    right: 43%;
-    width: 30px;
-} */
 polygon {
     fill: white;
     stroke: rgba(41, 44, 52);
@@ -30,4 +33,28 @@ polygon {
     text-shadow: -1px 1px 10px white;
     text-align: center;
     padding-top: 0.3rem;
+}
+
+.overlay{
+    position: absolute;
+    background: rgba(0,0,0,0.8);
+    width: 100%;
+    transition: 0.5 ease;
+    opacity: 0;
+    bottom: 0;
+    font-size: 1rem;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+}
+
+ .poster-Admin:hover .overlay {
+    opacity: 1;
+}
+
+@media (max-width:1199px){
+    .poster-Admin .overlay{
+        opacity:1 ;
+    }
 }

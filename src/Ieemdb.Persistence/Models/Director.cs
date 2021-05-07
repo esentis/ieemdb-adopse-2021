@@ -7,23 +7,49 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   public class Director : EemdbEntity<long>, ISearchable
   {
-    private string name = string.Empty;
+    private string fName = string.Empty;
 
-    public string Name
+    private string lName = string.Empty;
+
+    private string bio = string.Empty;
+
+    public string FirstName
     {
-      get => name;
+      get => fName;
       set
       {
-        name = value;
+        fName = value;
+        NormalizedFirstName = value.NormalizeSearch();
+      }
+    }
+
+    public string LastName
+    {
+      get => lName;
+      set
+      {
+        lName = value;
+        NormalizedLastName = value.NormalizeSearch();
+      }
+    }
+
+    public string NormalizedFirstName { get; private set; } = string.Empty;
+
+    public string NormalizedLastName { get; private set; } = string.Empty;
+
+    public DateTimeOffset BirthDate { get; set; }
+
+    public string Bio
+    {
+      get => bio;
+      set
+      {
+        bio = value;
         NormalizedSearch = value.NormalizeSearch();
       }
     }
 
     public string NormalizedSearch { get; private set; } = string.Empty;
-
-    public DateTimeOffset BirthDate { get; set; }
-
-    public string Bio { get; set; } = string.Empty;
 
     public bool Featured { get; set; }
   }

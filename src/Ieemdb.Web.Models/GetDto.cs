@@ -4,13 +4,13 @@ namespace Esentis.Ieemdb.Web.Models
   using System.ComponentModel;
   using System.ComponentModel.DataAnnotations;
 
-  public record AddActorDto(string Name, DateTimeOffset BirthDate, string Bio);
+  public record AddActorDto(string FirstName, string LastName, DateTimeOffset BirthDate, string Bio);
 
-  public record AddDirectorDto(string Name, DateTimeOffset BirthDate, string Bio);
+  public record AddDirectorDto(string FirstName, string LastName, DateTimeOffset BirthDate, string Bio);
 
   public record AddGenreDto(string Name);
 
-  public record AddWriterDto(string Name, DateTimeOffset BirthDate, string Bio);
+  public record AddWriterDto(string FirstName, string LastName, DateTimeOffset BirthDate, string Bio);
 
   public record UserRegisterDto(
     [Required] string UserName,
@@ -22,7 +22,7 @@ namespace Esentis.Ieemdb.Web.Models
     [Required][PasswordPropertyText] string Password,
     [Required] string DeviceName);
 
-  public record UserBindingDto(string AccessToken, DateTimeOffset ExpiresIn, Guid RefreshToken);
+  public record UserBindingDto(string AccessToken, DateTimeOffset ExpiresIn, Guid RefreshToken, string role);
 
   public record UserRefreshTokenDto(string ExpiredToken, Guid RefreshToken);
 }

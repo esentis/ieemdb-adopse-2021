@@ -1,26 +1,29 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import {Col} from 'react-bootstrap';
-import '../Styles/MovieView.css'
-
-
-function MovieView(props) {
+import { useParams } from "react-router-dom";
+import '../Styles/MovieView.css' 
+import MovieViewPoster from './MovieViewPoster';
+import MovieViewTrailer from './MovieViewTrailer';
+import MovieViewSynopsis from './MovieViewSynopsis';
+import movies from './Movie_Dataset';
+import {useUpdatePage} from './GlobalContext'
+function MovieView() {
+    const setPage=useUpdatePage();
+    useEffect(() => {
+        setPage("1")})
+    const { id }=useParams();
+    const item=movies.find(movie=>{
+        return movie.id===id;
+    })
     return (
-       <Col className='column-right-MovieView'>
-       <div style={{color:'white'}}>
-       <p>Title:{props.Title}</p>
-       <p>Poster:{props.Poster}</p>
-       <p>Overview:{props.Overview}</p>
-       <p>ReleaseDate:{props.ReleaseDate}</p>
-       <p>Genres:{props.Genres}</p>
-       <p>Actors:{props.Actors}</p>
-       <p>Writers:{props.Writers}</p>
-       <p>Directors:{props.Directors}</p>
-       <p>Rating:{props.Rating}</p>
-       <p>Duration:{props.Duration}</p>
-       <p>CountryOrigin:{props.CountryOrigin}</p>
-       </div>
-       </Col>
+        <Col className='column-right-MovieView'>
+            <div className='MovieViewPoster'><MovieViewPoster key={item.id} id={item.id} title={item.title} poster={item.poster} releaseDate={item.release_date} genres={item.genres} rating={item.rating} duration={item.duration}/></div>
+            <div className='splitScreen'>
+                <div className='MovieViewSynopsis'><MovieViewSynopsis key={item.id} id={item.id} overview={item.overview} actors={item.actors} writers={item.writers} directors={item.directors} countryOrigin={item.countryOrigin}/></div>
+                <div className='MovieViewTrailer'><MovieViewTrailer id={item.id}/></div>
+            </div>
+        </Col>
+        
     )
 }
-
 export default MovieView;

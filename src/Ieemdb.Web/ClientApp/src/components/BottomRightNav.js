@@ -25,22 +25,22 @@ export default function BottomRightNav(){
             </Col>
             <Col>
                 <Nav.Item>
-                    <Nav.Link onClick={showNewReleases}>New Realeases</Nav.Link>
+                    <Nav.Link className="nav-bottom-right-link" onClick={showNewReleases}>New Releases</Nav.Link>
                 </Nav.Item>
             </Col>
             <Col>
                 <Nav.Item>
-                    <Nav.Link onClick={showPopular}>Popular</Nav.Link>
+                    <Nav.Link className="nav-bottom-right-link" onClick={showPopular}>Popular</Nav.Link>
                 </Nav.Item>
             </Col>
             <Col>
                 <Nav.Item>
-                    <Nav.Link onClick={showRecentlyAdded}>Recently Added</Nav.Link>
+                    <Nav.Link className="nav-bottom-right-link" onClick={showRecentlyAdded}>Recently Added</Nav.Link>
                 </Nav.Item>
             </Col>
             <Col>
                 <Nav.Item>
-                    <Nav.Link onClick={showTopRated}>Top Rated</Nav.Link>
+                    <Nav.Link className="nav-bottom-right-link" onClick={showTopRated}>Top Rated</Nav.Link>
                 </Nav.Item>
             </Col>
             <Col>

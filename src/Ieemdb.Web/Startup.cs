@@ -7,6 +7,7 @@ namespace Esentis.Ieemdb.Web
   using System.Text;
 
   using Esentis.Ieemdb.Persistence;
+  using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Helpers.Extensions;
@@ -55,6 +56,7 @@ namespace Esentis.Ieemdb.Web
       services.AddApplicationInsightsTelemetry();
 
       services.AddHttpContextAccessor();
+      services.AddScoped<RazorViewToStringRenderer>();
       services.AddSingleton<TimestampSaveChangesInterceptor>();
       services.AddSingleton<AuditSaveChangesInterceptor<Guid>>();
 
@@ -64,7 +66,9 @@ namespace Esentis.Ieemdb.Web
       services.AddDbContextPool<IeemdbDbContext>((serviceProvider, options) =>
       {
         options.UseNpgsql(
-            Configuration.GetConnectionString("Ieemdb"))
+            Configuration.GetConnectionString("Ieemdb"), npgsql => npgsql
+               .EnableRetryOnFailure(5, TimeSpan.FromSeconds(1), Array.Empty<string>())
+               .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
           .AddInterceptors(
             serviceProvider.GetRequiredService<TimestampSaveChangesInterceptor>(),
             serviceProvider.GetRequiredService<AuditSaveChangesInterceptor<Guid>>())
@@ -120,6 +124,7 @@ namespace Esentis.Ieemdb.Web
         {
           var isDevelopment = Environment.IsDevelopment();
           c.User.RequireUniqueEmail = !isDevelopment;
+
           c.Password = new PasswordOptions
           {
             RequireDigit = !isDevelopment,
@@ -164,6 +169,7 @@ namespace Esentis.Ieemdb.Web
       services.AddRazorPages();
 
       services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
+
     }
 
     public void Configure(IApplicationBuilder app)
@@ -196,7 +202,6 @@ namespace Esentis.Ieemdb.Web
       app.UseSpaStaticFiles();
 
       app.UseRouting();
-
       app.UseReDoc(c =>
       {
         c.RoutePrefix = "docs";
