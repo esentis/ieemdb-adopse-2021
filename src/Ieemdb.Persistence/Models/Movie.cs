@@ -40,11 +40,27 @@ namespace Esentis.Ieemdb.Persistence.Models
       }
     }
 
-    public string NormalizedSearch { get; set; }
+    public string NormalizedSearch { get; private set; }
+
+    public double AverageRating { get; set; }
 
     public DateTimeOffset ReleaseDate { get; set; }
 
     public bool Featured { get; set; }
 
+    public IReadOnlyCollection<MovieGenre> MovieGenres { get; set; }
+      = new List<MovieGenre>(0);
+
+    public IReadOnlyCollection<MovieActor> MovieActors { get; set; }
+      = new List<MovieActor>(0);
+
+    public IReadOnlyCollection<MovieDirector> MovieDirectors { get; set; }
+      = new List<MovieDirector>(0);
+
+    public IReadOnlyCollection<MovieWriter> MovieWriters { get; set; }
+      = new List<MovieWriter>(0);
+
+    public IReadOnlyCollection<Rating> Ratings { get; set; }
+      = new List<Rating>(0);
   }
 }

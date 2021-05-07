@@ -66,7 +66,9 @@ namespace Esentis.Ieemdb.Web
       services.AddDbContextPool<IeemdbDbContext>((serviceProvider, options) =>
       {
         options.UseNpgsql(
-            Configuration.GetConnectionString("Ieemdb"))
+            Configuration.GetConnectionString("Ieemdb"), npgsql => npgsql
+               .EnableRetryOnFailure(5, TimeSpan.FromSeconds(1), Array.Empty<string>())
+               .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
           .AddInterceptors(
             serviceProvider.GetRequiredService<TimestampSaveChangesInterceptor>(),
             serviceProvider.GetRequiredService<AuditSaveChangesInterceptor<Guid>>())

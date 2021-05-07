@@ -19,7 +19,6 @@ namespace Esentis.Ieemdb.Web.Helpers
 
   public static class MappingConfiguration
   {
-
     public static readonly IPureMapperConfig Mapping = new PureMapperConfig()
       .Map<Actor, ActorDto>(mapper => actor => new ActorDto()
       {
@@ -106,6 +105,24 @@ namespace Esentis.Ieemdb.Web.Helpers
         Featured = movie.Featured,
         ReleaseDate = movie.ReleaseDate,
       })
+      .Map<Movie, MovieDto>(
+        mapper => movie => new MovieDto()
+        {
+          Id = movie.Id,
+          Title = movie.Title,
+          Plot = movie.Plot,
+          TrailerUrl = movie.TrailerUrl,
+          Duration = movie.Duration,
+          Featured = movie.Featured,
+          ReleaseDate = movie.ReleaseDate,
+          Actors = movie.MovieActors.Select(x => mapper.Resolve<Actor, ActorDto>().Invoke(x.Actor)).ToList(),
+          Directors =
+            movie.MovieDirectors.Select(x => mapper.Resolve<Director, DirectorDto>().Invoke(x.Director)).ToList(),
+          Writers = movie.MovieWriters.Select(x => mapper.Resolve<Writer, WriterDto>().Invoke(x.Writer)).ToList(),
+          Genres = movie.MovieGenres.Select(x => mapper.Resolve<Genre, GenreDto>().Invoke(x.Genre)).ToList(),
+        },
+        name: "complete")
+      .Map<UpdateMovieDto, Movie>(mapper => (source, destination) => UpdateMovie(source, destination, mapper))
       .Map<Rating, RatingDto>(mapper => rating => new RatingDto()
       {
         Id = rating.Id,
@@ -116,5 +133,15 @@ namespace Esentis.Ieemdb.Web.Helpers
         Review = rating.Review,
       });
 
+    private static Movie UpdateMovie(UpdateMovieDto dto, Movie movie, IPureMapperUpdateResolver mapper)
+    {
+      movie.ReleaseDate = dto.ReleaseDate;
+      movie.Title = dto.Title;
+      movie.Plot = dto.Plot;
+      movie.Duration = dto.Duration;
+      movie.TrailerUrl = dto.TrailerUrl;
+
+      return movie;
+    }
   }
 }

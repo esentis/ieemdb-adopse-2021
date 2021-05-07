@@ -81,7 +81,7 @@ namespace Esentis.Ieemdb.Persistence
       builder.Entity<MovieActor>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany()
+          .WithMany(x => x.MovieActors)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Actor)
@@ -94,7 +94,7 @@ namespace Esentis.Ieemdb.Persistence
       builder.Entity<MovieDirector>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany()
+          .WithMany(x => x.MovieDirectors)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Director)
@@ -120,7 +120,7 @@ namespace Esentis.Ieemdb.Persistence
       builder.Entity<MovieWriter>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany()
+          .WithMany(x => x.MovieWriters)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Writer)
@@ -133,7 +133,7 @@ namespace Esentis.Ieemdb.Persistence
       builder.Entity<MovieGenre>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany()
+          .WithMany(x => x.MovieGenres)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Genre)
@@ -154,6 +154,13 @@ namespace Esentis.Ieemdb.Persistence
           .HasForeignKey("CountryId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasKey("MovieId", "CountryId");
+      });
+
+      builder.Entity<Rating>(e =>
+      {
+        e.HasOne(mv => mv.Movie)
+          .WithMany(x => x.Ratings)
+          .OnDelete(DeleteBehavior.Restrict);
       });
     }
   }
