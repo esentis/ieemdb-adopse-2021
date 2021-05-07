@@ -37,7 +37,7 @@ export const useUpdateRole=()=>{
 }
     function GlobalContextProvider(props){
         const [page,setPage]=useState("");
-        const [role,setRole]=useState("Admin");
+        const [role,setRole]=useState(localStorage.getItem('role'));
         const handleClick=(arg)=>{
             setPage(arg);
        }
@@ -51,7 +51,9 @@ export const useUpdateRole=()=>{
 
         window.onstorage = () => {
             if(localStorage.getItem('token')!==null){
-                setIsLoggedIn(true)}
+                setIsLoggedIn(true)
+                setRole(localStorage.getItem('role'))
+            }
             else{setIsLoggedIn(false);}
         }
 

@@ -84,7 +84,7 @@ function AdvancedSearchView() {
         }
 
         function handleGenre(value){
-            setGenres([value.map(obj=>obj.label)]);
+            setGenres([value.map(obj=>obj.id)]);
             if(value.length===0){
                 setGenres("")
             }}

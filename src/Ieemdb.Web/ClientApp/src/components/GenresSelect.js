@@ -5,19 +5,26 @@ import '../Styles/AdvancedSearch.css'
 function GenresSelect(props) {
     const genres=[
         {value:1,
-        label:"Action"},
+        label:"Action",
+        id:16},
         {value:2,
-        label:"Horror"},
+        label:"Horror",
+        id:17},
         {value:3,
-        label:"Adventure"},
+        label:"Adventure",
+        id:18},
         {value:4,
-        label:"Comedy"},
+        label:"Comedy",
+        id:19},
         {value:5,
-        label:"Fantasy"},
+        label:"Fantasy",
+        id:20},
         {value:6,
-        label:"Science fiction"},
+        label:"Science fiction",
+        id:21},
         {value:7,
-        label:"Western"}
+        label:"Western",
+        id:22}
         ]
         
 
