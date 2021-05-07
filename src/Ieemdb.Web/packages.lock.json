@@ -1103,6 +1103,14 @@
           "Npgsql": "5.0.2"
         }
       },
+      "Refit": {
+        "type": "Transitive",
+        "resolved": "6.0.38",
+        "contentHash": "1wKjkHYDUp6TrQ0fK6w6CXguJ+kkGYj2IpPMfzyLQM+uinDYzYqWQ0kcsGxmTWGuWM4rYbUZN7IYFtSDD4x0Yw==",
+        "dependencies": {
+          "System.Net.Http.Json": "5.0.0"
+        }
+      },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1708,6 +1716,11 @@
           "runtime.native.System.Net.Http": "4.3.0",
           "runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0"
         }
+      },
+      "System.Net.Http.Json": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "3CPSQpCzEmI9o+1G79TnPCjF40omCdnoXj2Rg76BDwGj5+LZnFPjV+t35eedlvl+uthmholk/XXxXTYgJWSexw=="
       },
       "System.Net.NameResolution": {
         "type": "Transitive",
@@ -2325,7 +2338,10 @@
         }
       },
       "Esentis.Ieemdb.Web.Models": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Refit": "6.0.38"
+        }
       }
     }
   }
