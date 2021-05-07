@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Esentis.Ieemdb.Persistence.Migrations
 {
     [DbContext(typeof(IeemdbDbContext))]
-    [Migration("20210429201931_Added Watchlist model try01")]
-    partial class AddedWatchlistmodeltry01
+    [Migration("20210504185747_update db with newer aditions")]
+    partial class updatedbwithneweraditions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -629,6 +629,10 @@ namespace Esentis.Ieemdb.Persistence.Migrations
 
                     b.Property<double>("Rate")
                         .HasColumnType("double precision");
+
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

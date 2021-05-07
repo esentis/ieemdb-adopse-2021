@@ -4,9 +4,16 @@ const GlobalContext=createContext();
 const UpdateState=createContext();
 const LoginState=createContext();
 const UpdateLoginState=createContext();
+const Role=createContext();
+const UpdateRole=createContext();
+const CheckLogin=createContext();
 
 export const usePage=()=>{
     return useContext(GlobalContext);
+}
+
+export const useCheckLogin=()=>{
+    return useContext(CheckLogin);
 }
 
 export const useChangeLoginState=()=>{
@@ -20,8 +27,17 @@ export const useLoginState=()=>{
 export const useUpdatePage=()=>{
     return useContext(UpdateState);
 }
+
+export const useRole=()=>{
+    return useContext(Role);
+}
+
+export const useUpdateRole=()=>{
+    return useContext(UpdateRole);
+}
     function GlobalContextProvider(props){
         const [page,setPage]=useState("");
+        const [role,setRole]=useState("Admin");
         const handleClick=(arg)=>{
             setPage(arg);
        }
@@ -38,6 +54,12 @@ export const useUpdatePage=()=>{
                 setIsLoggedIn(true)}
             else{setIsLoggedIn(false);}
         }
+
+        const CheckLoginState=()=>{
+            if(localStorage.getItem('token')!==null){
+              return true;
+            }else{return false}
+          }
            
 
        
@@ -47,7 +69,13 @@ export const useUpdatePage=()=>{
             <UpdateState.Provider value={handleClick}>
             <UpdateLoginState.Provider value={setIsLoggedIn}>
             <LoginState.Provider value={isLoggedIn}>
+            <Role.Provider value={role}>
+            <CheckLogin.Provider value={CheckLoginState}>
+            <UpdateRole.Provider value={setRole}>
                 {props.children}
+                </UpdateRole.Provider>
+                </CheckLogin.Provider>
+                </Role.Provider>
                 </LoginState.Provider>
                 </UpdateLoginState.Provider>
             </UpdateState.Provider>  

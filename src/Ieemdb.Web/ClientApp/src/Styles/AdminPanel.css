@@ -1,0 +1,88 @@
+.column-right-Admin{
+  padding: 0%;
+  margin-left:16.6%;
+  width: 80%;
+  color: white;
+    }
+
+    .DivButton{
+      flex-grow: 1;
+    text-align: right;
+    padding-right: 30px;
+    padding-left: 30px;
+    align-content: flex-end;
+    justify-content: center;
+    }
+
+    .input-wrapper{
+      justify-content: center;
+      display:flex
+    }
+
+    .input-wrapper input {
+      width: 40vw;
+      background:transparent ;
+      padding: 4px;
+      border-radius: 4rem;
+      border: 2px solid white;
+      color: var(--white);
+      font-size: 1.25rem;
+      margin-top: 5vh;
+      outline: none;
+    }
+
+    .buttonSave {
+      background-color: transparent;
+      opacity: inherit;
+      color: white;
+      border: 2px solid #e7e7e7;
+      padding: 0.5rem 1rem;
+      text-align: center;
+      display: inline-block;
+      font-size: 1.2rem;
+      font-family: Arial;
+      transition-duration: 0.4s;
+      cursor: pointer;
+      border-radius: 4rem;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+      text-shadow: 2px 2px 5px rgb(0, 0, 0);
+  }
+  .buttonSave:hover {
+    background-color: #e7e7e7;
+    color: #282828;
+  }
+
+  .resultsDiv{
+    display: flex;
+    justify-content: center;
+  }
+
+  .resultsTitles{
+    display: flex;
+    margin-left: 18.5vw;
+  }
+
+  .searchResults{
+    width:auto;
+    display: block;
+    margin-left: 20vw;
+  }
+
+    @media (max-width:1199px){
+        .column-right-Admin{
+          margin-left:0;
+          top:8vh;}
+        .input-wrapper input{
+          width: 80vw;
+        }  
+        .DivButton{
+          text-align: center;
+        }
+        .searchResults{width: auto}
+
+        .resultsDiv{
+          margin-left: 2vw;
+          justify-content: start;
+        }
+        .resultsTitles{margin-left: 4vw;}  
+}

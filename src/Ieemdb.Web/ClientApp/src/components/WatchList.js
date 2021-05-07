@@ -24,10 +24,13 @@ function WatchList() {
         Duration={i.duration}
         CountryOrigin={i.countryOrigin}
         height={"250vh"} 
-        width={'auto'} />)
+        width={'auto'}
+        posterClass='poster'
+        flag={false} />)
     return (
         <TopRight title={title}
-                  items={items} />
+                  items={items}
+                  ColClassName={"column-right"}  />
     )
 }
 
