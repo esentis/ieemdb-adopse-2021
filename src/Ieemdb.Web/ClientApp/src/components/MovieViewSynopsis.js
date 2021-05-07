@@ -4,6 +4,7 @@ import '../Styles/MovieViewSynopsis.css';
 import Modal from 'react-awesome-modal';
 function MovieViewSynopsis(props){
     /*const id=props.id;*/
+    //test giana alla3w se vs
     const [opre, setopre] = useState(false);
     const [name, setName] = useState("");
     const overview=props.overview;
