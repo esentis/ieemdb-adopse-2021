@@ -8,6 +8,15 @@
         "resolved": "33.0.2",
         "contentHash": "92CcSgl7KLEw7lerMytjY504IPnhmYqDkCgIPm5GVfiZPslRWUcgWvtoNYhKbSU4m/Ms7giKP8OxPAFTFBgC3w=="
       },
+      "Kritikos.Extensions.Linq": {
+        "type": "Direct",
+        "requested": "[0.1.7, )",
+        "resolved": "0.1.7",
+        "contentHash": "wp0ExxKS7B5hNTu+E+KdFUgepgvL3STCSvLgHcQjVuwtSsrRp+KhEr5pSw4ghOMZ7BgEomoI1nQevxmdWAeREQ==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0"
+        }
+      },
       "Kritikos.PureMapper": {
         "type": "Direct",
         "requested": "[1.0.3, )",

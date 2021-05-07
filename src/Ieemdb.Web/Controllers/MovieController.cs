@@ -9,6 +9,8 @@ namespace Esentis.Ieemdb.Web.Controllers
 
   using Bogus;
 
+  using EllipticCurve.Utils;
+
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Joins;
@@ -16,7 +18,10 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Models.Dto;
+  using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
+  using Kritikos.Extensions.Linq;
+  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Authorization;
@@ -28,98 +33,127 @@ namespace Esentis.Ieemdb.Web.Controllers
   [Route("api/movie")]
   public class MovieController : BaseController<MovieController>
   {
-
     public MovieController(ILogger<MovieController> logger, IeemdbDbContext ctx, IPureMapper mapper)
       : base(logger, ctx, mapper)
     {
     }
 
-    [HttpGet("search")]
-    public async Task<ActionResult<ICollection<MovieDto>>> SearchForMovie(
-      string query,
-      [Range(1, 100)] int itemsPerPage = 20,
-      int page = 1)
+    /// <summary>
+    /// Get a single movie provided the ID.
+    /// </summary>
+    /// <param name="id">Movie's unique ID. </param>
+    /// <returns>Movie</returns>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<MovieDto>> GetMovie(long id, CancellationToken token = default)
     {
-      var toSkip = itemsPerPage * (page - 1);
+      var movie = await Context.Movies
+        .Include(x => x.MovieActors)
+        .ThenInclude(x => x.Actor)
+        .Include(x => x.MovieDirectors)
+        .ThenInclude(x => x.Director)
+        .Include(x => x.MovieWriters)
+        .ThenInclude(x => x.Writer)
+        .Include(x => x.MovieGenres)
+        .ThenInclude(x => x.Genre)
+        .SingleOrDefaultAsync(m => m.Id == id, token);
 
-      // We prepare the query without executing it.
-      var moviesQuery = Context.Movies
-        .TagWith($"Searching for movies with {query}")
-        .Where(x => EF.Functions.ToTsVector("english", x.NormalizedSearch).Matches(query) || EF.Functions.ToTsVector("english", x.NormalizedTitle).Matches(query) || x.NormalizedTitle.Contains(query.NormalizeSearch()))
-
-        .OrderBy(x => x.Id);
-
-      // We calculate how many movies are in database.
-      var totalMovies = await moviesQuery.CountAsync();
-
-      // If page provided doesn't exist we return bad request.
-      if (page > ((totalMovies
-                   / itemsPerPage) + 1))
+      if (movie == null)
       {
-        return BadRequest("Page doesn't exist");
+        return NotFound("Movie not found");
       }
 
-      // We create the paged query request.
-      var pagedMovies = await moviesQuery
-        .Skip(toSkip)
-        .Take(itemsPerPage)
-        .ToListAsync();
-
-      List<MovieDto> resultDtos = new();
-
-      foreach (var pagedMovie in pagedMovies)
-      {
-        var actors = await Context.MovieActors.Include(x => x.Actor).Where(x => x.Movie == pagedMovie).ToListAsync();
-        var actorsDto = actors.Select(x => Mapper.Map<Actor, ActorDto>(x.Actor)).ToList();
-
-        var genres = await Context.MovieGenres.Include(x => x.Genre).Where(x => x.Movie == pagedMovie).ToListAsync();
-        var genresDto = genres.Select(x => Mapper.Map<Genre, GenreDto>(x.Genre)).ToList();
-
-        var directors = await Context.MovieDirectors.Include(x => x.Director).Where(x => x.Movie == pagedMovie).ToListAsync();
-        var directorsDto = directors.Select(x => Mapper.Map<Director, DirectorDto>(x.Director)).ToList();
-
-        var writers = await Context.MovieWriters.Include(x => x.Writer).Where(x => x.Movie == pagedMovie).ToListAsync();
-        var writersDto = writers.Select(x => Mapper.Map<Writer, WriterDto>(x.Writer)).ToList();
-
-        var countries = await Context.MovieCountries.Include(x => x.Country).Where(x => x.Movie == pagedMovie).ToListAsync();
-        var countriesDto = countries.Select(x => Mapper.Map<Country, CountryDto>(x.Country)).ToList();
-
-        var posters = await Context.Posters.Where(x => x.Movie == pagedMovie).Select(x => x.Url).ToListAsync();
-
-        var screenshots = await Context.Screenshots.Where(x => x.Movie == pagedMovie).Select(x => x.Url).ToListAsync();
-
-        resultDtos.Add(new MovieDto
-        {
-          Actors = actorsDto,
-          Plot = pagedMovie.Plot,
-          Directors = directorsDto,
-          Writers = writersDto,
-          Genres = genresDto,
-          Countries = countriesDto,
-          Posters = posters,
-          Screenshots = screenshots,
-          Featured = pagedMovie.Featured,
-          Title = pagedMovie.Title,
-          TrailerUrl = pagedMovie.TrailerUrl,
-          Duration = pagedMovie.Duration,
-          ReleaseDate = pagedMovie.ReleaseDate,
-
-        });
-      }
-      // We create the result, which is paged.
-      var result = new PagedResult<MovieDto>
-      {
-        Results = resultDtos,
-        Page = page,
-        TotalPages = (totalMovies / itemsPerPage) + 1,
-        TotalElements = totalMovies,
-      };
-
-      // We return OK and the paged results;
-      return Ok(result);
+      var movieDto = Mapper.Map<Movie, MovieDto>(movie);
+      return Ok(movieDto);
     }
 
-    [HttpPost("add")]
+    /// <summary>
+    /// Searches movies based on multiple criteria.
+    /// </summary>
+    /// <param name="criteria">Search criteria. </param>
+    /// <response code="200">Returns search results. </response>
+    /// <response code="400">Page doesn't exist. </response>
+    /// <response code="402">Wrong operator </response>
+    /// <returns>Search results.</returns>
+    [HttpPost("search")]
+    public async Task<ActionResult<ICollection<MovieDto>>> SearchForMovie(
+      [FromBody] MovieSearchCriteria criteria,
+      CancellationToken token = default)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState.Values);
+      }
+
+      var query = RetrieveUserId() == Guid.Empty
+        ? Context.Movies
+          .Where(x => true)
+          .OrderBy(x => x.Id)
+        : Context.Movies
+          .WhereIf(
+            criteria.MinDuration != null,
+            x => x.Duration >= criteria.MinDuration)
+          .WhereIf(
+            criteria.MaxDuration != null,
+            x => x.Duration <= criteria.MaxDuration)
+          .WhereIf(
+            criteria.FromYear != null,
+            x => x.ReleaseDate >= criteria.FromYear)
+          .WhereIf(
+            criteria.ToYear != null,
+            x => x.ReleaseDate <= criteria.ToYear)
+          .WhereIf(
+            criteria.Actor != null,
+            x => Context.MovieActors.Any(a =>
+              a.Actor.NormalizedLastName.Contains(criteria.Actor!.NormalizeSearch()) && x.Id == a.Movie.Id))
+          .WhereIf(
+            criteria.Director != null,
+            x => Context.MovieDirectors.Any(a =>
+              a.Director.NormalizedLastName.Contains(criteria.Director!.NormalizeSearch()) && x.Id == a.Movie.Id))
+          .WhereIf(
+            criteria.Writer != null,
+            x => Context.MovieWriters.Any(a =>
+              a.Writer.NormalizedLastName.Contains(criteria.Writer!.NormalizeSearch()) && x.Id == a.Movie.Id))
+          .WhereIf(
+            criteria.MinRating != null,
+            x => Context.Ratings.Any(r => r.Rate >= criteria.MinRating && r.Movie.Id == x.Id))
+          .WhereIf(
+            criteria.MaxRating != null,
+            x => x.Ratings.Average(y => y.Rate) <= criteria.MaxRating)
+          .WhereIf(
+            criteria.Genres.Length > 0,
+            x => x.MovieGenres.Any(gn => criteria.Genres.Contains(gn.Genre.Id)))
+          .OrderBy(x => x.Id);
+
+      query = query
+        .WhereIf(criteria.IsFeatured != null, x => x.Featured)
+        .WhereIf(
+          criteria.TitleCriteria != null,
+          x => x.NormalizedTitle.Contains(criteria.TitleCriteria!.NormalizeSearch()) || EF.Functions
+            .ToTsVector("english", x.NormalizedSearch)
+            .Matches(criteria.TitleCriteria!))
+        .WhereIf(
+          criteria.PlotCriteria != null,
+          x => EF.Functions.ToTsVector("english", x.NormalizedSearch).Matches(criteria.PlotCriteria!))
+        .OrderBy(x => x.Id);
+
+      var matchingMovies = await query.CountAsync(token);
+
+      var slice = await query.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Movie, MovieDto>(Mapper, "complete")
+        .ToListAsync(token);
+
+      PagedResult<MovieDto> results = new()
+      {
+        Page = criteria.Page,
+        Results = slice,
+        TotalElements = matchingMovies,
+        TotalPages = (matchingMovies / criteria.ItemsPerPage) + 1,
+      };
+
+      return Ok(results);
+    }
+
+    [HttpPost("")]
     public async Task<ActionResult> AddMovie([FromBody] AddMovieDto dto)
     {
       if (!ModelState.IsValid)
@@ -180,7 +214,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       var movie = new Movie
       {
         Featured = false,
-        Duration = TimeSpan.FromMinutes(dto.Duration),
+        Duration = dto.Duration,
         Plot = dto.Plot,
         TrailerUrl = dto.TrailerUrl,
         ReleaseDate = dto.ReleaseDate,
@@ -209,43 +243,22 @@ namespace Esentis.Ieemdb.Web.Controllers
       return Ok();
     }
 
-    /// <summary>
-    /// This controller gets the list of featured movies.
-    /// </summary>
-    /// <param name="itemsPerPage">Define how many items shall be returned. </param>
-    /// <param name="page">Choose which page of the results shall be returned.</param>
-    /// <returns></returns>
-    [HttpGet("featured")]
-    public async Task<ActionResult<ICollection<MovieDto>>> GetAllFeaturedMovies(int itemsPerPage = 20, int page = 1)
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<MovieDto>> UpdateMovie(long id, [FromBody] UpdateMovieDto movieDto)
     {
-      var toSkip = itemsPerPage * (page - 1);
-
-      var moviesQuery = Context.Movies
-        .TagWith("Retrieving all featured movies")
-        .Where(x => x.Featured.Equals(true))
-        .OrderBy(x => x.Id);
-
-      var totalMovies = await moviesQuery.CountAsync();
-
-      if (page > ((totalMovies / itemsPerPage) + 1))
+      var movie = await Context.Movies.SingleOrDefaultAsync(x => x.Id == id);
+      if (movie == null)
       {
-        return BadRequest("Page doesn't exist");
+        return NotFound();
       }
 
-      var pagedMovies = await moviesQuery
-        .Skip(toSkip)
-        .Take(itemsPerPage)
-        .ToListAsync();
+      Mapper.Map(movieDto, movie);
+      await Context.SaveChangesAsync();
 
-      var result = new PagedResult<MovieDto>
-      {
-        Results = pagedMovies.Select(x => Mapper.Map<Movie, MovieDto>(x)).ToList(),
-        Page = page,
-        TotalPages = (totalMovies / itemsPerPage) + 1,
-        TotalElements = totalMovies,
-      };
+      var dto = Mapper.Map<Movie, MovieDto>(movie);
 
-      return Ok(result);
+      return Ok(dto);
     }
 
     /// <summary>
@@ -254,8 +267,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="featuredIdList"></param>
     /// <response code="200">All Kateuxein. </response>
     /// <response code="404">Couldn't match all id's to movies. </response>
-    [HttpPost("featured")]
-    public async Task<ActionResult<List<MovieDto>>> AddFeaturedMovie([FromBody] long[] featuredIdList, CancellationToken cancellationToken = default)
+    [HttpPost("feature")]
+    public async Task<ActionResult<List<MovieDto>>> AddFeaturedMovie([FromBody] long[] featuredIdList,
+      CancellationToken cancellationToken = default)
     {
       var movies = await Context.Movies.Where(m => featuredIdList.Contains(m.Id)).ToListAsync(cancellationToken);
       var temp = featuredIdList.Where(x => movies.All(y => y.Id != x)).ToArray();
@@ -280,7 +294,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="featuredIdList"></param>
     /// <returns>No Content.</returns>
-    [HttpPost("unfeatured")]
+    [HttpPost("unfeature")]
     public async Task<ActionResult> RemoveFeaturedMovie([FromBody] List<long> UnfeaturedIdList)
     {
       Context.Movies.Where(m => UnfeaturedIdList.Contains(m.Id)).ToList().ForEach(mv => mv.Featured = false);
@@ -288,24 +302,6 @@ namespace Esentis.Ieemdb.Web.Controllers
       await Context.SaveChangesAsync();
 
       return NoContent();
-    }
-
-    /// <summary>
-    /// Get a single movie provided the ID.
-    /// </summary>
-    /// <param name="id">Movie's unique ID. </param>
-    /// <returns>Movie</returns>
-    [HttpGet("{id}")]
-    public async Task<ActionResult> GetMovie(long id)
-    {
-      var movie = await Context.Movies.Where(m => m.Id == id).SingleOrDefaultAsync();
-
-      if (movie == null)
-      {
-        return NotFound("Movie not found");
-      }
-
-      return Ok(Mapper.Map<Movie, MovieDto>(movie));
     }
   }
 }
