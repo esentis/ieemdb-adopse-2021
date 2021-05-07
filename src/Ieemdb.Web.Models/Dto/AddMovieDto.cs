@@ -10,7 +10,7 @@ namespace Esentis.Ieemdb.Web.Models.Dto
   {
     public string Title { get; set; }
 
-    public int Duration { get; set; } // Minutes
+    public TimeSpan Duration { get; set; }
 
     public string Plot { get; set; }
 
