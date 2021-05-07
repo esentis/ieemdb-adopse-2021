@@ -28,7 +28,7 @@ namespace Esentis.Ieemdb.Web.Models.Dto
 
     public List<long> WriterIds { get; set; }
 
-    public List<Uri> PosterUrls { get; set; }
+    public string PosterUrl { get; set; }
 
     public List<Uri> ScreenshotUrls { get; set; }
   }

@@ -25,6 +25,8 @@ namespace Esentis.Ieemdb.Web.Models
 
     public DateTimeOffset ReleaseDate { get; set; }
 
+    public string PosterUrl { get; set; }
+
     public List<CountryDto> Countries { get; set; }
 
     public List<ActorDto> Actors { get; set; }
@@ -33,8 +35,5 @@ namespace Esentis.Ieemdb.Web.Models
 
     public List<WriterDto> Writers { get; set; }
 
-    public List<Uri> Posters { get; set; }
-
-    public List<Uri> Screenshots { get; set; }
   }
 }

@@ -43,8 +43,6 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<MovieWatchlist> MovieWatchlists { get; set; }
 
-    public DbSet<Poster> Posters { get; set; }
-
     public DbSet<Screenshot> Screenshots { get; set; }
 
     public DbSet<MovieWriter> MovieWriters { get; set; }
@@ -162,6 +160,14 @@ namespace Esentis.Ieemdb.Persistence
           .WithMany(x => x.Ratings)
           .OnDelete(DeleteBehavior.Restrict);
       });
+
+      builder.Entity<Screenshot>(e =>
+      {
+        e.HasOne(mv => mv.Movie)
+          .WithMany(x => x.Screenshots)
+          .OnDelete(DeleteBehavior.Restrict);
+      });
+
     }
   }
 }
