@@ -33,6 +33,8 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Country> Countries { get; set; }
 
+    public DbSet<Watchlist> Watchlists{ get; set; }
+
     public DbSet<Rating> Ratings { get; set; }
 
     public DbSet<Favorite> Favorites { get; set; }
