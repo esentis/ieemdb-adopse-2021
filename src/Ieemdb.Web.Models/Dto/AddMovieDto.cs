@@ -2,6 +2,7 @@ namespace Esentis.Ieemdb.Web.Models.Dto
 {
   using System;
   using System.Collections.Generic;
+  using System.ComponentModel.DataAnnotations;
   using System.Linq;
   using System.Text;
   using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace Esentis.Ieemdb.Web.Models.Dto
   {
     public string Title { get; set; }
 
-    public TimeSpan Duration { get; set; }
+    public double DurationInMinutes { get; set; }
 
     public string Plot { get; set; }
 

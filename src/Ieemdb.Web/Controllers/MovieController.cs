@@ -55,6 +55,8 @@ namespace Esentis.Ieemdb.Web.Controllers
         .ThenInclude(x => x.Writer)
         .Include(x => x.MovieGenres)
         .ThenInclude(x => x.Genre)
+        .Include(x => x.MovieCountries)
+        .ThenInclude(x => x.Country)
         .SingleOrDefaultAsync(m => m.Id == id, token);
 
       if (movie == null)
@@ -165,7 +167,6 @@ namespace Esentis.Ieemdb.Web.Controllers
       var directorIds = dto.DirectorIds.Distinct().OrderBy(x => x).ToList();
       var writerIds = dto.WriterIds.Distinct().OrderBy(x => x).ToList();
       var genreIds = dto.GenreIds.Distinct().OrderBy(x => x).ToList();
-      var posterUrls = dto.PosterUrl.Distinct().ToList();
       var screenshotUrls = dto.ScreenshotUrls.Distinct().ToList();
       var countryIds = dto.CountryIds.Distinct().OrderBy(x => x).ToList();
 
@@ -215,7 +216,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       {
         PosterUrl = dto.PosterUrl,
         Featured = false,
-        Duration = dto.Duration,
+        Duration = TimeSpan.FromMinutes(dto.DurationInMinutes),
         Plot = dto.Plot,
         TrailerUrl = dto.TrailerUrl,
         ReleaseDate = dto.ReleaseDate,
@@ -241,7 +242,6 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       return Ok();
     }
-
 
     [HttpPut("{id}")]
     public async Task<ActionResult<MovieDto>> UpdateMovie(long id, [FromBody] UpdateMovieDto movieDto)

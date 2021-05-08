@@ -144,7 +144,7 @@ namespace Esentis.Ieemdb.Persistence
       builder.Entity<MovieCountry>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany()
+          .WithMany(x => x.MovieCountries)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Country)
