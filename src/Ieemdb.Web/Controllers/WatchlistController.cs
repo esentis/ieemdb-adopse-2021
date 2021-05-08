@@ -103,5 +103,63 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       return Ok(movieWatchlist);
     }
+
+    /// <summary>
+    /// Adds movie on watchlist.
+    /// </summary>
+    /// <param name="movieId">Movie id.</param>
+    /// <param name="watchlistId">Watchlist id.</param>
+    /// <response code="200">Returns added successful.</response>
+    /// <response code="400">Page doesn't exist.</response>
+    /// <response code="404">Not found given items.</response>
+    /// <returns>Ok</returns>
+    [HttpPost("addMovieToWatchlist")]
+    public async Task<ActionResult> AddMovieToWatchlist(long movieId, long watchlistId, CancellationToken token = default)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState.Values.SelectMany(c => c.Errors));
+      }
+
+      var userId = RetrieveUserId().ToString();
+
+      if (userId == "00000000-0000-0000-0000-000000000000")
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var user = await userManager.FindByIdAsync(userId);
+
+      if (user == null)
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var movie = await Context.Movies.FirstOrDefaultAsync(x => x.Id == movieId, token);
+
+      if (movie == null)
+      {
+        return NotFound("Movie not found.");
+      }
+
+      var watchlist = await Context.Watchlists.FirstOrDefaultAsync(x => x.Id == watchlistId && x.User == user, token);
+
+      if (watchlist == null)
+      {
+        return NotFound("Watchlist not found.");
+      }
+
+      var movieWatchlist = new MovieWatchlist
+      {
+        Movie = movie,
+        Watchlist = watchlist,
+      };
+
+      Context.MovieWatchlists.Add(movieWatchlist);
+
+      await Context.SaveChangesAsync();
+
+      return Ok("Added successfully");
+    }
   }
 }
