@@ -20,20 +20,23 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Identity;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
+  [Authorize]
   [Route("api/rating")]
   public class RatingController : BaseController<RatingController>
   {
 
     private readonly UserManager<IeemdbUser> userManager;
 
-    public RatingController(ILogger<RatingController> logger, IeemdbDbContext ctx, IPureMapper mapper)
+    public RatingController(ILogger<RatingController> logger, IeemdbDbContext ctx, IPureMapper mapper,UserManager<IeemdbUser> userManager)
       : base(logger, ctx, mapper)
     {
+      this.userManager = userManager;
     }
 
     /// <summary>
@@ -49,6 +52,12 @@ namespace Esentis.Ieemdb.Web.Controllers
     public async Task<ActionResult> AddRating(AddRatingDto addRatingDto, CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
+
+      if (userId == "00000000-0000-0000-0000-000000000000")
+      {
+        return BadRequest("Something went wrong.");
+      }
+
       var user = await userManager.FindByIdAsync(userId);
       if (user == null)
       {
@@ -65,7 +74,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         .SingleOrDefaultAsync(x => x.User == user && x.Movie == movie, token);
 
       // If user is trying to add a rating that he has already added
-      if (rating != null && rating.Rate == addRatingDto.Rate)
+      if (rating != null)
       {
         return Conflict("User has already rated the movie.");
       }
