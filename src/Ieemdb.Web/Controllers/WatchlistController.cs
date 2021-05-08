@@ -161,5 +161,55 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       return Ok("Added successfully");
     }
+
+    /// <summary>
+    /// Adds a new watchlist.
+    /// </summary>
+    /// <param name="listname">List's name.</param>
+    /// <response code="200">Returns added successful.</response>
+    /// <response code="400">Page doesn't exist.</response>
+    /// <response code="404">Not found given items.</response>
+    /// <returns>Ok</returns>
+    [HttpPost("addWatchlist")]
+    public async Task<ActionResult> AddWatchlist(string listname, CancellationToken token = default)
+    {
+      if (!ModelState.IsValid)
+      {
+        return BadRequest(ModelState.Values.SelectMany(c => c.Errors));
+      }
+
+      var userId = RetrieveUserId().ToString();
+
+      if (userId == "00000000-0000-0000-0000-000000000000")
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var user = await userManager.FindByIdAsync(userId);
+
+      if (user == null)
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var watchlistExists = await Context.Watchlists.FirstOrDefaultAsync(x => x.Name == listname && x.User == user, token);
+
+      if (watchlistExists != null)
+      {
+        return BadRequest("Watchlist with the same name already exists.");
+      }
+
+      var watchlist = new Watchlist
+      {
+        Name = listname,
+        User = user,
+      };
+
+      Context.Watchlists.Add(watchlist);
+
+      await Context.SaveChangesAsync();
+
+      return Ok("Added successfully");
+    }
   }
 }
