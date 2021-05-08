@@ -72,5 +72,36 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       return Ok(watchlists);
     }
+
+    /// <summary>
+    /// Returns a specific user's list.
+    /// </summary>
+    /// <param name="watchlistId">Watchlist's id.</param>
+    /// <returns>Movies from Watchlist .</returns>
+    /// <response code="200">Returns results. </response>
+    /// <response code="400">Page doesn't exist. </response>
+    [HttpGet("list")]
+    public async Task<ActionResult<List<MovieWatchlist>>> GetWatchlist(long watchlistId, CancellationToken token = default)
+    {
+      var userId = RetrieveUserId().ToString();
+
+      if (userId == "00000000-0000-0000-0000-000000000000")
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var user = await userManager.FindByIdAsync(userId);
+
+      if (user == null)
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var watchlists = Context.Watchlists.Where(x => x.Id == watchlistId);
+
+      var movieWatchlist = Context.MovieWatchlists.Where(x => x.Watchlist == watchlists);
+
+      return Ok(movieWatchlist);
+    }
   }
 }
