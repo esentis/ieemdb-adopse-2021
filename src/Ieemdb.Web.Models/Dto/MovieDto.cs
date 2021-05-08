@@ -15,6 +15,8 @@ namespace Esentis.Ieemdb.Web.Models
 
     public string TrailerUrl { get; set; }
 
+    public double AverageRating { get; set; }
+
     public TimeSpan Duration { get; set; }
 
     public bool Featured { get; set; }

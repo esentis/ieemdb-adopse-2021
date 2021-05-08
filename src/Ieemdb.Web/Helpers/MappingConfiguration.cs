@@ -111,6 +111,7 @@ namespace Esentis.Ieemdb.Web.Helpers
           Id = movie.Id,
           Title = movie.Title,
           Plot = movie.Plot,
+          AverageRating = movie.AverageRating,
           PosterUrl = movie.PosterUrl,
           TrailerUrl = movie.TrailerUrl,
           Duration = movie.Duration,

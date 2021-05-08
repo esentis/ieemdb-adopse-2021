@@ -11,7 +11,7 @@ namespace Esentis.Ieemdb.Web.Models.SearchCriteria
   {
     public int Page { get; set; }
 
-    [Range(1, 100)]
+    [Range(1, 20)]
     public int ItemsPerPage { get; set; }
   }
 }
