@@ -267,7 +267,8 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">All Kateuxein. </response>
     /// <response code="404">Couldn't match all id's to movies. </response>
     [HttpPost("feature")]
-    public async Task<ActionResult<List<MovieDto>>> AddFeaturedMovie([FromBody] long[] featuredIdList,
+    public async Task<ActionResult<List<MovieDto>>> AddFeaturedMovie(
+      [FromBody] long[] featuredIdList,
       CancellationToken cancellationToken = default)
     {
       var movies = await Context.Movies.Where(m => featuredIdList.Contains(m.Id)).ToListAsync(cancellationToken);
@@ -291,7 +292,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <summary>
     /// This controller sets the list of featured movies.
     /// </summary>
-    /// <param name="featuredIdList"></param>
+    /// <param name="featuredIdList">List of movie IDs to put on featured list.</param>
     /// <returns>No Content.</returns>
     [HttpPost("unfeature")]
     public async Task<ActionResult> RemoveFeaturedMovie([FromBody] List<long> UnfeaturedIdList)
@@ -300,6 +301,158 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       await Context.SaveChangesAsync();
 
+      return NoContent();
+    }
+
+    /// <summary>
+    /// Returns all time top movies.
+    /// </summary>
+    /// <returns>List of top 100 movies.</returns>
+    [HttpGet("top")]
+    public async Task<ActionResult<List<MovieDto>>> GetTop()
+    {
+      var topRatedMovieIds = await Context.Ratings.OrderByDescending(x => x.Rate)
+        .Take(100)
+        .Select(x => x.Movie.Id)
+        .ToListAsync();
+
+      var topMovies = await Context.Movies.Include(x => x.MovieActors)
+        .ThenInclude(x => x.Actor)
+        .Include(x => x.MovieDirectors)
+        .ThenInclude(x => x.Director)
+        .Include(x => x.MovieWriters)
+        .ThenInclude(x => x.Writer)
+        .Include(x => x.MovieGenres)
+        .ThenInclude(x => x.Genre)
+        .Include(x => x.MovieCountries)
+        .ThenInclude(x => x.Country)
+        .Where(x => topRatedMovieIds.Contains(x.Id))
+        .ToListAsync();
+
+      var moviesDto = topMovies.Select(x => Mapper.Map<Movie, MovieDto>(x, "complete"));
+
+      return Ok(moviesDto);
+    }
+
+    /// <summary>
+    /// Returns movies released the current month.
+    /// </summary>
+    /// <param name="criteria">Page results criteria.</param>
+    /// <returns>List of movies.</returns>
+    [HttpGet("new")]
+    public async Task<ActionResult<ICollection<MovieDto>>> GetNewReleases(
+      PaginationCriteria criteria,
+      CancellationToken token = default)
+    {
+      var monthAgo = DateTimeOffset.Now.AddDays(-30);
+      var now = DateTimeOffset.Now;
+
+      var newMoviesQuery = Context.Movies.Include(x => x.MovieActors)
+        .ThenInclude(x => x.Actor)
+        .Include(x => x.MovieDirectors)
+        .ThenInclude(x => x.Director)
+        .Include(x => x.MovieWriters)
+        .ThenInclude(x => x.Writer)
+        .Include(x => x.MovieGenres)
+        .ThenInclude(x => x.Genre)
+        .Include(x => x.MovieCountries)
+        .ThenInclude(x => x.Country)
+        .Where(x => (x.ReleaseDate <= now) && (x.ReleaseDate >= monthAgo))
+        .OrderBy(x => x.ReleaseDate);
+
+      var moviesCount = await newMoviesQuery.CountAsync(token);
+
+      var slice = await newMoviesQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Movie, MovieDto>(Mapper, "complete")
+        .ToListAsync(token);
+
+      PagedResult<MovieDto> results = new()
+      {
+        Page = criteria.Page,
+        Results = slice,
+        TotalElements = moviesCount,
+        TotalPages = (moviesCount / criteria.ItemsPerPage) + 1,
+      };
+      return Ok(results);
+    }
+
+    /// <summary>
+    /// Returns movies released the current week.
+    /// </summary>
+    /// <param name="criteria">Page results criteria.</param>
+    /// <returns>List of movies.</returns>
+    [HttpGet("latest")]
+    public async Task<ActionResult<ICollection<MovieDto>>> GetLatestAdded(
+      PaginationCriteria criteria,
+      CancellationToken token = default)
+    {
+      var weekAgo = DateTimeOffset.Now.AddDays(-7);
+      var now = DateTimeOffset.Now;
+
+      var latestMoviesQuery = Context.Movies.Include(x => x.MovieActors)
+        .ThenInclude(x => x.Actor)
+        .Include(x => x.MovieDirectors)
+        .ThenInclude(x => x.Director)
+        .Include(x => x.MovieWriters)
+        .ThenInclude(x => x.Writer)
+        .Include(x => x.MovieGenres)
+        .ThenInclude(x => x.Genre)
+        .Include(x => x.MovieCountries)
+        .ThenInclude(x => x.Country)
+        .Where(x => (x.CreatedAt <= now) && (x.CreatedAt >= weekAgo))
+        .OrderBy(x => x.CreatedAt);
+
+      var moviesCount = await latestMoviesQuery.CountAsync(token);
+
+      var slice = await latestMoviesQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Movie, MovieDto>(Mapper, "complete")
+        .ToListAsync(token);
+
+      PagedResult<MovieDto> results = new()
+      {
+        Page = criteria.Page,
+        Results = slice,
+        TotalElements = moviesCount,
+        TotalPages = (moviesCount / criteria.ItemsPerPage) + 1,
+      };
+
+      return Ok(results);
+    }
+
+    /// <summary>
+    /// Deletes a movie from database.
+    /// </summary>
+    /// <param name="id">Movie's unique ID.</param>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteMovie(long id)
+    {
+      var movie = await Context.Movies.SingleOrDefaultAsync(x => x.Id == id);
+
+      if (movie == null)
+      {
+        return NotFound("Movie not found");
+      }
+
+      var movieRatings = await Context.Ratings.Where(x => x.Movie.Id == id).ToListAsync();
+      var movieActors = await Context.MovieActors.Where(x => x.Movie.Id == id).ToListAsync();
+      var movieDirectors = await Context.MovieDirectors.Where(x => x.Movie.Id == id).ToListAsync();
+      var movieWriters = await Context.MovieWriters.Where(x => x.Movie.Id == id).ToListAsync();
+      var movieGenres = await Context.MovieGenres.Where(x => x.Movie.Id == id).ToListAsync();
+      var movieCountries = await Context.MovieCountries.Where(x => x.Movie.Id == id).ToListAsync();
+      var movieWatchlist = await Context.MovieWatchlists.Where(x => x.Movie.Id == id).ToListAsync();
+      var movieScreenshots = await Context.Screenshots.Where(x => x.Movie.Id == id).ToListAsync();
+
+      Context.Ratings.RemoveRange(movieRatings);
+      Context.Screenshots.RemoveRange(movieScreenshots);
+      Context.MovieActors.RemoveRange(movieActors);
+      Context.MovieDirectors.RemoveRange(movieDirectors);
+      Context.MovieWriters.RemoveRange(movieWriters);
+      Context.MovieGenres.RemoveRange(movieGenres);
+      Context.MovieCountries.RemoveRange(movieCountries);
+      Context.MovieWatchlists.RemoveRange(movieWatchlist);
+      Context.Movies.Remove(movie);
+
+      await Context.SaveChangesAsync();
       return NoContent();
     }
   }
