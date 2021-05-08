@@ -46,7 +46,6 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <summary>
     /// Returns all user's lists.
     /// </summary>
-    /// <param name="id">Actor's ID.</param>
     /// <returns>All user's lists.</returns>
     /// <response code="200">Returns results. </response>
     /// <response code="400">Page doesn't exist. </response>
@@ -112,7 +111,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns added successful.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <response code="404">Not found given items.</response>
-    /// <returns>Ok</returns>
+    /// <returns>Ok.</returns>
     [HttpPost("addMovieToWatchlist")]
     public async Task<ActionResult> AddMovieToWatchlist(long movieId, long watchlistId, CancellationToken token = default)
     {
@@ -169,7 +168,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns added successful.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <response code="404">Not found given items.</response>
-    /// <returns>Ok</returns>
+    /// <returns>Ok.</returns>
     [HttpPost("addWatchlist")]
     public async Task<ActionResult> AddWatchlist(string listname, CancellationToken token = default)
     {
