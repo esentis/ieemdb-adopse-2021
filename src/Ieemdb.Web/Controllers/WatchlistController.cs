@@ -42,5 +42,35 @@ namespace Esentis.Ieemdb.Web.Controllers
     {
       this.userManager = userManager;
     }
+
+    /// <summary>
+    /// Returns all user's lists.
+    /// </summary>
+    /// <param name="id">Actor's ID.</param>
+    /// <returns>All user's lists.</returns>
+    /// <response code="200">Returns results. </response>
+    /// <response code="400">Page doesn't exist. </response>
+    /// <response code="402">Wrong operator </response>
+    [HttpGet("usersLists")]
+    public async Task<ActionResult<List<Watchlist>>> GetAllWatchlists()
+    {
+      var userId = RetrieveUserId().ToString();
+
+      if (userId == "00000000-0000-0000-0000-000000000000")
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var user = await userManager.FindByIdAsync(userId);
+
+      if (user == null)
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var watchlists = Context.Watchlists.Where(x => x.User == user);
+
+      return Ok(watchlists);
+    }
   }
 }
