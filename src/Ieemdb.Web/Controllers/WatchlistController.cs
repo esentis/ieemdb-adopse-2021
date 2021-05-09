@@ -7,10 +7,6 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Threading;
   using System.Threading.Tasks;
 
-  using Bogus;
-
-  using EllipticCurve.Utils;
-
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
@@ -32,7 +28,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
-  [Route("api/movie")]
+  [Route("api/watchlist")]
   public class WatchlistController : BaseController<WatchlistController>
   {
     private readonly UserManager<IeemdbUser> userManager;
@@ -44,14 +40,14 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Returns all user's lists.
+    /// Returns watchlist.
     /// </summary>
-    /// <returns>All user's lists.</returns>
+    /// <returns>Returns list of MovieDto.</returns>
     /// <response code="200">Returns results. </response>
     /// <response code="400">Page doesn't exist. </response>
     /// <response code="402">Wrong operator </response>
-    [HttpGet("usersLists")]
-    public async Task<ActionResult<List<Watchlist>>> GetAllWatchlists()
+    [HttpGet("")]
+    public async Task<ActionResult<List<MovieDto>>> GetWatchlist(CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
 
@@ -67,59 +63,38 @@ namespace Esentis.Ieemdb.Web.Controllers
         return BadRequest("Something went wrong.");
       }
 
-      var watchlists = Context.Watchlists.Where(x => x.User == user);
+      var watchlistsId = await Context.Watchlists.Where(w => w.User == user)
+        .Select(x => x.Movie)
+        .Select(x => x.Id)
+        .ToListAsync(token);
 
-      return Ok(watchlists);
-    }
+      var moviesWatchlist = await Context.Movies.Include(x => x.MovieActors)
+        .ThenInclude(x => x.Actor)
+        .Include(x => x.MovieDirectors)
+        .ThenInclude(x => x.Director)
+        .Include(x => x.MovieWriters)
+        .ThenInclude(x => x.Writer)
+        .Include(x => x.MovieGenres)
+        .ThenInclude(x => x.Genre)
+        .Include(x => x.MovieCountries)
+        .ThenInclude(x => x.Country)
+        .Where(mv => watchlistsId.Contains(mv.Id))
+        .ToListAsync(token);
 
-    /// <summary>
-    /// Returns a specific user's list.
-    /// </summary>
-    /// <param name="watchlistId">Watchlist's id.</param>
-    /// <returns>Movies from Watchlist .</returns>
-    /// <response code="200">Returns results. </response>
-    /// <response code="400">Page doesn't exist. </response>
-    [HttpGet("list")]
-    public async Task<ActionResult<List<MovieWatchlist>>> GetWatchlist(long watchlistId, CancellationToken token = default)
-    {
-      var userId = RetrieveUserId().ToString();
-
-      if (userId == "00000000-0000-0000-0000-000000000000")
-      {
-        return BadRequest("Something went wrong.");
-      }
-
-      var user = await userManager.FindByIdAsync(userId);
-
-      if (user == null)
-      {
-        return BadRequest("Something went wrong.");
-      }
-
-      var watchlists = Context.Watchlists.Where(x => x.Id == watchlistId);
-
-      var movieWatchlist = Context.MovieWatchlists.Where(x => x.Watchlist == watchlists);
-
-      return Ok(movieWatchlist);
+      return Ok(moviesWatchlist.Select(fm => Mapper.Map<Movie, MovieDto>(fm, "complete")));
     }
 
     /// <summary>
     /// Adds movie on watchlist.
     /// </summary>
     /// <param name="movieId">Movie id.</param>
-    /// <param name="watchlistId">Watchlist id.</param>
     /// <response code="200">Returns added successful.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <response code="404">Not found given items.</response>
     /// <returns>Ok.</returns>
-    [HttpPost("addMovieToWatchlist")]
-    public async Task<ActionResult> AddMovieToWatchlist(long movieId, long watchlistId, CancellationToken token = default)
+    [HttpPost("")]
+    public async Task<ActionResult> AddMovieToWatchlist(long movieId, CancellationToken token = default)
     {
-      if (!ModelState.IsValid)
-      {
-        return BadRequest(ModelState.Values.SelectMany(c => c.Errors));
-      }
-
       var userId = RetrieveUserId().ToString();
 
       if (userId == "00000000-0000-0000-0000-000000000000")
@@ -141,20 +116,20 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("Movie not found.");
       }
 
-      var watchlist = await Context.Watchlists.FirstOrDefaultAsync(x => x.Id == watchlistId && x.User == user, token);
+      var iswatchlist = await Context.Watchlists.AnyAsync(x => x.Movie == movie && x.User == user, token);
 
-      if (watchlist == null)
+      if (iswatchlist)
       {
-        return NotFound("Watchlist not found.");
+        return Conflict("Movie is already in watchlist");
       }
 
-      var movieWatchlist = new MovieWatchlist
+      var movieWatchlist = new Watchlist
       {
         Movie = movie,
-        Watchlist = watchlist,
+        User = user,
       };
 
-      Context.MovieWatchlists.Add(movieWatchlist);
+      Context.Watchlists.Add(movieWatchlist);
 
       await Context.SaveChangesAsync();
 
@@ -162,21 +137,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Adds a new watchlist.
+    /// Removes a movie from watchlist.
     /// </summary>
-    /// <param name="listname">List's name.</param>
-    /// <response code="200">Returns added successful.</response>
-    /// <response code="400">Page doesn't exist.</response>
-    /// <response code="404">Not found given items.</response>
-    /// <returns>Ok.</returns>
-    [HttpPost("addWatchlist")]
-    public async Task<ActionResult> AddWatchlist(string listname, CancellationToken token = default)
+    /// <param name="movieId">Movie's Id.</param>
+    /// <returns>List of MovieDto/>.</returns>
+    [HttpDelete("")]
+    public async Task<ActionResult<ICollection<MovieDto>>> RemoveWatchlist( long movieId, CancellationToken token = default)
     {
-      if (!ModelState.IsValid)
-      {
-        return BadRequest(ModelState.Values.SelectMany(c => c.Errors));
-      }
-
       var userId = RetrieveUserId().ToString();
 
       if (userId == "00000000-0000-0000-0000-000000000000")
@@ -191,24 +158,17 @@ namespace Esentis.Ieemdb.Web.Controllers
         return BadRequest("Something went wrong.");
       }
 
-      var watchlistExists = await Context.Watchlists.FirstOrDefaultAsync(x => x.Name == listname && x.User == user, token);
+      var movie = await Context.Watchlists.SingleOrDefaultAsync(w => w.User == user && w.Movie.Id == movieId, token);
 
-      if (watchlistExists != null)
+      if (movie == null)
       {
-        return BadRequest("Watchlist with the same name already exists.");
+        return NotFound("Movie not found");
       }
 
-      var watchlist = new Watchlist
-      {
-        Name = listname,
-        User = user,
-      };
-
-      Context.Watchlists.Add(watchlist);
-
+      Context.Watchlists.Remove(movie);
       await Context.SaveChangesAsync();
 
-      return Ok("Added successfully");
+      return NoContent();
     }
   }
 }

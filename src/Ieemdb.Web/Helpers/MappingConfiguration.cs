@@ -134,7 +134,9 @@ namespace Esentis.Ieemdb.Web.Helpers
         MovieName = rating.Movie.Title,
         Rate = rating.Rate,
         Review = rating.Review,
-      });
+      })
+      .Map<Watchlist, WatchlistDto>(mapper => watchlist => new WatchlistDto() { Name = watchlist.Name, WatchlistId = watchlist.Id })
+      .Map<WatchlistDto, Watchlist>(mapper => watchlistDto => new Watchlist() { Name = watchlistDto.Name, Id = watchlistDto.WatchlistId });
 
     private static Movie UpdateMovie(UpdateMovieDto dto, Movie movie, IPureMapperUpdateResolver mapper)
     {
