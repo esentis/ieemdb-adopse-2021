@@ -3,13 +3,14 @@ import TopRight from './TopRight'
 import MovieCard from './MovieCard';
 import movies from './Movie_Dataset';
 import {useUpdatePage} from './GlobalContext'
+import {Col} from 'react-bootstrap';
 
 function WatchList() {
     const setPage=useUpdatePage();
     useEffect(() => {
         setPage("2")})
     
-    const title='WATCH LIST';
+    const title='Watch List';
     const items=movies.map(i => <MovieCard 
         id={i.id}
         Title={i.title} 
@@ -28,9 +29,11 @@ function WatchList() {
         posterClass='poster'
         flag={false} />)
     return (
+        <Col className="column-right">
         <TopRight title={title}
-                  items={items}
-                  ColClassName={"column-right"}  />
+                  items={items} />
+                  </Col>
+
     )
 }
 

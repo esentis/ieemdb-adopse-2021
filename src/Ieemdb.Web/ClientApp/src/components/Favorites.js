@@ -3,6 +3,7 @@ import TopRight from './TopRight'
 import MovieCard from './MovieCard';
 import movies from './Movie_Dataset';
 import {useUpdatePage} from './GlobalContext';
+import {Col} from 'react-bootstrap';
 
 
 function Favorites() {
@@ -12,7 +13,7 @@ function Favorites() {
        
 
 
-    const title='FAVORITES';
+    const title='Favorites';
     const items=movies.map(i => <MovieCard 
         id={i.id}
         Title={i.title} 
@@ -31,9 +32,10 @@ function Favorites() {
         posterClass='poster'
         flag={false} />)
     return (
+        <Col className="column-right">
         <TopRight title={title}
-                  items={items}
-                  ColClassName={"column-right"} />
+                  items={items} />
+                  </Col>
     )
 }
 

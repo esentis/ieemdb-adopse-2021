@@ -46,3 +46,10 @@
 .button_arrow:hover{
     color: #ede6c4;
 }
+
+.emptyMessage{
+    font-size: 2rem;
+    color:White;
+    margin-top:5%;
+    font-weight: bold;
+}
