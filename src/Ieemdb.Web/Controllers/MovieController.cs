@@ -86,11 +86,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         return BadRequest(ModelState.Values);
       }
 
-      var query = RetrieveUserId() == Guid.Empty
-        ? Context.Movies
-          .Where(x => true)
-          .OrderBy(x => x.Id)
-        : Context.Movies
+      var query = Context.Movies
           .WhereIf(
             criteria.MinDuration != null,
             x => x.Duration >= criteria.MinDuration)
