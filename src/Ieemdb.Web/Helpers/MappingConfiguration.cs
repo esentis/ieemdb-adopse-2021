@@ -67,7 +67,6 @@ namespace Esentis.Ieemdb.Web.Helpers
         BirthDate = addDirector.BirthDate,
       })
       .Map<Genre, GenreDto>(mapper => genre => new GenreDto() { Name = genre.Name, Id = genre.Id, })
-      .Map<Poster, ImageDto>(mapper => poster => new ImageDto() { Url = poster.Url.ToString() })
       .Map<Country, CountryDto>(mapper => country => new CountryDto() { Name = country.Name, Id = country.Id })
       .Map<Screenshot, ImageDto>(mapper => screenshot => new ImageDto() { Url = screenshot.Url.ToString() })
       .Map<GenreDto, Genre>(mapper => genreDto => new Genre() { Name = genreDto.Name, Id = genreDto.Id, })

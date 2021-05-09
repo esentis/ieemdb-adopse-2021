@@ -127,7 +127,7 @@ namespace Esentis.Ieemdb.Web.Controllers
           .OrderBy(x => x.Id);
 
       query = query
-        .WhereIf(criteria.IsFeatured != null, x => x.Featured)
+        .WhereIf(criteria.IsFeatured != null, x => x.Featured == criteria.IsFeatured)
         .WhereIf(
           criteria.TitleCriteria != null,
           x => x.NormalizedTitle.Contains(criteria.TitleCriteria!.NormalizeSearch()) || EF.Functions
