@@ -239,6 +239,14 @@ namespace Esentis.Ieemdb.Web.Controllers
       return Ok();
     }
 
+    /// <summary>
+    /// Updates a movie with new information.
+    /// </summary>
+    /// <param name="id">Unique ID of the movie to add to featured.</param>
+    /// <param name="movieDto">Movie information to be updated.</param>
+    /// <response code="200">Movie added to features.</response>
+    /// <response code="404">Movie not found.</response>
+    /// <returns></returns>
     [HttpPut("{id}")]
     public async Task<ActionResult<MovieDto>> UpdateMovie(long id, [FromBody] UpdateMovieDto movieDto)
     {
