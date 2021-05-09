@@ -9,9 +9,9 @@ function Results({results,flag,onClick,disabled,featured}) {
                 <li key={result.id}><ResultCard
                     id={result.id}
                     title={result.title}
-                    poster={result.poster}
-                    release_date={result.release_date}
-                    overview={result.overview}
+                    poster={result.posterUrl}
+                    release_date={result.releaseDate}
+                    overview={result.plot}
                     flag={flag}
                     onClick={onClick}
                     disabled={disabled}
