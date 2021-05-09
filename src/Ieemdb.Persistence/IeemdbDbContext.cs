@@ -35,8 +35,6 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Rating> Ratings { get; set; }
 
-    public DbSet<Favorite> Favorites { get; set; }
-
     public DbSet<MovieActor> MovieActors { get; set; }
 
     public DbSet<MovieDirector> MovieDirectors { get; set; }

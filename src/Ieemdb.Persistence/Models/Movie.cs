@@ -9,7 +9,7 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Movie : EemdbEntity<long>, ISearchable
+  public class Movie : EemdbEntity<long>, ISearchable, ISoftDeletable
   {
     private string title = string.Empty;
     private string plot = string.Empty;
@@ -49,6 +49,8 @@ namespace Esentis.Ieemdb.Persistence.Models
     public bool Featured { get; set; }
 
     public string PosterUrl { get; set; }
+
+    public bool IsDeleted { get; set; }
 
     public IReadOnlyCollection<MovieGenre> MovieGenres { get; set; }
       = new List<MovieGenre>(0);
