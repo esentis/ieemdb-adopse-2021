@@ -51,6 +51,8 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Device> Devices { get; set; }
 
+    public DbSet<Favorite> Favorites { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
       base.OnModelCreating(builder);
