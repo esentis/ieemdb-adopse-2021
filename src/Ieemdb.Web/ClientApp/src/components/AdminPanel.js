@@ -8,7 +8,8 @@ import movies from './Movie_Dataset';
 import AdminSearchbar from './AdminSearchbar';
 import Results from './Results';
 import Paginate from 'react-paginate';
-import '../Styles/Paginate.css'
+import '../Styles/Paginate.css';
+import axios from 'axios';
 
 
 function AdminPanel() {
@@ -16,7 +17,11 @@ function AdminPanel() {
     const setPage=useUpdatePage();
     useEffect(() => {
         setPage("1")
-        setFeatured(movies)},[setPage]);
+        async function fetchData(){
+            await axios({method:'post',url:`https://${window.location.host}/api/movie/search`,data:{"page":1,"itemsPerPage":20,"isFeatured": true}})
+            .then(res=>setFeatured(res.data.results));}
+        fetchData();
+    },[setPage]);
         
         const [featured,setFeatured]=useState([]);
         const [unFeatured,setUnFeatured]=useState([]);
@@ -47,7 +52,7 @@ function AdminPanel() {
         const items=featured.map(i => <MovieCard 
         id={i.id}
         Title={i.title} 
-        Poster={i.poster}
+        Poster={i.posterUrl}
         height={"250vh"} 
         width={'auto'}
         posterClass='poster-Admin'
@@ -82,8 +87,7 @@ function AdminPanel() {
         <>
         <Col className="column-right-Admin">
         <TopRight title={title}
-                  items={items}
-                  ColClassName={""} />
+                  items={items} />
                 <div className='DivButton'><button className='buttonSave' onClick={saveClick}>Save Changes</button></div>
                 <AdminSearchbar onKeyUp={onEnter} />
                 <div className='resultsTitles' style={{display:display}}><p className="ResultTitle">Results for "{searchValue}"<span className="ResultsLength">{movies.length} Movies</span></p></div>
@@ -97,7 +101,7 @@ function AdminPanel() {
                   onPageChange={handlePageClick}
                   containerClassName={"pagination"}
                   subContainerClassName={"pages pagination"}
-                  activeClassName={"active"}/>  }
+                  activeClassName={"active"}/>}
         </Col>
         </> 
     )
