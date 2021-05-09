@@ -4,6 +4,7 @@ import '../Styles/MovieViewPoster.css';
 import {useHistory} from 'react-router-dom';
 import Modal from 'react-awesome-modal';
 import ReactStars from "react-rating-stars-component";
+import Moment from "react-moment";
 function RatingStars(rating){
     if (rating.stars/2 < 1){
         return (<div id="divRate">
@@ -65,13 +66,15 @@ function MovieViewPoster(props){
     const [starrev, setstarrev] = useState('0');
     const history=useHistory();
     /*const id=props.id;*/
-    const releaseDate = props.releaseDate.substring(0,4);
+    
+    const releaseDate = <Moment format="YYYY">{props.releaseDate}</Moment>
     const genres = props.genres.map((genre) =>
-        <p className="movieDescGenre">{genre}</p>
+        <p className="movieDescGenre">{genre.name}</p>
     );
+   
     const rating = props.rating;
-    const durationHours = Math.floor(props.duration / 50);
-    const durationMinutes = props.duration % 60;
+    const durationHours = props.duration.hours;
+    const durationMinutes = props.duration.minutes
     function onFavButtonClick(){
         //Otan kanei klik sto ADD FAVORITE button
         console.log("Click on ADD FAVORITE button");

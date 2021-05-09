@@ -5,16 +5,16 @@ function MovieViewSynopsis(props){
     /*const id=props.id;*/
     const overview=props.overview;
     const directors = props.directors.map((directors) =>
-        <span className="span">{directors} </span>
+        <span className="span">{directors.firstName} {directors.lastName} </span>
     );
     const actors = props.actors.map((actors) =>
-        <span className="span">{actors} </span>
+        <span className="span">{actors.firstName} {actors.lastName},</span>
     );
     const writers = props.writers.map((writers) =>
-        <span className="span">{writers} </span>
+        <span className="span">{writers.firstName} {writers.lastName} </span>
     );
     const countryOrigin = props.countryOrigin.map((countryOrigin) =>
-        <span className="span">{countryOrigin} </span>
+        <span className="span">{countryOrigin.name}</span>
     );
     function onWatchlistButtonClick(){
         //Otan kanei click sto ADD TO WATCHLIST button
