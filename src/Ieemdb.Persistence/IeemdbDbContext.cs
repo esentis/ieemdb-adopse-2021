@@ -37,8 +37,6 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Rating> Ratings { get; set; }
 
-    public DbSet<Favorite> Favorites { get; set; }
-
     public DbSet<MovieActor> MovieActors { get; set; }
 
     public DbSet<MovieDirector> MovieDirectors { get; set; }
@@ -54,6 +52,8 @@ namespace Esentis.Ieemdb.Persistence
     public DbSet<MovieCountry> MovieCountries { get; set; }
 
     public DbSet<Device> Devices { get; set; }
+
+    public DbSet<Favorite> Favorites { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

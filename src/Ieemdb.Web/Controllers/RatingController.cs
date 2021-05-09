@@ -42,26 +42,21 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <summary>
     /// Add a new rating to a specific movie.
     /// </summary>
-    /// <param name="addRatingDto">Provide movie ID, rate and text Review. </param>
-    /// <response code="200">Movie successfuly rated. </response>
-    /// <response code="400">Something went wrong. </response>
-    /// <response code="404">Movie not found. </response>
+    /// <param name="addRatingDto">Provide movie ID, rate and text Review.</param>
+    /// <response code="201">Movie successfuly rated.</response>
+    /// <response code="400">No such user.</response>
+    /// <response code="404">Movie not found.</response>
     /// <response code="409">User has already rated the movie.</response>
-    /// <returns>No Content.</returns>
+    /// <returns>Created <see cref="RatingDto"/>.</returns>
     [HttpPost("add")]
-    public async Task<ActionResult> AddRating(AddRatingDto addRatingDto, CancellationToken token = default)
+    public async Task<ActionResult<RatingDto>> AddRating(AddRatingDto addRatingDto, CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
-
-      if (userId == "00000000-0000-0000-0000-000000000000")
-      {
-        return BadRequest("Something went wrong.");
-      }
 
       var user = await userManager.FindByIdAsync(userId);
       if (user == null)
       {
-        return BadRequest("Something went wrong.");
+        return BadRequest("No such user.");
       }
 
       var movie = await Context.Movies.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.Id == addRatingDto.MovieId, token);
@@ -85,7 +80,8 @@ namespace Esentis.Ieemdb.Web.Controllers
       Context.Ratings.Add(rating);
 
       await Context.SaveChangesAsync(token);
-      return Ok("Movie successfuly rated.");
+
+      return CreatedAtAction(nameof(GetRating), new { id = rating.Id }, Mapper.Map<Rating, RatingDto>(rating));
     }
 
     /// <summary>

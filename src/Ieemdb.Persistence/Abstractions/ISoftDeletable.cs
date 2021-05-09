@@ -1,4 +1,4 @@
-namespace Esentis.Ieemdb.Persistence.Models
+namespace Esentis.Ieemdb.Persistence.Abstractions
 {
   using System;
   using System.Collections.Generic;
@@ -6,11 +6,8 @@ namespace Esentis.Ieemdb.Persistence.Models
   using System.Text;
   using System.Threading.Tasks;
 
-  public class Poster
+  public interface ISoftDeletable
   {
-    public int Id { get; set; }
-
-    public Uri Url { get; set; }
-
+    public bool IsDeleted { get; set; }
   }
 }

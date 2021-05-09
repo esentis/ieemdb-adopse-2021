@@ -3,15 +3,17 @@ using System;
 using Esentis.Ieemdb.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Esentis.Ieemdb.Persistence.Migrations
 {
     [DbContext(typeof(IeemdbDbContext))]
-    partial class IeemdbDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210509152338_adds isDeleted field")]
+    partial class addsisDeletedfield
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -474,40 +476,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("Directors");
-                });
-
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Favorite", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<long?>("MovieId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Genre", b =>
@@ -1816,21 +1784,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("Writer");
-                });
-
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Favorite", b =>
-                {
-                    b.HasOne("Esentis.Ieemdb.Persistence.Models.Movie", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId");
-
-                    b.HasOne("Esentis.Ieemdb.Persistence.Identity.IeemdbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Rating", b =>

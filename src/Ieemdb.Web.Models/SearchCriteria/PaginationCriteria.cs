@@ -9,9 +9,9 @@ namespace Esentis.Ieemdb.Web.Models.SearchCriteria
 
   public class PaginationCriteria
   {
-    public int Page { get; set; }
+    public int Page { get; set; } = 1;
 
-    [Range(1, 20)]
+    [Range(5, 50)]
     public int ItemsPerPage { get; set; }
   }
 }

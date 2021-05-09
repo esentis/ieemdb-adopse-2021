@@ -86,11 +86,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         return BadRequest(ModelState.Values);
       }
 
-      var query = RetrieveUserId() == Guid.Empty
-        ? Context.Movies
-          .Where(x => true)
-          .OrderBy(x => x.Id)
-        : Context.Movies
+      var query = Context.Movies
           .WhereIf(
             criteria.MinDuration != null,
             x => x.Duration >= criteria.MinDuration)
@@ -127,7 +123,7 @@ namespace Esentis.Ieemdb.Web.Controllers
           .OrderBy(x => x.Id);
 
       query = query
-        .WhereIf(criteria.IsFeatured != null, x => x.Featured)
+        .WhereIf(criteria.IsFeatured != null, x => x.Featured == criteria.IsFeatured)
         .WhereIf(
           criteria.TitleCriteria != null,
           x => x.NormalizedTitle.Contains(criteria.TitleCriteria!.NormalizeSearch()) || EF.Functions
@@ -243,6 +239,14 @@ namespace Esentis.Ieemdb.Web.Controllers
       return Ok();
     }
 
+    /// <summary>
+    /// Updates a movie with new information.
+    /// </summary>
+    /// <param name="id">Unique ID of the movie to add to featured.</param>
+    /// <param name="movieDto">Movie information to be updated.</param>
+    /// <response code="200">Movie added to features.</response>
+    /// <response code="404">Movie not found.</response>
+    /// <returns></returns>
     [HttpPut("{id}")]
     public async Task<ActionResult<MovieDto>> UpdateMovie(long id, [FromBody] UpdateMovieDto movieDto)
     {
@@ -263,42 +267,44 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <summary>
     /// This controller sets the list of featured movies.
     /// </summary>
-    /// <param name="featuredIdList"></param>
-    /// <response code="200">All Kateuxein. </response>
-    /// <response code="404">Couldn't match all id's to movies. </response>
+    /// <param name="id">Unique ID of the movie to add to featured.</param>
+    /// <response code="200">Movie added to features.</response>
+    /// <response code="404">Couldn't match all id's to movies.</response>
     [HttpPost("feature")]
-    public async Task<ActionResult<List<MovieDto>>> AddFeaturedMovie(
-      [FromBody] long[] featuredIdList,
+    public async Task<ActionResult<MovieDto>> AddFeaturedMovie(
+      long id,
       CancellationToken cancellationToken = default)
     {
-      var movies = await Context.Movies.Where(m => featuredIdList.Contains(m.Id)).ToListAsync(cancellationToken);
-      var temp = featuredIdList.Where(x => movies.All(y => y.Id != x)).ToArray();
+      var movie = await Context.Movies.FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
 
-      if (temp.Any())
+      if (movie == null)
       {
-        return NotFound($"Couldn't find results for the given id's {string.Join(", ", temp)}");
+        return NotFound("Movie not found.");
       }
 
-      foreach (var item in movies)
-      {
-        item.Featured = true;
-      }
+      movie.Featured = true;
 
       await Context.SaveChangesAsync(cancellationToken);
 
-      return Ok(movies.Select(x => Mapper.Map<Movie, MovieDto>(x)));
+      return Ok(Mapper.Map<Movie, MovieDto>(movie));
     }
 
     /// <summary>
     /// This controller sets the list of featured movies.
     /// </summary>
-    /// <param name="featuredIdList">List of movie IDs to put on featured list.</param>
+    /// <param name="id">Unique ID of the movie to remove.</param>
     /// <returns>No Content.</returns>
     [HttpPost("unfeature")]
-    public async Task<ActionResult> RemoveFeaturedMovie([FromBody] List<long> UnfeaturedIdList)
+    public async Task<ActionResult> RemoveFeaturedMovie(long id, CancellationToken cancellationToken = default)
     {
-      Context.Movies.Where(m => UnfeaturedIdList.Contains(m.Id)).ToList().ForEach(mv => mv.Featured = false);
+      var movie = await Context.Movies.SingleOrDefaultAsync(m => m.Id == id, cancellationToken);
 
+      if (movie == null)
+      {
+        return NotFound("Movie not found.");
+      }
+
+      movie.Featured = false;
       await Context.SaveChangesAsync();
 
       return NoContent();
@@ -309,12 +315,12 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <returns>List of top 100 movies.</returns>
     [HttpGet("top")]
-    public async Task<ActionResult<List<MovieDto>>> GetTop()
+    public async Task<ActionResult<List<MovieDto>>> GetTop(CancellationToken cancellationToken = default)
     {
       var topRatedMovieIds = await Context.Ratings.OrderByDescending(x => x.Rate)
         .Take(100)
         .Select(x => x.Movie.Id)
-        .ToListAsync();
+        .ToListAsync(cancellationToken);
 
       var topMovies = await Context.Movies.Include(x => x.MovieActors)
         .ThenInclude(x => x.Actor)
@@ -327,7 +333,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Include(x => x.MovieCountries)
         .ThenInclude(x => x.Country)
         .Where(x => topRatedMovieIds.Contains(x.Id))
-        .ToListAsync();
+        .ToListAsync(cancellationToken);
 
       var moviesDto = topMovies.Select(x => Mapper.Map<Movie, MovieDto>(x, "complete"));
 

@@ -6,6 +6,7 @@ namespace Esentis.Ieemdb.Web
 
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Helpers.Extensions;
+  using Esentis.Ieemdb.Web.Models.Api;
 
   using Microsoft.ApplicationInsights.Extensibility;
   using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,8 @@ namespace Esentis.Ieemdb.Web
   using Microsoft.Extensions.Hosting;
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Logging.Abstractions;
+
+  using Refit;
 
   using Serilog;
   using Serilog.Core;
@@ -32,7 +35,8 @@ namespace Esentis.Ieemdb.Web
 
       using var loggerProvider = new SerilogLoggerProvider(Log.Logger);
       logger = loggerProvider.CreateLogger(nameof(Startup));
-
+      // RestService.For<ITmdb>("https://api.themoviedb.org/3");
+ 
       try
       {
         var host = CreateHostBuilder(args).Build();

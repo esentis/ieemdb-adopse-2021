@@ -133,7 +133,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       await Context.SaveChangesAsync();
 
-      var dto = new UserBindingDto(token, accessTokenExpiration, refreshToken,userManager.GetRolesAsync(user).Result.FirstOrDefault());
+      var dto = new UserBindingDto(token, accessTokenExpiration, refreshToken);
 
       return Ok(dto);
     }
@@ -151,7 +151,8 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound();
       }
 
-      var device = await Context.Devices.Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId)
+      var durationToCheck = DateTimeOffset.Now.AddDays(-jwtOptions.RefreshTokenDurationInDays);
+      var device = await Context.Devices.Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId).Where(x => x.UpdatedAt < durationToCheck)
         .SingleOrDefaultAsync();
       if (device
           == null)
@@ -168,7 +169,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       device.RefreshToken = Guid.NewGuid();
       await Context.SaveChangesAsync();
 
-      var result = new UserBindingDto(token, accessTokenExpiration, Guid.Parse(token), userManager.GetRolesAsync(user).Result.FirstOrDefault());
+      var result = new UserBindingDto(token, accessTokenExpiration, Guid.Parse(token));
 
       return Ok(result);
     }
