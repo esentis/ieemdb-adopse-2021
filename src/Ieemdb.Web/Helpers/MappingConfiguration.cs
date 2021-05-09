@@ -140,6 +140,7 @@ namespace Esentis.Ieemdb.Web.Helpers
         Movie = mapper.Resolve<Movie, MovieDto>("complete").Invoke(favorite.Movie),
       })
       .Map<Watchlist, WatchlistDto>(mapper => watchlist => new WatchlistDto() { Movie = mapper.Resolve<Movie, MovieDto>("complete").Invoke(watchlist.Movie), Id = watchlist.Id });
+  
 
     private static Movie UpdateMovie(UpdateMovieDto dto, Movie movie, IPureMapperUpdateResolver mapper)
     {
