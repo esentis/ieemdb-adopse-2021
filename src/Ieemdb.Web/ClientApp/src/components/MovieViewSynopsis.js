@@ -4,6 +4,8 @@ import '../Styles/MovieViewSynopsis.css';
 function MovieViewSynopsis(props){
     /*const id=props.id;*/
     const overview=props.overview;
+    const durationHours = Math.floor(props.duration / 50);
+    const durationMinutes = props.duration % 60;
     const directors = props.directors.map((directors) =>
         <span className="span">{directors} </span>
     );
@@ -28,6 +30,10 @@ function MovieViewSynopsis(props){
             <Row className="rowTab">
                 <p className="smallTitles">SYNOPSIS</p>
                 <p className="text">{overview}</p>
+                {durationMinutes > 0
+                    ? <p className="text" style={{cursor:'auto'}}>Duration: {durationHours} hours and {durationMinutes} minutes</p>
+                    : <p className="text" style={{cursor:'auto'}}>Duration: {durationHours} hours</p>
+                }
             </Row>
             <Row className="rowTab2">
                 <Col>
