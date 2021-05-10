@@ -54,6 +54,7 @@ namespace Esentis.Ieemdb.Web
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddHostedService<DeletedCleanupService>();
+      services.AddHostedService<RefreshTokenCleanupService>();
       services.AddSingleton<IPureMapper>(sp => new PureMapper(MappingConfiguration.Mapping));
       services.AddApplicationInsightsTelemetry();
 
