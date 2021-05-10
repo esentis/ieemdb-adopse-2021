@@ -5,6 +5,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 /*import auth from './auth';*/
 import { useHistory } from 'react-router-dom';
+import jwt_decode from "jwt-decode";
 import {/*useLoginState,*/ useChangeLoginState,useUpdateRole} from './GlobalContext';
 function LoginForm() {
   const [userNameLogin, setUserNameLogin] = useState("");
@@ -34,8 +35,10 @@ function LoginForm() {
         localStorage.setItem('username',userNameLogin);
         isLoggedIn(true);
         history.push("/");
-        updateRole(res.data.role);
-        localStorage.setItem('role',res.data.role);
+        var decoded = jwt_decode(res.data.accessToken);
+        var role=Object.values(decoded)[5];
+        console.log(role);
+        updateRole(role);
       }
     })
     .catch(error=>{
