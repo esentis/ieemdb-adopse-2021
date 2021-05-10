@@ -13,7 +13,7 @@ function BottomRightCarousel(){
     const items = movies.map(i => <MovieCard
         id={i.id}
         Title={i.title} 
-        Poster={i.poster} 
+        Poster={i.posterUrl} 
         Overview={i.overview}
         ReleaseDate={i.release_date}
         Genres={i.genres}
