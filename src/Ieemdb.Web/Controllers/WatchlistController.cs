@@ -1,33 +1,25 @@
 namespace Esentis.Ieemdb.Web.Controllers
 {
-  using System;
   using System.Collections.Generic;
-  using System.ComponentModel.DataAnnotations;
   using System.Linq;
   using System.Threading;
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
-  using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
-  using Esentis.Ieemdb.Persistence.Joins;
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
-  using Esentis.Ieemdb.Web.Models.Dto;
-  using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
-  using Kritikos.Extensions.Linq;
-  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Authorization;
-  using Microsoft.AspNetCore.Cors;
   using Microsoft.AspNetCore.Identity;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
+  [Authorize]
   [Route("api/watchlist")]
   public class WatchlistController : BaseController<WatchlistController>
   {
@@ -44,23 +36,17 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <returns>Returns list of MovieDto.</returns>
     /// <response code="200">Returns results. </response>
-    /// <response code="400">Page doesn't exist. </response>
-    /// <response code="402">Wrong operator </response>
+    /// <response code="404">User not found.</response>
     [HttpGet("")]
     public async Task<ActionResult<List<MovieDto>>> GetWatchlist(CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
 
-      if (userId == "00000000-0000-0000-0000-000000000000")
-      {
-        return BadRequest("Something went wrong.");
-      }
-
       var user = await userManager.FindByIdAsync(userId);
 
       if (user == null)
       {
-        return BadRequest("Something went wrong.");
+        return NotFound("User not found.");
       }
 
       var watchlistsId = await Context.Watchlists.Where(w => w.User == user)
@@ -89,24 +75,19 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="movieId">Movie id.</param>
     /// <response code="200">Returns added successful.</response>
-    /// <response code="400">Page doesn't exist.</response>
-    /// <response code="404">Not found given items.</response>
+    /// <response code="404">User not found. Movie not found.</response>
+    /// <response code="409">Movie is already in watchlist.</response>
     /// <returns>Ok.</returns>
     [HttpPost("")]
     public async Task<ActionResult> AddMovieToWatchlist(long movieId, CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
 
-      if (userId == "00000000-0000-0000-0000-000000000000")
-      {
-        return BadRequest("Something went wrong.");
-      }
-
       var user = await userManager.FindByIdAsync(userId);
 
       if (user == null)
       {
-        return BadRequest("Something went wrong.");
+        return NotFound("User not found.");
       }
 
       var movie = await Context.Movies.FirstOrDefaultAsync(x => x.Id == movieId, token);
@@ -140,22 +121,19 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// Removes a movie from watchlist.
     /// </summary>
     /// <param name="movieId">Movie's Id.</param>
+    /// <response code="204">Successfully deleted movie from watchlist.</response>
+    /// <response code="404">User not found. Movie not found.</response>
     /// <returns>List of MovieDto/>.</returns>
     [HttpDelete("")]
     public async Task<ActionResult<ICollection<MovieDto>>> RemoveWatchlist( long movieId, CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
 
-      if (userId == "00000000-0000-0000-0000-000000000000")
-      {
-        return BadRequest("Something went wrong.");
-      }
-
       var user = await userManager.FindByIdAsync(userId);
 
       if (user == null)
       {
-        return BadRequest("Something went wrong.");
+        return NotFound("User not found.");
       }
 
       var movie = await Context.Watchlists.SingleOrDefaultAsync(w => w.User == user && w.Movie.Id == movieId, token);
