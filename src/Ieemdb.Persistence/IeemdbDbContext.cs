@@ -33,13 +33,13 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Country> Countries { get; set; }
 
+    public DbSet<Watchlist> Watchlists{ get; set; }
+
     public DbSet<Rating> Ratings { get; set; }
 
     public DbSet<MovieActor> MovieActors { get; set; }
 
     public DbSet<MovieDirector> MovieDirectors { get; set; }
-
-    public DbSet<MovieWatchlist> MovieWatchlists { get; set; }
 
     public DbSet<Screenshot> Screenshots { get; set; }
 
@@ -102,18 +102,6 @@ namespace Esentis.Ieemdb.Persistence
         e.HasKey("MovieId", "DirectorId");
       });
 
-      builder.Entity<MovieWatchlist>(e =>
-      {
-        e.HasOne(mv => mv.Movie)
-          .WithMany()
-          .HasForeignKey("MovieId")
-          .OnDelete(DeleteBehavior.Restrict);
-        e.HasOne(mv => mv.Watchlist)
-          .WithMany()
-          .HasForeignKey("WatchlistId")
-          .OnDelete(DeleteBehavior.Restrict);
-        e.HasKey("MovieId", "WatchlistId");
-      });
 
       builder.Entity<MovieWriter>(e =>
       {

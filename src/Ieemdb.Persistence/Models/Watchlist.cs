@@ -6,7 +6,7 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   public class Watchlist : EemdbEntity<long>
   {
-    public string Name { get; set; }
+    public Movie Movie { get; set; }
 
     public IeemdbUser User { get; set; }
   }

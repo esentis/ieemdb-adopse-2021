@@ -445,7 +445,6 @@ namespace Esentis.Ieemdb.Web.Controllers
       var movieWriters = await Context.MovieWriters.Where(x => x.Movie.Id == id).ToListAsync();
       var movieGenres = await Context.MovieGenres.Where(x => x.Movie.Id == id).ToListAsync();
       var movieCountries = await Context.MovieCountries.Where(x => x.Movie.Id == id).ToListAsync();
-      var movieWatchlist = await Context.MovieWatchlists.Where(x => x.Movie.Id == id).ToListAsync();
       var movieScreenshots = await Context.Screenshots.Where(x => x.Movie.Id == id).ToListAsync();
 
       Context.Ratings.RemoveRange(movieRatings);
@@ -455,7 +454,6 @@ namespace Esentis.Ieemdb.Web.Controllers
       Context.MovieWriters.RemoveRange(movieWriters);
       Context.MovieGenres.RemoveRange(movieGenres);
       Context.MovieCountries.RemoveRange(movieCountries);
-      Context.MovieWatchlists.RemoveRange(movieWatchlist);
       Context.Movies.Remove(movie);
 
       await Context.SaveChangesAsync();
