@@ -70,8 +70,6 @@ function MovieViewPoster(props){
         <p className="movieDescGenre">{genre}</p>
     );
     const rating = props.rating;
-    const durationHours = Math.floor(props.duration / 50);
-    const durationMinutes = props.duration % 60;
     function onFavButtonClick(){
         //Otan kanei klik sto ADD FAVORITE button
         console.log("Click on ADD FAVORITE button");
@@ -81,10 +79,6 @@ function MovieViewPoster(props){
     }
     function backButton(){
         history.goBack();
-    }
-    function HandleReleaseDate(e){
-        const ReleaseDate=e.target.innerHTML;
-        history.push('/ReleaseDate/value='+ReleaseDate)
     }
     function HandleGenres(e){
         const Genre=e.target.innerHTML;
@@ -98,7 +92,7 @@ function MovieViewPoster(props){
             </Row>
             <Row className="dcenter">
                 <div id="divTitle">
-                    <p className="movieTitle">{props.title}</p>
+                    <p className="movieTitle">{props.title} ({releaseDate})</p>
                 </div>
                 <div id="divFavorReview">
                     <button className="buttonLove" onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
@@ -107,12 +101,7 @@ function MovieViewPoster(props){
             </Row>
             <Row className="dbottom">
                 <div id="divDesc">
-                    <p className="movieDesc" onClick={HandleReleaseDate} >{releaseDate}</p>
                     <p className="movieDescGenres" onClick={HandleGenres}  >{genres}</p>
-                    {durationMinutes > 0
-                        ? <p className="movieDesc" style={{cursor:'auto'}}>{durationHours} hours and {durationMinutes} minutes</p>
-                        : <p className="movieDesc" style={{cursor:'auto'}}>{durationHours} hours</p>
-                    }
                 </div>
                 <RatingStars stars={rating}/>
             </Row>
