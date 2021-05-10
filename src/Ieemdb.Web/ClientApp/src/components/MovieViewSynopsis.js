@@ -8,7 +8,7 @@ function MovieViewSynopsis(props){
         <span className="span">{directors.firstName} {directors.lastName} </span>
     );
     const actors = props.actors.map((actors) =>
-        <span className="span">{actors.firstName} {actors.lastName},</span>
+        <span className="span">{actors.firstName} {actors.lastName}</span>
     );
     const writers = props.writers.map((writers) =>
         <span className="span">{writers.firstName} {writers.lastName} </span>
