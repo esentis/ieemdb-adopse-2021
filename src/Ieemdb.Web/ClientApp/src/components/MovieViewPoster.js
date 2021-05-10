@@ -4,6 +4,8 @@ import '../Styles/MovieViewPoster.css';
 import {useHistory} from 'react-router-dom';
 import Modal from 'react-awesome-modal';
 import ReactStars from "react-rating-stars-component";
+import Genre from './Genre';
+import Moment from "react-moment";
 function RatingStars(rating){
     if (rating.stars/2 < 1){
         return (<div id="divRate">
@@ -64,10 +66,13 @@ function MovieViewPoster(props){
     const [opre, setopre] = useState(false);
     const [starrev, setstarrev] = useState('0');
     const history=useHistory();
+    function HandleGenres(id,name){
+        history.push('/Genre/GenreValue='+name+'/Id='+id);
+    }
     /*const id=props.id;*/
-    const releaseDate = props.releaseDate.substring(0,4);
+    const releaseDate = <Moment format="YYYY">{props.releaseDate}</Moment>
     const genres = props.genres.map((genre) =>
-        <p className="movieDescGenre">{genre}</p>
+        <Genre name={genre.name} id={genre.id} onClick={HandleGenres}/>
     );
     const rating = props.rating;
     function onFavButtonClick(){
@@ -79,10 +84,6 @@ function MovieViewPoster(props){
     }
     function backButton(){
         history.goBack();
-    }
-    function HandleGenres(e){
-        const Genre=e.target.innerHTML;
-        history.push('/Genre/value='+Genre)
     }
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
@@ -101,7 +102,7 @@ function MovieViewPoster(props){
             </Row>
             <Row className="dbottom">
                 <div id="divDesc">
-                    <p className="movieDescGenres" onClick={HandleGenres}  >{genres}</p>
+                    <p className="movieDescGenres">{genres}</p>
                 </div>
                 <RatingStars stars={rating}/>
             </Row>
