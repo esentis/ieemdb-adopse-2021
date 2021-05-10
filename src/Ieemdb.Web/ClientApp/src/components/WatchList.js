@@ -11,27 +11,18 @@ function WatchList() {
         setPage("2")})
     
     const title='Watch List';
-    const items=movies.map(i => <MovieCard 
+    var posters=movies.map(i => <MovieCard 
         id={i.id}
         Title={i.title} 
-        Poster={i.poster} 
-        Overview={i.overview}
-        ReleaseDate={i.release_date}
-        Genres={i.genres}
-        Actors={i.actors}
-        Writers={i.writers}
-        Directors={i.directors}
-        Rating={i.rating}
-        Duration={i.duration}
-        CountryOrigin={i.countryOrigin}
+        Poster={i.posterUrl?i.posterUrl:"https://media.comicbook.com/files/img/default-movie.png"}  
         height={"250vh"} 
         width={'auto'}
         posterClass='poster'
-        flag={false} />)
+        flag={false}/>)
     return (
         <Col className="column-right">
         <TopRight title={title}
-                  items={items} />
+                  items={posters} />
                   </Col>
 
     )

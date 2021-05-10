@@ -1,19 +1,11 @@
 import React,{useEffect,useState} from 'react'
 import TopRight from './TopRight'
 import MovieCard from './MovieCard';
-import movies from './Movie_Dataset';
 import {useUpdatePage} from './GlobalContext';
 import axios from 'axios';
 import {Col} from 'react-bootstrap';
-import PropagateLoader from "react-spinners/PropagateLoader";
-import { css } from "@emotion/core";
 
 function Featured() {
-    const override = css`
-  display: block;
-  margin: auto;
-  border-color: "#D3D3D3";
-`;
     const setPage=useUpdatePage();
     const [data,setData]=useState([]);
     const [loading,setLoading]=useState(true);
@@ -30,16 +22,7 @@ function Featured() {
     const items=data.map(i => <MovieCard 
         id={i.id}
         Title={i.title} 
-        Poster={i.posterUrl} 
-        Overview={i.overview}
-        ReleaseDate={i.release_date}
-        Genres={i.genres}
-        Actors={i.actors}
-        Writers={i.writers}
-        Directors={i.directors}
-        Rating={i.rating}
-        Duration={i.duration}
-        CountryOrigin={i.countryOrigin}
+        Poster={i.posterUrl?i.posterUrl:"https://media.comicbook.com/files/img/default-movie.png"} 
         height={"250vh"} 
         width={'auto'}
         posterClass='poster'
