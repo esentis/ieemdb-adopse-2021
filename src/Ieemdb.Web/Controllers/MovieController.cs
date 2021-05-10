@@ -39,10 +39,11 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Get a single movie provided the ID.
+    /// Returns a single Movie.
     /// </summary>
     /// <param name="id">Movie's unique ID. </param>
-    /// <returns>Movie</returns>
+    /// <response code="404">Movie not found.</response>
+    /// <returns>Single <see cref="MovieDto"/>.</returns>
     [HttpGet("{id}")]
     public async Task<ActionResult<MovieDto>> GetMovie(long id, CancellationToken token = default)
     {
@@ -69,12 +70,11 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Searches movies based on multiple criteria.
+    /// Searches Movies based on multiple criteria.
     /// </summary>
-    /// <param name="criteria">Search criteria. </param>
-    /// <response code="200">Returns search results. </response>
-    /// <response code="400">Page doesn't exist. </response>
-    /// <response code="402">Wrong operator </response>
+    /// <param name="criteria">Search criteria.</param>
+    /// <response code="200">Returns search results.</response>
+    /// <response code="400">Invalid data.</response>
     /// <returns>Search results.</returns>
     [HttpPost("search")]
     public async Task<ActionResult<ICollection<MovieDto>>> SearchForMovie(
@@ -151,6 +151,14 @@ namespace Esentis.Ieemdb.Web.Controllers
       return Ok(results);
     }
 
+    /// <summary>
+    /// Adds a Movie.
+    /// </summary>
+    /// <param name="dto">Movie information.</param>
+    /// <response code="200">Successfully added.</response>
+    /// <response code="400">Fields missing.</response>
+    /// <response code="404">Missing actors. Missing directors. Missing countries. Missing writers. Missing genres.</response>
+    /// <returns>Created <see cref="MovieDto"/>.</returns>
     [HttpPost("")]
     public async Task<ActionResult> AddMovie([FromBody] AddMovieDto dto)
     {
@@ -240,13 +248,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Updates a movie with new information.
+    /// Updates a Movie with new information.
     /// </summary>
     /// <param name="id">Unique ID of the movie to add to featured.</param>
     /// <param name="movieDto">Movie information to be updated.</param>
     /// <response code="200">Movie added to features.</response>
     /// <response code="404">Movie not found.</response>
-    /// <returns></returns>
+    /// <returns>Updated <see cref="MovieDto"/>.</returns>
     [HttpPut("{id}")]
     public async Task<ActionResult<MovieDto>> UpdateMovie(long id, [FromBody] UpdateMovieDto movieDto)
     {
@@ -265,11 +273,11 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// This controller sets the list of featured movies.
+    /// Adds a Movie to featured list.
     /// </summary>
     /// <param name="id">Unique ID of the movie to add to featured.</param>
     /// <response code="200">Movie added to features.</response>
-    /// <response code="404">Couldn't match all id's to movies.</response>
+    /// <response code="404">Movie not found.</response>
     [HttpPost("feature")]
     public async Task<ActionResult<MovieDto>> AddFeaturedMovie(
       long id,
@@ -290,9 +298,11 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// This controller sets the list of featured movies.
+    /// Removes a Movie from featured list.
     /// </summary>
     /// <param name="id">Unique ID of the movie to remove.</param>
+    /// <response code="204">Succesfully added to list.</response>
+    /// <response code="404">Movie not found.</response>
     /// <returns>No Content.</returns>
     [HttpPost("unfeature")]
     public async Task<ActionResult> RemoveFeaturedMovie(long id, CancellationToken cancellationToken = default)
@@ -311,8 +321,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Returns all time top movies.
+    /// Returns all time top Movies.
     /// </summary>
+    /// <response code="200">Succesfully returns movies.</response>
     /// <returns>List of top 100 movies.</returns>
     [HttpGet("top")]
     public async Task<ActionResult<List<MovieDto>>> GetTop(CancellationToken cancellationToken = default)
@@ -341,9 +352,10 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Returns movies released the current month.
+    /// Returns Movies released the current month.
     /// </summary>
     /// <param name="criteria">Page results criteria.</param>
+    /// <response code="200">Succesfully returns movies.</response>
     /// <returns>List of movies.</returns>
     [HttpGet("new")]
     public async Task<ActionResult<ICollection<MovieDto>>> GetNewReleases(
@@ -383,9 +395,10 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Returns movies released the current week.
+    /// Returns Movies released the current week.
     /// </summary>
     /// <param name="criteria">Page results criteria.</param>
+    /// <response code="200">Succesfully returns movies.</response>
     /// <returns>List of movies.</returns>
     [HttpGet("latest")]
     public async Task<ActionResult<ICollection<MovieDto>>> GetLatestAdded(
@@ -426,35 +439,22 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Deletes a movie from database.
+    /// Removes a Movie.
     /// </summary>
     /// <param name="id">Movie's unique ID.</param>
+    /// <response code="204">Succesfully deleted.</response>
+    /// <response code="404">Movie not found.</response>
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteMovie(long id)
     {
       var movie = await Context.Movies.SingleOrDefaultAsync(x => x.Id == id);
 
-      if (movie == null)
+      if (movie == null || movie.IsDeleted)
       {
         return NotFound("Movie not found");
       }
 
-      var movieRatings = await Context.Ratings.Where(x => x.Movie.Id == id).ToListAsync();
-      var movieActors = await Context.MovieActors.Where(x => x.Movie.Id == id).ToListAsync();
-      var movieDirectors = await Context.MovieDirectors.Where(x => x.Movie.Id == id).ToListAsync();
-      var movieWriters = await Context.MovieWriters.Where(x => x.Movie.Id == id).ToListAsync();
-      var movieGenres = await Context.MovieGenres.Where(x => x.Movie.Id == id).ToListAsync();
-      var movieCountries = await Context.MovieCountries.Where(x => x.Movie.Id == id).ToListAsync();
-      var movieScreenshots = await Context.Screenshots.Where(x => x.Movie.Id == id).ToListAsync();
-
-      Context.Ratings.RemoveRange(movieRatings);
-      Context.Screenshots.RemoveRange(movieScreenshots);
-      Context.MovieActors.RemoveRange(movieActors);
-      Context.MovieDirectors.RemoveRange(movieDirectors);
-      Context.MovieWriters.RemoveRange(movieWriters);
-      Context.MovieGenres.RemoveRange(movieGenres);
-      Context.MovieCountries.RemoveRange(movieCountries);
-      Context.Movies.Remove(movie);
+      movie.IsDeleted = true;
 
       await Context.SaveChangesAsync();
       return NoContent();
