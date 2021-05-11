@@ -33,7 +33,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="criteria">Paging criteria.</param>
     /// <returns>List of <see cref="ActorDto"/>.</returns>
-    [HttpGet("")]
+    [HttpPost("all")]
     public async Task<ActionResult<List<ActorDto>>> GetActors(PaginationCriteria criteria)
     {
       var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);
@@ -71,7 +71,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="query">Search term.</param>
     /// <param name="criteria">Paging criteria.</param>
     /// <returns>List of <see cref="ActorDto"/>.</returns>
-    [HttpGet("search")]
+    [HttpPost("search")]
     public async Task<ActionResult<List<ActorDto>>> Search(string query, PaginationCriteria criteria)
     {
       var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);

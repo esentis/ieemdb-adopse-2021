@@ -34,7 +34,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Succesfully returns Genres.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>List of <see cref="GenreDto"/>.</returns>
-    [HttpGet("")]
+    [HttpPost("all")]
     public async Task<ActionResult<List<GenreDto>>> GetGenres(PaginationCriteria criteria)
     {
       var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);

@@ -33,7 +33,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns all writers.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>List of <see cref="WriterDto"/>.</returns>
-    [HttpGet("")]
+    [HttpPost("all")]
     public async Task<ActionResult<List<WriterDto>>> GetWriters(PaginationCriteria criteria)
     {
       var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);
