@@ -69,18 +69,12 @@ function MovieViewPoster(props){
     function HandleGenres(id,name){
         history.push('/Genre/GenreValue='+name+'/Id='+id);
     }
-
-
     /*const id=props.id;*/
-    
     const releaseDate = <Moment format="YYYY">{props.releaseDate}</Moment>
     const genres = props.genres.map((genre) =>
         <Genre name={genre.name} id={genre.id} onClick={HandleGenres}/>
     );
-   
     const rating = props.rating;
-    const durationHours = props.duration.hours;
-    const durationMinutes = props.duration.minutes
     function onFavButtonClick(){
         //Otan kanei klik sto ADD FAVORITE button
         console.log("Click on ADD FAVORITE button");
@@ -91,8 +85,6 @@ function MovieViewPoster(props){
     function backButton(){
         history.goBack();
     }
-
-   
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
@@ -101,7 +93,7 @@ function MovieViewPoster(props){
             </Row>
             <Row className="dcenter">
                 <div id="divTitle">
-                    <p className="movieTitle">{props.title}</p>
+                    <p className="movieTitle">{props.title} ({releaseDate})</p>
                 </div>
                 <div id="divFavorReview">
                     <button className="buttonLove" onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
@@ -110,12 +102,7 @@ function MovieViewPoster(props){
             </Row>
             <Row className="dbottom">
                 <div id="divDesc">
-                    <p className="movieDesc">{releaseDate}</p>
                     <p className="movieDescGenres">{genres}</p>
-                    {durationMinutes > 0
-                        ? <p className="movieDesc" style={{cursor:'auto'}}>{durationHours} hours and {durationMinutes} minutes</p>
-                        : <p className="movieDesc" style={{cursor:'auto'}}>{durationHours} hours</p>
-                    }
                 </div>
                 <RatingStars stars={rating}/>
             </Row>

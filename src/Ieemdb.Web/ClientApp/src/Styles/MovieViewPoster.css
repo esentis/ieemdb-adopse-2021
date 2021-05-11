@@ -45,7 +45,7 @@
     flex-direction: row;
 }
 #divTitle{
-    flex-grow: 10;
+    flex-grow: 50;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -112,7 +112,7 @@
     align-items: baseline;
 }
 #divDesc{
-    flex-grow: 6;
+    flex-grow: 50;
     justify-content: flex-start;
 }
 .movieDesc{
