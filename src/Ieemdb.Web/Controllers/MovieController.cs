@@ -357,7 +357,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="criteria">Page results criteria.</param>
     /// <response code="200">Succesfully returns movies.</response>
     /// <returns>List of movies.</returns>
-    [HttpGet("new")]
+    [HttpPost("new")]
     public async Task<ActionResult<ICollection<MovieDto>>> GetNewReleases(
       PaginationCriteria criteria,
       CancellationToken token = default)
@@ -400,7 +400,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="criteria">Page results criteria.</param>
     /// <response code="200">Succesfully returns movies.</response>
     /// <returns>List of movies.</returns>
-    [HttpGet("latest")]
+    [HttpPost("latest")]
     public async Task<ActionResult<ICollection<MovieDto>>> GetLatestAdded(
       PaginationCriteria criteria,
       CancellationToken token = default)

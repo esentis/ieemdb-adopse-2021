@@ -34,7 +34,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns the directors.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>A list of <see cref="DirectorDto"/>.</returns>
-    [HttpGet("")]
+    [HttpPost("all")]
     public async Task<ActionResult<List<DirectorDto>>> GetDirectors(PaginationCriteria criteria)
     {
       var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);
