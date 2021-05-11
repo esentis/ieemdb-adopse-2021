@@ -4,8 +4,8 @@ import '../Styles/MovieViewSynopsis.css';
 function MovieViewSynopsis(props){
     /*const id=props.id;*/
     const overview=props.overview;
-    const durationHours = Math.floor(props.duration / 50);
-    const durationMinutes = props.duration % 60;
+    const durationHours = props.duration.hours;
+    const durationMinutes = props.duration.minutes;
     const directors = props.directors.map((directors) =>
         <span className="span">{directors.firstName} {directors.lastName} </span>
     );
