@@ -1,4 +1,5 @@
 import React,{createContext,useContext,useEffect,useState} from 'react'
+import jwt_decode from "jwt-decode";
 
 const GlobalContext=createContext();
 const UpdateState=createContext();
@@ -44,15 +45,22 @@ export const useUpdateRole=()=>{
        
        const [isLoggedIn,setIsLoggedIn]=useState(false);
 
+       function getRole(){
+        var decoded = jwt_decode(localStorage.getItem('token'));
+        var role=Object.values(decoded)[5];
+        setRole(role);
+       }
+
         useEffect(()=>{
             if(localStorage.getItem('token')!==null){
-                setIsLoggedIn(true)}
+                setIsLoggedIn(true)
+                getRole();}
         },[])
 
         window.onstorage = () => {
             if(localStorage.getItem('token')!==null){
                 setIsLoggedIn(true)
-                setRole(localStorage.getItem('role'))
+                getRole();
             }
             else{setIsLoggedIn(false);}
         }
