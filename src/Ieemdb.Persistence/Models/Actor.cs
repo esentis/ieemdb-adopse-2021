@@ -5,7 +5,7 @@ namespace Esentis.Ieemdb.Persistence.Models
   using Esentis.Ieemdb.Persistence.Abstractions;
   using Esentis.Ieemdb.Persistence.Helpers;
 
-  public class Actor : EemdbEntity<long>, ISearchable
+  public class Actor : EemdbEntity<long>, ISearchable, ISoftDeletable
   {
     private string fName = string.Empty;
 
@@ -22,6 +22,7 @@ namespace Esentis.Ieemdb.Persistence.Models
         NormalizedFirstName = value.NormalizeSearch();
       }
     }
+    public bool IsDeleted { get; set; }
 
     public string LastName
     {

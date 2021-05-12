@@ -7,12 +7,8 @@
   transform: translate(-50%, -50%);
 }
 .backForm{
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  width: max-content;
+  display: block;
+  width: 25vw;
 }
 .formTitle{
   order: 0;
@@ -68,6 +64,10 @@
   margin-top: 20px;
   font-family: Arial;
 }
+.formButton:disabled{
+    pointer-events: none;
+    opacity: 0.5;
+}
 .formInput:focus{
   border-radius: 0rem;
   border: 0px;
@@ -94,6 +94,16 @@
   width: fit-content;
   font-family: Arial;
 }
+
+
+.snackbar{
+  margin-top:4.5vw;
+  position: absolute;
+  left: 50%;
+  width: 80vw;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
 @media (max-width:1199px){
   .center-Form {
     top: 45%;
@@ -111,5 +121,13 @@
   }
   .divChangeForm{
     margin-top: 20px;
+  }
+
+  .backForm{
+    width: 85vw;
+  }
+  .snackbar{
+    width: 100vw;
+    margin-top: 15vw;
   }
 }

@@ -12,6 +12,7 @@ namespace Esentis.Ieemdb.Web
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Helpers.Extensions;
   using Esentis.Ieemdb.Web.Options;
+  using Esentis.Ieemdb.Web.Services;
 
   using Kritikos.Configuration.Persistence.Extensions;
   using Kritikos.Configuration.Persistence.Interceptors;
@@ -52,6 +53,8 @@ namespace Esentis.Ieemdb.Web
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddHostedService<DeletedCleanupService>();
+      services.AddHostedService<RefreshTokenCleanupService>();
       services.AddSingleton<IPureMapper>(sp => new PureMapper(MappingConfiguration.Mapping));
       services.AddApplicationInsightsTelemetry();
 
@@ -66,7 +69,9 @@ namespace Esentis.Ieemdb.Web
       services.AddDbContextPool<IeemdbDbContext>((serviceProvider, options) =>
       {
         options.UseNpgsql(
-            Configuration.GetConnectionString("Ieemdb"))
+            Configuration.GetConnectionString("Ieemdb"), npgsql => npgsql
+               .EnableRetryOnFailure(5, TimeSpan.FromSeconds(1), Array.Empty<string>())
+               .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
           .AddInterceptors(
             serviceProvider.GetRequiredService<TimestampSaveChangesInterceptor>(),
             serviceProvider.GetRequiredService<AuditSaveChangesInterceptor<Guid>>())

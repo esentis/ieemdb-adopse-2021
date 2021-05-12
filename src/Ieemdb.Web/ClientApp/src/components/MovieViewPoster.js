@@ -4,6 +4,8 @@ import '../Styles/MovieViewPoster.css';
 import {useHistory} from 'react-router-dom';
 import Modal from 'react-awesome-modal';
 import ReactStars from "react-rating-stars-component";
+import Genre from './Genre';
+import Moment from "react-moment";
 function RatingStars(rating){
     if (rating.stars/2 < 1){
         return (<div id="divRate">
@@ -64,14 +66,15 @@ function MovieViewPoster(props){
     const [opre, setopre] = useState(false);
     const [starrev, setstarrev] = useState('0');
     const history=useHistory();
+    function HandleGenres(id,name){
+        history.push('/Genre/GenreValue='+name+'/Id='+id);
+    }
     /*const id=props.id;*/
-    const releaseDate = props.releaseDate.substring(0,4);
+    const releaseDate = <Moment format="YYYY">{props.releaseDate}</Moment>
     const genres = props.genres.map((genre) =>
-        <p className="movieDescGenre">{genre}</p>
+        <Genre name={genre.name} id={genre.id} onClick={HandleGenres}/>
     );
     const rating = props.rating;
-    const durationHours = Math.floor(props.duration / 50);
-    const durationMinutes = props.duration % 60;
     function onFavButtonClick(){
         //Otan kanei klik sto ADD FAVORITE button
         console.log("Click on ADD FAVORITE button");
@@ -82,14 +85,6 @@ function MovieViewPoster(props){
     function backButton(){
         history.goBack();
     }
-    function HandleReleaseDate(e){
-        const ReleaseDate=e.target.innerHTML;
-        history.push('/ReleaseDate/value='+ReleaseDate)
-    }
-    function HandleGenres(e){
-        const Genre=e.target.innerHTML;
-        history.push('/Genre/value='+Genre)
-    }
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
@@ -98,7 +93,7 @@ function MovieViewPoster(props){
             </Row>
             <Row className="dcenter">
                 <div id="divTitle">
-                    <p className="movieTitle">{props.title}</p>
+                    <p className="movieTitle">{props.title} ({releaseDate})</p>
                 </div>
                 <div id="divFavorReview">
                     <button className="buttonLove" onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
@@ -107,12 +102,7 @@ function MovieViewPoster(props){
             </Row>
             <Row className="dbottom">
                 <div id="divDesc">
-                    <p className="movieDesc" onClick={HandleReleaseDate} >{releaseDate}</p>
-                    <p className="movieDescGenres" onClick={HandleGenres}  >{genres}</p>
-                    {durationMinutes > 0
-                        ? <p className="movieDesc" style={{cursor:'auto'}}>{durationHours} hours and {durationMinutes} minutes</p>
-                        : <p className="movieDesc" style={{cursor:'auto'}}>{durationHours} hours</p>
-                    }
+                    <p className="movieDescGenres">{genres}</p>
                 </div>
                 <RatingStars stars={rating}/>
             </Row>

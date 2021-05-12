@@ -35,17 +35,19 @@ function MovieViewSynopsis(props){
     const [opre, setopre] = useState(false);
     const [name, setName] = useState("");
     const overview=props.overview;
+    const durationHours = props.duration.hours;
+    const durationMinutes = props.duration.minutes;
     const directors = props.directors.map((directors) =>
-      <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors} </span>
+        <span className="span">{directors.firstName} {directors.lastName} </span>
     );
     const actors = props.actors.map((actors) =>
-      <span className="spanName" onClick={() => onActorClick(actors)}>{actors} </span>
+        <span className="span">{actors.firstName} {actors.lastName}</span>
     );
     const writers = props.writers.map((writers) =>
-      <span className="spanName" onClick={() => onWriterClick(writers)}>{writers} </span>
+        <span className="span">{writers.firstName} {writers.lastName} </span>
     );
     const countryOrigin = props.countryOrigin.map((countryOrigin) =>
-      <span>{countryOrigin} </span>
+        <span className="span">{countryOrigin.name}</span>
     );
     function onWatchlistButtonClick(){
         //Otan kanei click sto ADD TO WATCHLIST button
