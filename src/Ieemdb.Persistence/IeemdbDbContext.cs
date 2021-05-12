@@ -95,11 +95,13 @@ namespace Esentis.Ieemdb.Persistence
         e.HasOne(mv => mv.Movie)
           .WithMany(x => x.MovieActors)
           .HasForeignKey("MovieId")
-          .OnDelete(DeleteBehavior.Restrict);
+          .OnDelete(DeleteBehavior.Restrict)
+          .IsRequired();
         e.HasOne(mv => mv.Actor)
           .WithMany()
           .HasForeignKey("ActorId")
-          .OnDelete(DeleteBehavior.Restrict);
+          .OnDelete(DeleteBehavior.Restrict)
+          .IsRequired();
         e.HasKey("MovieId", "ActorId");
       });
 
