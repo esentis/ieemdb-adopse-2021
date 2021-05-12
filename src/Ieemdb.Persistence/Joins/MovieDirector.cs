@@ -5,6 +5,7 @@ namespace Esentis.Ieemdb.Persistence.Joins
 
   public class MovieDirector : EmdbKeylessEntity
   {
+#nullable disable
     public Movie Movie { get; set; }
 
     public Director Director { get; set; }

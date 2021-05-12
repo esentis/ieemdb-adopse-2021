@@ -154,7 +154,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Username successfully changed.</response>
     /// <response code="404">User not found.</response>
     [HttpPost("changeUsername")]
-    public async Task<ActionResult> ChangeUsername(string username)
+    public async Task<ActionResult> ChangeUsername(string username, CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
       var user = await userManager.FindByIdAsync(userId);
@@ -166,7 +166,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       user.UserName = username;
       user.NormalizedUserName = username.NormalizeSearch();
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       return Ok();
     }
 
@@ -176,7 +176,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="204">User successfully removed.</response>
     /// <response code="404">User not found.</response>
     [HttpDelete("")]
-    public async Task<ActionResult> RemoveUser()
+    public async Task<ActionResult> RemoveUser(CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
       var user = await userManager.FindByIdAsync(userId);
@@ -185,10 +185,10 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("User not found.");
       }
 
-      var devicesToDelete = await Context.Devices.Where(d => d.User == user).ToListAsync();
-      var ratingsToDelete = await Context.Ratings.Where(r => r.User == user).ToListAsync();
-      var watchlistsToDelete = await Context.Watchlists.Where(w => w.User == user).ToListAsync();
-      var favoritesToDelete = await Context.Favorites.Where(f => f.User == user).ToListAsync();
+      var devicesToDelete = await Context.Devices.Where(d => d.User == user).ToListAsync(token);
+      var ratingsToDelete = await Context.Ratings.Where(r => r.User == user).ToListAsync(token);
+      var watchlistsToDelete = await Context.Watchlists.Where(w => w.User == user).ToListAsync(token);
+      var favoritesToDelete = await Context.Favorites.Where(f => f.User == user).ToListAsync(token);
 
       Context.Devices.RemoveRange(devicesToDelete);
       Context.Ratings.RemoveRange(ratingsToDelete);
@@ -201,7 +201,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         return BadRequest(result.Errors);
       }
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       return NoContent();
     }
 
@@ -214,7 +214,8 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <returns><see cref="UserBindingDto"/>.</returns>
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<ActionResult<UserBindingDto>> LoginUser([FromBody] UserLoginDto userLogin)
+    public async Task<ActionResult<UserBindingDto>> LoginUser([FromBody] UserLoginDto userLogin,
+      CancellationToken token = default)
     {
       var user = await userManager.FindByNameAsync(userLogin.UserName)
                  ?? await userManager.FindByEmailAsync(userLogin.UserName);
@@ -223,7 +224,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("User not found or wrong password");
       }
 
-      var device = await Context.Devices.FirstOrDefaultAsync(e => e.Name == userLogin.DeviceName);
+      var device = await Context.Devices.FirstOrDefaultAsync(e => e.Name == userLogin.DeviceName, token);
       if (device == null)
       {
         device = new Device { User = user, Name = userLogin.DeviceName };
@@ -233,14 +234,14 @@ namespace Esentis.Ieemdb.Web.Controllers
       var accessTokenExpiration = DateTimeOffset.UtcNow.AddMinutes(jwtOptions.DurationInMinutes);
 
       var claims = await GenerateClaims(user);
-      var token = GenerateJwt(claims, accessTokenExpiration);
+      var jwt = GenerateJwt(claims, accessTokenExpiration);
 
       var refreshToken = Guid.NewGuid();
       device.RefreshToken = refreshToken;
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
 
-      var dto = new UserBindingDto(token, accessTokenExpiration, refreshToken);
+      var dto = new UserBindingDto(jwt, accessTokenExpiration, refreshToken);
 
       return Ok(dto);
     }
@@ -254,7 +255,8 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <returns><see cref="UserBindingDto"/>.</returns>
     [AllowAnonymous]
     [HttpPost("refresh")]
-    public async Task<ActionResult<UserBindingDto>> RefreshToken([FromBody] UserRefreshTokenDto dto)
+    public async Task<ActionResult<UserBindingDto>> RefreshToken([FromBody] UserRefreshTokenDto dto,
+      CancellationToken token = default)
     {
       var principal = GetPrincipalFromExpiredToken(dto.ExpiredToken);
 
@@ -268,7 +270,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       var durationToCheck = DateTimeOffset.Now.AddDays(-jwtOptions.RefreshTokenDurationInDays);
       var device = await Context.Devices.Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId)
         .Where(x => x.UpdatedAt < durationToCheck)
-        .SingleOrDefaultAsync();
+        .SingleOrDefaultAsync(token);
       if (device
           == null)
       {
@@ -279,12 +281,12 @@ namespace Esentis.Ieemdb.Web.Controllers
       var accessTokenExpiration = DateTimeOffset.UtcNow.AddMinutes(jwtOptions.DurationInMinutes);
 
       var claims = await GenerateClaims(user);
-      var token = GenerateJwt(claims, accessTokenExpiration);
+      var jwt = GenerateJwt(claims, accessTokenExpiration);
 
       device.RefreshToken = Guid.NewGuid();
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
 
-      var result = new UserBindingDto(token, accessTokenExpiration, Guid.Parse(token));
+      var result = new UserBindingDto(jwt, accessTokenExpiration, Guid.Parse(jwt));
 
       return Ok(result);
     }

@@ -13,6 +13,8 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Models.Dto;
   using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
+  using Kritikos.Extensions.Linq;
+  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Mvc;
@@ -34,7 +36,8 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="criteria">Paging criteria.</param>
     /// <returns>List of <see cref="ActorDto"/>.</returns>
     [HttpPost("all")]
-    public async Task<ActionResult<List<ActorDto>>> GetActors(PaginationCriteria criteria)
+    public async Task<ActionResult<List<ActorDto>>> GetActors(PaginationCriteria criteria,
+      CancellationToken token = default)
     {
       var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);
 
@@ -42,7 +45,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         .TagWith("Retrieving all actors")
         .OrderBy(x => x.Id);
 
-      var totalActors = await actorsQuery.CountAsync();
+      var totalActors = await actorsQuery.CountAsync(token);
 
       if (criteria.Page > ((totalActors / criteria.ItemsPerPage) + 1))
       {
@@ -52,7 +55,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       var pagedActors = await actorsQuery
         .Skip(toSkip)
         .Take(criteria.ItemsPerPage)
-        .ToListAsync();
+        .ToListAsync(token);
 
       var result = new PagedResult<ActorDto>
       {
@@ -72,30 +75,29 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="criteria">Paging criteria.</param>
     /// <returns>List of <see cref="ActorDto"/>.</returns>
     [HttpPost("search")]
-    public async Task<ActionResult<List<ActorDto>>> Search(string query, PaginationCriteria criteria)
+    public async Task<ActionResult<List<ActorDto>>> Search(
+      PersonSearchCriteria criteria,
+      CancellationToken token = default)
     {
-      var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);
-
       var actorsQuery = Context.Actors
-        .TagWith($"Searching for {query}")
-        .FullTextSearch(query)
+        .TagWith($"Searching for {criteria.Query}")
+        .FullTextSearchIf(string.IsNullOrWhiteSpace(criteria.Query), criteria.Query)
         .OrderBy(x => x.Id);
 
-      var totalActors = await actorsQuery.CountAsync();
+      var totalActors = await actorsQuery.CountAsync(token);
 
       if (criteria.Page > ((totalActors / criteria.ItemsPerPage) + 1))
       {
         return BadRequest("Page doesn't exist");
       }
 
-      var pagedActors = await actorsQuery
-        .Skip(toSkip)
-        .Take(criteria.ItemsPerPage)
-        .ToListAsync();
+      var pagedActors = await actorsQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Actor, ActorDto>(Mapper)
+        .ToListAsync(token);
 
       var result = new PagedResult<ActorDto>
       {
-        Results = pagedActors.Select(x => Mapper.Map<Actor, ActorDto>(x)).ToList(),
+        Results = pagedActors,
         Page = criteria.Page,
         TotalPages = (totalActors / criteria.ItemsPerPage) + 1,
         TotalElements = totalActors,
@@ -134,13 +136,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="201">Actor successfully added.</response>
     /// <returns>Created <see cref="ActorDto"/>.</returns>
     [HttpPost("")]
-    public async Task<ActionResult<ActorDto>> AddActor([FromBody] AddActorDto dto)
+    public async Task<ActionResult<ActorDto>> AddActor([FromBody] AddActorDto dto, CancellationToken token = default)
     {
       var actor = Mapper.Map<AddActorDto, Actor>(dto);
 
       Context.Actors.Add(actor);
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Actor), actor);
 
       return CreatedAtAction(nameof(GetActor), new { id = actor.Id }, Mapper.Map<Actor, ActorDto>(actor));

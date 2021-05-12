@@ -7,6 +7,8 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Threading;
   using System.Threading.Tasks;
 
+  using AutoMapper.QueryableExtensions;
+
   using Bogus;
 
   using EllipticCurve.Utils;
@@ -58,6 +60,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         .ThenInclude(x => x.Genre)
         .Include(x => x.MovieCountries)
         .ThenInclude(x => x.Country)
+        .Project<Movie, MovieDto>(Mapper, "complete")
         .SingleOrDefaultAsync(m => m.Id == id, token);
 
       if (movie == null)
@@ -65,8 +68,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("Movie not found");
       }
 
-      var movieDto = Mapper.Map<Movie, MovieDto>(movie, "complete");
-      return Ok(movieDto);
+      return Ok(movie);
     }
 
     /// <summary>
@@ -344,11 +346,10 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Include(x => x.MovieCountries)
         .ThenInclude(x => x.Country)
         .Where(x => topRatedMovieIds.Contains(x.Id))
+        .Project<Movie, MovieDto>(Mapper, "complete")
         .ToListAsync(cancellationToken);
 
-      var moviesDto = topMovies.Select(x => Mapper.Map<Movie, MovieDto>(x, "complete"));
-
-      return Ok(moviesDto);
+      return Ok(topMovies);
     }
 
     /// <summary>

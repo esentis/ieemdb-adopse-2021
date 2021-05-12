@@ -2,6 +2,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 {
   using System.Collections.Generic;
   using System.Linq;
+  using System.Threading;
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
@@ -11,6 +12,8 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Models.Dto;
   using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
+  using Kritikos.Extensions.Linq;
+  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Mvc;
@@ -34,35 +37,36 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>List of <see cref="WriterDto"/>.</returns>
     [HttpPost("all")]
-    public async Task<ActionResult<List<WriterDto>>> GetWriters(PaginationCriteria criteria)
+    public async Task<ActionResult<List<WriterDto>>> GetWriters(
+      PaginationCriteria criteria,
+      CancellationToken token = default)
     {
-      var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);
-
       var writersQuery = Context.Writers
         .TagWith("Retrieving all writers")
         .OrderBy(x => x.Id);
 
-      var totalWriters = await writersQuery.CountAsync();
+      var totalWriters = await writersQuery.CountAsync(token);
 
       if (criteria.Page > ((totalWriters / criteria.ItemsPerPage) + 1))
       {
         return BadRequest("Page doesn't exist");
       }
 
-      var pagedWriters = await writersQuery
-        .Skip(toSkip)
-        .Take(criteria.ItemsPerPage)
-        .ToListAsync();
+      var count = await writersQuery.CountAsync(token);
 
-      var result = new PagedResult<WriterDto>
+      var pagedWriters = await writersQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Writer, WriterDto>(Mapper)
+        .ToListAsync(token);
+
+      PagedResult<WriterDto> results = new()
       {
-        Results = pagedWriters.Select(x => Mapper.Map<Writer, WriterDto>(x)).ToList(),
         Page = criteria.Page,
-        TotalPages = (totalWriters / criteria.ItemsPerPage) + 1,
-        TotalElements = totalWriters,
+        Results = pagedWriters,
+        TotalElements = count,
+        TotalPages = (count / criteria.ItemsPerPage) + 1,
       };
 
-      return Ok(result);
+      return Ok(results);
     }
 
     /// <summary>
@@ -73,9 +77,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="404">Writer not found.</response>
     /// <returns>Single <see cref="WriterDto"/>.</returns>
     [HttpGet("{id}")]
-    public ActionResult<WriterDto> GetWriter(long id)
+    public async Task<ActionResult<WriterDto>> GetWriter(long id, CancellationToken token = default)
     {
-      var writer = Context.Writers.SingleOrDefault(x => x.Id == id);
+      var writer = await Context.Writers.SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (writer == null)
       {
@@ -95,13 +99,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="201">Successfully added.</response>
     /// <returns>Created <see cref="WriterDto"/>.</returns>
     [HttpPost("")]
-    public async Task<ActionResult<WriterDto>> AddWriter([FromBody] AddWriterDto dto)
+    public async Task<ActionResult<WriterDto>> AddWriter([FromBody] AddWriterDto dto, CancellationToken token = default)
     {
       var writer = Mapper.Map<AddWriterDto, Writer>(dto);
 
       Context.Writers.Add(writer);
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Writer), writer);
 
       return CreatedAtAction(nameof(GetWriter), new { id = writer.Id }, Mapper.Map<Writer, WriterDto>(writer));
@@ -114,9 +118,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="204">Successfully deleted.</response>
     /// <response code="404">Writer not found.</response>
     [HttpDelete("")]
-    public async Task<ActionResult> DeleteWriter(int id)
+    public async Task<ActionResult> DeleteWriter(int id, CancellationToken token = default)
     {
-      var writer = Context.Writers.SingleOrDefault(x => x.Id == id);
+      var writer = await Context.Writers.SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (writer == null || writer.IsDeleted)
       {
@@ -126,7 +130,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       writer.IsDeleted = true;
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       Logger.LogInformation(LogTemplates.Deleted, nameof(Writer), id);
 
       return NoContent();
@@ -139,9 +143,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="dto">Writer's information.</param>
     /// <returns>Updated <see cref="WriterDto"/>.</returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult<WriterDto>> UpdateWriter(int id, AddWriterDto dto)
+    public async Task<ActionResult<WriterDto>> UpdateWriter(int id, AddWriterDto dto, CancellationToken token = default)
     {
-      var writer = Context.Writers.SingleOrDefault(x => x.Id == id);
+      var writer = await Context.Writers.SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (writer == null)
       {

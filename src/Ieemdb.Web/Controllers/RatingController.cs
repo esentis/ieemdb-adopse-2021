@@ -15,6 +15,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Models.Dto;
+  using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
   using Kritikos.Extensions.Linq;
   using Kritikos.PureMap;
@@ -30,10 +31,10 @@ namespace Esentis.Ieemdb.Web.Controllers
   [Route("api/rating")]
   public class RatingController : BaseController<RatingController>
   {
-
     private readonly UserManager<IeemdbUser> userManager;
 
-    public RatingController(ILogger<RatingController> logger, IeemdbDbContext ctx, IPureMapper mapper,UserManager<IeemdbUser> userManager)
+    public RatingController(ILogger<RatingController> logger, IeemdbDbContext ctx, IPureMapper mapper,
+      UserManager<IeemdbUser> userManager)
       : base(logger, ctx, mapper)
     {
       this.userManager = userManager;
@@ -48,7 +49,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="404">Movie not found.</response>
     /// <response code="409">User has already rated the movie.</response>
     /// <returns>Created <see cref="RatingDto"/>.</returns>
-    [HttpPost("add")]
+    [HttpPost("")]
     public async Task<ActionResult<RatingDto>> AddRating(AddRatingDto addRatingDto, CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
@@ -59,7 +60,8 @@ namespace Esentis.Ieemdb.Web.Controllers
         return BadRequest("No such user.");
       }
 
-      var movie = await Context.Movies.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.Id == addRatingDto.MovieId, token);
+      var movie = await Context.Movies.Include(x => x.Ratings)
+        .FirstOrDefaultAsync(x => x.Id == addRatingDto.MovieId, token);
       if (movie == null)
       {
         return NotFound("Movie not found.");
@@ -111,9 +113,10 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("No rating found.");
       }
 
-      rating.Movie.AverageRating = (rating.Movie.Ratings.Where(x => x.Id != rating.Id).Sum(x => x.Rate) - rating.Rate) / (rating.Movie.Ratings.Count - 1);
+      rating.Movie.AverageRating = (rating.Movie.Ratings.Where(x => x.Id != rating.Id).Sum(x => x.Rate) - rating.Rate)
+                                   / (rating.Movie.Ratings.Count - 1);
       Context.Ratings.Remove(rating);
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       return NoContent();
     }
 
@@ -126,8 +129,8 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="400">Something went wrong. </response>
     /// <response code="402">Page doesn't exist. </response>
     /// <returns>Returns a list of Ratings.</returns>
-    [HttpGet("")]
-    public async Task<ActionResult<List<Rating>>> PersonalRatings([Range(1, 100)] int itemsPerPage = 20, int page = 1, CancellationToken token = default)
+    [HttpPost("personal")]
+    public async Task<ActionResult<List<Rating>>> PersonalRatings(PaginationCriteria criteria, CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
       var user = await userManager.FindByIdAsync(userId);
@@ -140,22 +143,23 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Where(x => x.User.Id == user.Id)
         .OrderBy(x => x.CreatedAt);
       var totalRatings = await ratings.CountAsync(token);
-      var pagedRatings = await ratings.Slice(page, itemsPerPage).Project<Rating, RatingDto>(Mapper).ToListAsync(token);
+      var pagedRatings = await ratings.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Rating, RatingDto>(Mapper)
+        .ToListAsync(token);
       var result = new PagedResult<RatingDto>
       {
         Results = pagedRatings,
-        Page = page,
-        TotalPages = (totalRatings / itemsPerPage) + 1,
+        Page = criteria.Page,
+        TotalPages = (totalRatings / criteria.ItemsPerPage) + 1,
         TotalElements = totalRatings,
       };
 
-      if (page > ((totalRatings / itemsPerPage) + 1))
+      if (criteria.Page > ((totalRatings / criteria.ItemsPerPage) + 1))
       {
         return BadRequest("Page doesn't exist.");
       }
 
       return Ok(result);
-
     }
 
     /// <summary>
@@ -177,14 +181,15 @@ namespace Esentis.Ieemdb.Web.Controllers
         return BadRequest("Something went wrong.");
       }
 
-      var rating = await Context.Ratings.Where(x => x.Movie.Id == movieId && x.User.Id == user.Id).SingleOrDefaultAsync(token);
+      var rating = await Context.Ratings.Where(x => x.Movie.Id == movieId && x.User.Id == user.Id)
+        .Project<Rating, RatingDto>(Mapper)
+        .SingleOrDefaultAsync(token);
       if (rating == null)
       {
         return NotFound($"No rating found for user {user.Id} for the specific movie.");
       }
 
-      return Ok(Mapper.Map<Rating, RatingDto>(rating));
-
+      return Ok(rating);
     }
   }
 }
