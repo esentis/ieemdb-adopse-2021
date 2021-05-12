@@ -15,6 +15,7 @@ function MovieViewSynopsis(props){
     /*const id=props.id;*/
     //test giana alla3w se vs
     //test vol2
+    //τεστ v
     const items = movies.map(i => <MovieCard
         id={i.id}
         Title={i.title} 
@@ -125,6 +126,7 @@ function MovieViewSynopsis(props){
                     disableButtonsControls
                     onSlideChanged={syncActiveIndex}
                   />
+                  
                 </div>
                 <button className="button_arrow" onClick={slideNext}><i id="arrow" className="fa fa-arrow-right"></i></button>
               </div>   
