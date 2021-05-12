@@ -113,7 +113,17 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("No rating found.");
       }
 
-      rating.Movie.AverageRating = rating.Movie.Ratings.Where(x => x.Id != rating.Id).Sum(x => x.Rate) / (rating.Movie.Ratings.Count - 1);
+      double result = rating.Movie.Ratings.Where(x => x.Id != rating.Id).Sum(x => x.Rate) / (rating.Movie.Ratings.Count - 1);
+
+      if (!double.IsFinite(result))
+      {
+        rating.Movie.AverageRating = 0;
+      }
+      else
+      {
+        rating.Movie.AverageRating = result;
+      }
+
       Context.Ratings.Remove(rating);
       await Context.SaveChangesAsync(token);
       return NoContent();
