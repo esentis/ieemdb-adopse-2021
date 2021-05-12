@@ -154,8 +154,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound($"No {nameof(Director)} with Id {id} found in database");
       }
 
-      director.FirstName = dto.FirstName;
-      director.LastName = dto.LastName;
+      director.FullName = dto.FullName;
       director.Bio = dto.Bio;
       director.BirthDate = dto.BirthDate;
 

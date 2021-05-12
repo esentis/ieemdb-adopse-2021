@@ -6,7 +6,6 @@ namespace Esentis.Ieemdb.Web
 
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Helpers.Extensions;
-  using Esentis.Ieemdb.Web.Models.Api;
 
   using Microsoft.ApplicationInsights.Extensibility;
   using Microsoft.AspNetCore.Hosting;

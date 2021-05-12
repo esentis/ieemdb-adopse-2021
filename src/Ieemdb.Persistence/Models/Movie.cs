@@ -14,6 +14,8 @@ namespace Esentis.Ieemdb.Persistence.Models
     private string title = string.Empty;
     private string plot = string.Empty;
 
+    public long TmdbId { get; set; }
+
     public string Title
     {
       get => title;
@@ -72,6 +74,5 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public IReadOnlyCollection<Screenshot> Screenshots { get; set; }
       = new List<Screenshot>(0);
-
   }
 }

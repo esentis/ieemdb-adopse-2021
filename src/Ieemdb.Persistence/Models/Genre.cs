@@ -12,5 +12,7 @@ namespace Esentis.Ieemdb.Persistence.Models
     public string Name { get; set; }
 
     public bool IsDeleted { get; set; }
+
+    public long TmdbId { get; set; }
   }
 }

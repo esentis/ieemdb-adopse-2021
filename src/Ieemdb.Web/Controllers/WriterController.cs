@@ -149,8 +149,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound($"No {nameof(Writer)} with Id {id} found in database");
       }
 
-      writer.FirstName = dto.FirstName;
-      writer.LastName = dto.LastName;
+      writer.FullName = dto.FullName;
       writer.Bio = dto.Bio;
       writer.BirthDate = dto.BirthDate;
 

@@ -25,9 +25,9 @@ namespace Esentis.Ieemdb.Web.Models.SearchCriteria
 
     public DateTimeOffset? ToYear { get; set; }
 
-    public TimeSpan? MinDuration { get; set; }
+    public double? MinDurationInMinutes { get; set; }
 
-    public TimeSpan? MaxDuration { get; set; }
+    public double? MaxDurationInMinutes { get; set; }
 
     public long[] Genres { get; set; } = Array.Empty<long>();
   }

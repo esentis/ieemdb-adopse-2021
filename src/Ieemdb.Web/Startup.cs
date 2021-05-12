@@ -5,6 +5,7 @@ namespace Esentis.Ieemdb.Web
   using System.IO;
   using System.Reflection;
   using System.Text;
+  using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;
@@ -12,6 +13,7 @@ namespace Esentis.Ieemdb.Web
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Helpers.Extensions;
   using Esentis.Ieemdb.Web.Options;
+  using Esentis.Ieemdb.Web.Providers;
   using Esentis.Ieemdb.Web.Services;
 
   using Kritikos.Configuration.Persistence.Extensions;
@@ -35,6 +37,8 @@ namespace Esentis.Ieemdb.Web
   using Microsoft.IdentityModel.Tokens;
   using Microsoft.OpenApi.Models;
 
+  using Refit;
+
   using Swashbuckle.AspNetCore.Filters;
   using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -53,6 +57,13 @@ namespace Esentis.Ieemdb.Web
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      var settings = new RefitSettings
+      {
+        AuthorizationHeaderValueGetter = () => Task.FromResult(Configuration["ApiKeys:TMDB"]),
+      };
+      services.AddSingleton(sp => RestService.For<ITheMovieDb>("https://api.themoviedb.org/3", settings));
+      services.AddHostedService<MoviesMetadataUpdateService>();
+      services.AddHostedService<GenreMetadataService>();
       services.AddHostedService<DeletedCleanupService>();
       services.AddHostedService<RefreshTokenCleanupService>();
       services.AddSingleton<IPureMapper>(sp => new PureMapper(MappingConfiguration.Mapping));
@@ -70,8 +81,8 @@ namespace Esentis.Ieemdb.Web
       {
         options.UseNpgsql(
             Configuration.GetConnectionString("Ieemdb"), npgsql => npgsql
-               .EnableRetryOnFailure(5, TimeSpan.FromSeconds(1), Array.Empty<string>())
-               .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
+              .EnableRetryOnFailure(5, TimeSpan.FromSeconds(1), Array.Empty<string>())
+              .UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
           .AddInterceptors(
             serviceProvider.GetRequiredService<TimestampSaveChangesInterceptor>(),
             serviceProvider.GetRequiredService<AuditSaveChangesInterceptor<Guid>>())
@@ -92,10 +103,11 @@ namespace Esentis.Ieemdb.Web
       }
 
       services.Configure<JwtOptions>(options => Configuration.GetSection("JWT").Bind(options));
+      services.Configure<ServiceDurations>(options => Configuration.GetSection("ServiceDurations").Bind(options));
 
       services.AddSwaggerGen(c =>
       {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "IeemDB.Web.Api", Version = "v1" });
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "IEEMDB.Web.Api", Version = "v1" });
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
           Name = "Authorization",
@@ -172,7 +184,6 @@ namespace Esentis.Ieemdb.Web
       services.AddRazorPages();
 
       services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
-
     }
 
     public void Configure(IApplicationBuilder app)

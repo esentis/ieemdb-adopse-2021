@@ -87,40 +87,40 @@ namespace Esentis.Ieemdb.Web.Controllers
       }
 
       var query = Context.Movies
-          .WhereIf(
-            criteria.MinDuration != null,
-            x => x.Duration >= criteria.MinDuration)
-          .WhereIf(
-            criteria.MaxDuration != null,
-            x => x.Duration <= criteria.MaxDuration)
-          .WhereIf(
-            criteria.FromYear != null,
-            x => x.ReleaseDate >= criteria.FromYear)
-          .WhereIf(
-            criteria.ToYear != null,
-            x => x.ReleaseDate <= criteria.ToYear)
-          .WhereIf(
-            criteria.Actor != null,
-            x => Context.MovieActors.Any(a =>
-              a.Actor.NormalizedLastName.Contains(criteria.Actor!.NormalizeSearch()) && x.Id == a.Movie.Id))
-          .WhereIf(
-            criteria.Director != null,
-            x => Context.MovieDirectors.Any(a =>
-              a.Director.NormalizedLastName.Contains(criteria.Director!.NormalizeSearch()) && x.Id == a.Movie.Id))
-          .WhereIf(
-            criteria.Writer != null,
-            x => Context.MovieWriters.Any(a =>
-              a.Writer.NormalizedLastName.Contains(criteria.Writer!.NormalizeSearch()) && x.Id == a.Movie.Id))
-          .WhereIf(
-            criteria.MinRating != null,
-            x => Context.Ratings.Any(r => r.Rate >= criteria.MinRating && r.Movie.Id == x.Id))
-          .WhereIf(
-            criteria.MaxRating != null,
-            x => x.Ratings.Average(y => y.Rate) <= criteria.MaxRating)
-          .WhereIf(
-            criteria.Genres.Length > 0,
-            x => x.MovieGenres.Any(gn => criteria.Genres.Contains(gn.Genre.Id)))
-          .OrderBy(x => x.Id);
+        .WhereIf(
+          criteria.MinDurationInMinutes != null,
+          x => x.Duration >= TimeSpan.FromMinutes(criteria.MinDurationInMinutes!.Value))
+        .WhereIf(
+          criteria.MaxDurationInMinutes != null,
+          x => x.Duration <= TimeSpan.FromMinutes(criteria.MaxDurationInMinutes!.Value))
+        .WhereIf(
+          criteria.FromYear != null,
+          x => x.ReleaseDate >= criteria.FromYear)
+        .WhereIf(
+          criteria.ToYear != null,
+          x => x.ReleaseDate <= criteria.ToYear)
+        .WhereIf(
+          criteria.Actor != null,
+          x => Context.MovieActors.Any(a =>
+            a.Actor.NormalizedFullName.Contains(criteria.Actor!.NormalizeSearch()) && x.Id == a.Movie.Id))
+        .WhereIf(
+          criteria.Director != null,
+          x => Context.MovieDirectors.Any(a =>
+            a.Director.NormalizedFullName.Contains(criteria.Director!.NormalizeSearch()) && x.Id == a.Movie.Id))
+        .WhereIf(
+          criteria.Writer != null,
+          x => Context.MovieWriters.Any(a =>
+            a.Writer.NormalizedFullName.Contains(criteria.Writer!.NormalizeSearch()) && x.Id == a.Movie.Id))
+        .WhereIf(
+          criteria.MinRating != null,
+          x => Context.Ratings.Any(r => r.Rate >= criteria.MinRating && r.Movie.Id == x.Id))
+        .WhereIf(
+          criteria.MaxRating != null,
+          x => x.Ratings.Average(y => y.Rate) <= criteria.MaxRating)
+        .WhereIf(
+          criteria.Genres.Length > 0,
+          x => x.MovieGenres.Any(gn => criteria.Genres.Contains(gn.Genre.Id)))
+        .OrderBy(x => x.Id);
 
       query = query
         .WhereIf(criteria.IsFeatured != null, x => x.Featured == criteria.IsFeatured)
