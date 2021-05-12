@@ -445,18 +445,18 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="204">Succesfully deleted.</response>
     /// <response code="404">Movie not found.</response>
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteMovie(long id)
+    public async Task<ActionResult> DeleteMovie(long id, CancellationToken token = default)
     {
-      var movie = await Context.Movies.SingleOrDefaultAsync(x => x.Id == id);
+      var movie = await Context.Movies.SingleOrDefaultAsync(x => x.Id == id, token);
 
-      if (movie == null || movie.IsDeleted)
+      if (movie == null)
       {
         return NotFound("Movie not found");
       }
 
       movie.IsDeleted = true;
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       return NoContent();
     }
   }

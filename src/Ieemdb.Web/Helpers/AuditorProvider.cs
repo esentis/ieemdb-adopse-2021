@@ -3,7 +3,7 @@ namespace Esentis.Ieemdb.Web.Helpers
   using System;
   using System.Security.Claims;
 
-  using Kritikos.Configuration.Persistence.Services;
+  using Kritikos.Configuration.Persistence.Interceptors.Services;
 
   using Microsoft.AspNetCore.Http;
 

@@ -7,7 +7,7 @@ namespace Esentis.Ieemdb.Persistence.Models
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Joins;
 
-  using Kritikos.Configuration.Persistence.Abstractions;
+  using Kritikos.Configuration.Persistence.Contracts.Behavioral;
 
   public class Movie : EemdbEntity<long>, ISearchable, ISoftDeletable
   {

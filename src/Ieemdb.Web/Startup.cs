@@ -18,6 +18,8 @@ namespace Esentis.Ieemdb.Web
 
   using Kritikos.Configuration.Persistence.Extensions;
   using Kritikos.Configuration.Persistence.Interceptors;
+  using Kritikos.Configuration.Persistence.Interceptors.SaveChanges;
+  using Kritikos.Configuration.Persistence.Interceptors.Services;
   using Kritikos.Configuration.Persistence.Services;
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
@@ -90,7 +92,6 @@ namespace Esentis.Ieemdb.Web
       });
 
       services.AddDatabaseDeveloperPageExceptionFilter();
-      services.AddHostedService<MigrationService<IeemdbDbContext>>();
 
       var sendgrid = Configuration.GetValue<string>("SendGrid:ApiKey");
       if (string.IsNullOrEmpty(sendgrid))

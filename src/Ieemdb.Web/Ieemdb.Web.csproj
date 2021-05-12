@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="33.0.2" />
+    <PackageReference Include="Kritikos.Configuration.Persistence.Interceptors" Version="2.0.0" />
     <PackageReference Include="Kritikos.Extensions.Linq" Version="0.1.7" />
     <PackageReference Include="Kritikos.PureMapper" Version="1.0.3" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />

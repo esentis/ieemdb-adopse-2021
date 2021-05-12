@@ -4,20 +4,21 @@
     ".NETCoreApp,Version=v5.0": {
       "Kritikos.Configuration.Peristence.IdentityServer": {
         "type": "Direct",
-        "requested": "[1.1.1, )",
-        "resolved": "1.1.1",
-        "contentHash": "zAWgDgqwgqHl4Xk2luCIKi4tX8vatTOfUq1UxdVxlh6VRhQv0V5m3NNEB8L/vUpqMoASvyriqonm0X/tMTdchg==",
+        "requested": "[2.0.0, )",
+        "resolved": "2.0.0",
+        "contentHash": "k3fftx9dFGw3dQRDNc29iIuVDKoQfuDWy7G6aH0uTOl97pScQYSu665nOoHmIUwof1rObLLIrkHYW0PE2UUGIg==",
         "dependencies": {
-          "Kritikos.Configuration.Persistence": "1.1.1",
+          "Kritikos.Configuration.Persistence": "2.0.0",
           "Microsoft.AspNetCore.ApiAuthorization.IdentityServer": "5.0.5"
         }
       },
       "Kritikos.Configuration.Persistence": {
         "type": "Direct",
-        "requested": "[1.1.1, )",
-        "resolved": "1.1.1",
-        "contentHash": "GAECB1AR0apawYC4bM510EX+7dMOJ9b0yY+aMdGY7EiL0aO1TQ09LZh0fF/pSU1wPJIcQD1BqCl3yNRY9q+TYw==",
+        "requested": "[2.0.0, )",
+        "resolved": "2.0.0",
+        "contentHash": "4ZGxOasav9SF+JcsEW3kX7wvGAQ3y/xs9dU/Pi+jjLMhmxQGr2aq8A51hVOLTdfZp/GgWaGrYtpiYWEywS29OQ==",
         "dependencies": {
+          "Kritikos.Configuration.Persistence.Contracts": "2.0.0",
           "Microsoft.EntityFrameworkCore.Relational": "5.0.5",
           "Microsoft.Extensions.Hosting": "5.0.0",
           "System.ComponentModel.Annotations": "5.0.0"
@@ -194,6 +195,11 @@
         "dependencies": {
           "IdentityModel": "4.4.0"
         }
+      },
+      "Kritikos.Configuration.Persistence.Contracts": {
+        "type": "Transitive",
+        "resolved": "2.0.0",
+        "contentHash": "jvksXOZ7RD77RD/0Efz4Osi5F8u4/ebcVdoYJdtncHUWfjL4se1tjAR7EJqGghlF5OWHjaQLyN3Wb3oNvyW9Uw=="
       },
       "Microsoft.AspNetCore.ApiAuthorization.IdentityServer": {
         "type": "Transitive",
