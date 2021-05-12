@@ -7,45 +7,45 @@ import ReactStars from "react-rating-stars-component";
 import Genre from './Genre';
 import Moment from "react-moment";
 function RatingStars(rating){
-    if (rating.stars/2 < 1){
+    if (rating.stars < 1){
         return (<div id="divRate">
-                    <p className="rating">{rating.stars}/10</p>
+                    <p className="rating">{rating.stars}/5</p>
                     <ReactStars {...{value: 0, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
                                             emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
                                             filledIcon: <i className="fa fa-star" />}} />
                 </div>
         );
     }
-    else if (rating.stars/2 < 2){
+    else if (rating.stars < 2){
         return (<div id="divRate">
-                    <p className="rating">{rating.stars}/10</p>
+                    <p className="rating">{rating.stars}/5</p>
                     <ReactStars {...{value: 1, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
                                             emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
                                             filledIcon: <i className="fa fa-star" />}} />
                 </div>
         );
     }
-    else if (rating.stars/2 < 3){
+    else if (rating.stars < 3){
         return (<div id="divRate">
-                    <p className="rating">{rating.stars}/10</p>
+                    <p className="rating">{rating.stars}/5</p>
                     <ReactStars {...{value: 2, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
                                             emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
                                             filledIcon: <i className="fa fa-star" />}} />
                 </div>
         );
     }
-    else if (rating.stars/2 < 4){
+    else if (rating.stars < 4){
         return (<div id="divRate">
-                    <p className="rating">{rating.stars}/10</p>
+                    <p className="rating">{rating.stars}/5</p>
                     <ReactStars {...{value: 3, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
                                             emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
                                             filledIcon: <i className="fa fa-star" />}} />
                 </div>
         );
     }
-    else if (rating.stars/2 < 5){
+    else if (rating.stars < 5){
         return (<div id="divRate">
-                    <p className="rating">{rating.stars}/10</p>
+                    <p className="rating">{rating.stars}/5</p>
                     <ReactStars {...{value: 4, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
                                             emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
                                             filledIcon: <i className="fa fa-star" />}} />
@@ -54,7 +54,7 @@ function RatingStars(rating){
     }
     else{
         return (<div id="divRate">
-                    <p className="rating">{rating.stars}/10</p>
+                    <p className="rating">{rating.stars}/5</p>
                     <ReactStars {...{value: 5, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
                                             emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
                                             filledIcon: <i className="fa fa-star" />}} />
@@ -122,7 +122,7 @@ function MovieViewPoster(props){
                                 <p className="revWriter">Fanis Georgiou</p>
                                 <div className="revStars2">
                                     <p className="rating">1/5</p>
-                                    <ReactStars {...{value: 1, size: 30, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
+                                    <ReactStars {...{value: 5, size: 30, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
                                             emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
                                             filledIcon: <i className="fa fa-star" />}} />
                                 </div>
