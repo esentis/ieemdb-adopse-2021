@@ -4,9 +4,9 @@
     ".NETCoreApp,Version=v5.0": {
       "Kritikos.Configuration.Peristence.IdentityServer": {
         "type": "Direct",
-        "requested": "[1.1.1, )",
-        "resolved": "1.1.1",
-        "contentHash": "I15rY+cIO+hjVIpvsg8W88w4D4TJOnqVUxFWrGo2CiCjiTN6JGEHV2ylTs8WZcp2S8SUma0xghCVlKOhMJZgww==",
+        "requested": "[2.0.0, )",
+        "resolved": "2.0.0",
+        "contentHash": "k3fftx9dFGw3dQRDNc29iIuVDKoQfuDWy7G6aH0uTOl97pScQYSu665nOoHmIUwof1rObLLIrkHYW0PE2UUGIg==",
         "dependencies": {
           "Kritikos.Configuration.Persistence": "2.0.0",
           "Microsoft.AspNetCore.ApiAuthorization.IdentityServer": "5.0.5"
