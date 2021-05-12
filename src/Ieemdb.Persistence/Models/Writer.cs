@@ -7,13 +7,14 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   using Kritikos.Configuration.Persistence.Abstractions;
 
-  public class Writer : EemdbEntity<long>, ISearchable
+  public class Writer : EemdbEntity<long>, ISearchable, ISoftDeletable
   {
     private string fName = string.Empty;
 
     private string lName = string.Empty;
 
     private string bio = string.Empty;
+
     public string FirstName
     {
       get => fName;
@@ -33,6 +34,8 @@ namespace Esentis.Ieemdb.Persistence.Models
         NormalizedLastName = value.NormalizeSearch();
       }
     }
+
+    public bool IsDeleted { get; set; }
 
     public string NormalizedFirstName { get; private set; } = string.Empty;
 

@@ -33,17 +33,13 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Country> Countries { get; set; }
 
-    public DbSet<Rating> Ratings { get; set; }
+    public DbSet<Watchlist> Watchlists{ get; set; }
 
-    public DbSet<Favorite> Favorites { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
 
     public DbSet<MovieActor> MovieActors { get; set; }
 
     public DbSet<MovieDirector> MovieDirectors { get; set; }
-
-    public DbSet<MovieWatchlist> MovieWatchlists { get; set; }
-
-    public DbSet<Poster> Posters { get; set; }
 
     public DbSet<Screenshot> Screenshots { get; set; }
 
@@ -54,6 +50,8 @@ namespace Esentis.Ieemdb.Persistence
     public DbSet<MovieCountry> MovieCountries { get; set; }
 
     public DbSet<Device> Devices { get; set; }
+
+    public DbSet<Favorite> Favorites { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -81,7 +79,7 @@ namespace Esentis.Ieemdb.Persistence
       builder.Entity<MovieActor>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany()
+          .WithMany(x => x.MovieActors)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Actor)
@@ -94,7 +92,7 @@ namespace Esentis.Ieemdb.Persistence
       builder.Entity<MovieDirector>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany()
+          .WithMany(x => x.MovieDirectors)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Director)
@@ -104,23 +102,11 @@ namespace Esentis.Ieemdb.Persistence
         e.HasKey("MovieId", "DirectorId");
       });
 
-      builder.Entity<MovieWatchlist>(e =>
-      {
-        e.HasOne(mv => mv.Movie)
-          .WithMany()
-          .HasForeignKey("MovieId")
-          .OnDelete(DeleteBehavior.Restrict);
-        e.HasOne(mv => mv.Watchlist)
-          .WithMany()
-          .HasForeignKey("WatchlistId")
-          .OnDelete(DeleteBehavior.Restrict);
-        e.HasKey("MovieId", "WatchlistId");
-      });
 
       builder.Entity<MovieWriter>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany()
+          .WithMany(x => x.MovieWriters)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Writer)
@@ -133,7 +119,7 @@ namespace Esentis.Ieemdb.Persistence
       builder.Entity<MovieGenre>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany()
+          .WithMany(x => x.MovieGenres)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Genre)
@@ -146,7 +132,7 @@ namespace Esentis.Ieemdb.Persistence
       builder.Entity<MovieCountry>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany()
+          .WithMany(x => x.MovieCountries)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict);
         e.HasOne(mv => mv.Country)
@@ -155,6 +141,21 @@ namespace Esentis.Ieemdb.Persistence
           .OnDelete(DeleteBehavior.Restrict);
         e.HasKey("MovieId", "CountryId");
       });
+
+      builder.Entity<Rating>(e =>
+      {
+        e.HasOne(mv => mv.Movie)
+          .WithMany(x => x.Ratings)
+          .OnDelete(DeleteBehavior.Restrict);
+      });
+
+      builder.Entity<Screenshot>(e =>
+      {
+        e.HasOne(mv => mv.Movie)
+          .WithMany(x => x.Screenshots)
+          .OnDelete(DeleteBehavior.Restrict);
+      });
+
     }
   }
 }
