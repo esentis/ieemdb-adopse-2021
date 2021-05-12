@@ -6,6 +6,7 @@ import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 import MovieCard from './MovieCard';
 import movies from './Movie_Dataset';
+import Moment from "react-moment";
 const responsive = {
   0: { items: 2 },
   1024: { items: 5 },
@@ -34,20 +35,22 @@ function MovieViewSynopsis(props){
         );
     const [opre, setopre] = useState(false);
     const [name, setName] = useState("");
+    const [birthday, setBirthday] = useState("");
+    const [bio, setBio] = useState("");
     const overview=props.overview;
     const durationHours = props.duration.hours;
     const durationMinutes = props.duration.minutes;
     const directors = props.directors.map((directors) =>
-      <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors} </span>
+      <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors.lastName} </span>
     );
     const actors = props.actors.map((actors) =>
-      <span className="spanName" onClick={() => onActorClick(actors)}>{actors} </span>
+      <span className="spanName">{actors.firstName} </span>
     );
     const writers = props.writers.map((writers) =>
-      <span className="spanName" onClick={() => onWriterClick(writers)}>{writers} </span>
+      <span className="spanName">{writers.firstName} </span>
     );
     const countryOrigin = props.countryOrigin.map((countryOrigin) =>
-      <span>{countryOrigin} </span>
+      <span>{countryOrigin.name} </span>
     );
     function onWatchlistButtonClick(){
         //Otan kanei click sto ADD TO WATCHLIST button
@@ -61,7 +64,10 @@ function MovieViewSynopsis(props){
       popupToggle();
     }
     function onDirectorClick(directors) {
-      setName(directors);
+      setName(directors.firstName);
+      const releaseDate = <Moment format="DD/MM/YYYY">{directors.birthDate}</Moment>
+      setBirthday(releaseDate);
+      setBio(directors.bio);
       popupToggle();
     }
     function onWriterClick(writers) {
@@ -107,11 +113,11 @@ function MovieViewSynopsis(props){
               <button className="buttonClose" onClick={popupToggle}><i id="return" className="fa fa-close"></i></button>
               <p className="popUpName">{name}</p>
               <div className="birthDate">
-                <p className="popUpDate">November 19, 1958</p>
+                <p className="popUpDate">{birthday}</p>
               </div>
             </div>
             <div id="popUpBody">
-              <p className="popUpBio">Charles Stuart Kaufman is an American screenwriter, producer, director, and novelist. He wrote the films Being John Malkovich (1999), Adaptation (2002), and Eternal Sunshine of the Spotless Mind (2004). He made his directorial debut with Synecdoche, New York (2008), which film critic Roger Ebert called "the best movie of the decade" in 2009. Further directorial work includes the stop motion animated film Anomalisa (2015) and I'm Thinking of Ending Things (2020). In 2020, Kaufman made his literary debut with the release of his first novel, Antkind.</p>
+              <p className="popUpBio">{bio}</p>
               <div className="div_style">
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
                 <button className="button_arrow" onClick={slidePrev}><i id="arrow" className="fa fa-arrow-left"></i></button>
