@@ -8,69 +8,95 @@ namespace Esentis.Ieemdb.Web.Services
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Web.Options;
 
+  using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Hosting;
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Options;
 
-  public class RefreshTokenCleanupService : IHostedService, IDisposable
+  public class RefreshTokenCleanupService : BackgroundService
   {
-    private readonly IServiceScopeFactory scope;
+    private readonly Timer timer;
+    private readonly IServiceScopeFactory factory;
     private readonly ILogger<RefreshTokenCleanupService> logger;
-    private readonly Timer Trigger;
     private readonly JwtOptions jwtOptions;
+    private readonly ServiceDurations serviceDurations;
+    private CancellationTokenSource? cancellationTokenSource;
 
-
-    public RefreshTokenCleanupService(IServiceScopeFactory scopeFactory, IOptions<JwtOptions> opts,
+    public RefreshTokenCleanupService(
+      IServiceScopeFactory scopeFactory,
+      IOptions<JwtOptions> jwtOptions,
+      IOptions<ServiceDurations> durations,
       ILogger<RefreshTokenCleanupService> logger)
     {
-      scope = scopeFactory;
+      factory = scopeFactory;
       this.logger = logger;
-      jwtOptions = opts.Value;
-      Trigger = new Timer(DoWork, null, Timeout.Infinite, 0);
+      this.jwtOptions = jwtOptions.Value;
+      serviceDurations = durations.Value;
+      timer = new Timer(Trigger, null,
+        TimeSpan.Zero,
+        TimeSpan.FromMinutes(this.serviceDurations.CleanupTokensInMinutes));
     }
 
-    private void DoWork(object state)
-    {
-      using var s = scope.CreateScope();
-      var context = s.ServiceProvider.GetRequiredService<IeemdbDbContext>();
-      var expired = DateTimeOffset.Now.AddDays(-jwtOptions.RefreshTokenDurationInDays);
-      var tokens = context.Devices.Where(x => x.UpdatedAt < expired).ToList();
-      context.Devices.RemoveRange(tokens);
-      context.SaveChanges();
-      logger.LogInformation("Removed  {Count} refresh tokens", tokens.Count);
-    }
-
-    #region Overrides of BackgroundService
-
-    /// <inheritdoc />
     public void Dispose()
     {
-      Trigger.Dispose();
+      timer.Dispose();
+      base.Dispose();
     }
 
-    #endregion
+    public void Trigger(object? state) => cancellationTokenSource?.Cancel();
 
-    #region Implementation of IHostedService
-
-    /// <inheritdoc />
-    public Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-      logger.LogInformation("Starting service {Service}", nameof(RefreshTokenCleanupService));
+      while (!stoppingToken.IsCancellationRequested)
+      {
+        cancellationTokenSource = new CancellationTokenSource();
 
-      Trigger.Change(TimeSpan.Zero, TimeSpan.FromMinutes(60));
+        try
+        {
+          using var synced =
+            CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token, stoppingToken);
+          await Task.Delay(Timeout.Infinite, synced.Token);
+        }
+        catch (TaskCanceledException)
+        {
+        }
 
-      return Task.CompletedTask;
+        if (stoppingToken.IsCancellationRequested)
+        {
+          return;
+        }
+
+        using var scope = factory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<IeemdbDbContext>();
+
+        try
+        {
+          var expired = DateTimeOffset.Now.AddDays(-jwtOptions.RefreshTokenDurationInDays);
+          var tokens = context.Devices.Where(x => x.UpdatedAt < expired).ToList();
+          context.Devices.RemoveRange(tokens);
+          await context.SaveChangesAsync();
+          logger.LogInformation("Removed  {Count} refresh tokens", tokens.Count);
+
+          await context.SaveChangesAsync(stoppingToken);
+        }
+        catch (TaskCanceledException)
+        {
+          logger.LogInformation("Service {Service} is shutting down.", nameof(DeletedCleanupService));
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+        }
+        catch (DbUpdateException e)
+        {
+          logger.LogCritical(e, "Issues detected while saving to database: {Message}", e.Message);
+        }
+        catch (Exception e)
+        {
+          logger.LogError(e, "Unhandled exception: {Message}", e.Message);
+        }
+      }
     }
 
-    /// <inheritdoc />
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-      logger.LogInformation("Stopping service {Service}", nameof(RefreshTokenCleanupService));
-      Trigger.Change(Timeout.Infinite, 0);
-      return Task.CompletedTask;
-    }
-
-    #endregion
   }
 }

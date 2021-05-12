@@ -16,7 +16,7 @@ namespace Esentis.Ieemdb.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.5")
+                .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Identity.Device", b =>
@@ -26,8 +26,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -39,8 +39,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<Guid>("RefreshToken")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -65,8 +65,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
@@ -76,8 +76,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -101,8 +101,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -140,8 +140,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -167,14 +167,17 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<long>("ActorId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("Character")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -194,14 +197,14 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<long>("CountryId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -221,14 +224,14 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<long>("DirectorId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -248,14 +251,14 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<long>("GenreId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -275,14 +278,14 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<long>("WriterId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -305,11 +308,11 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("BirthDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -317,22 +320,14 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<bool>("Featured")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedFirstName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedLastName")
+                    b.Property<string>("NormalizedFullName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -340,8 +335,11 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<long>("TmdbId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -361,8 +359,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -378,8 +376,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -403,8 +401,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<DateTimeOffset>("BirthDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -412,22 +410,14 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<bool>("Featured")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedFirstName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedLastName")
+                    b.Property<string>("NormalizedFullName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -435,8 +425,11 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<long>("TmdbId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -456,8 +449,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -465,8 +458,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<long?>("MovieId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -490,8 +483,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -503,8 +496,11 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<long>("TmdbId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -524,8 +520,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<double>("AverageRating")
                         .HasColumnType("double precision");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -562,12 +558,15 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long>("TmdbId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TrailerUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -590,8 +589,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -606,8 +605,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -645,6 +644,30 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.ToTable("Screenshots");
                 });
 
+            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.ServiceBatchingProgress", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("LastProccessedPage")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Name")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalPages")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ServiceBatchingProgresses");
+                });
+
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Watchlist", b =>
                 {
                     b.Property<long>("Id")
@@ -652,8 +675,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -661,8 +684,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<long?>("MovieId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -693,8 +716,8 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<DateTimeOffset>("BirthDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -702,22 +725,14 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<bool>("Featured")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedFirstName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedLastName")
+                    b.Property<string>("NormalizedFullName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -725,8 +740,11 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<long>("TmdbId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");

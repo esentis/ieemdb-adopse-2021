@@ -7,12 +7,14 @@ namespace Esentis.Ieemdb.Persistence.Models
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Joins;
 
-  using Kritikos.Configuration.Persistence.Abstractions;
+  using Kritikos.Configuration.Persistence.Contracts.Behavioral;
 
   public class Movie : EemdbEntity<long>, ISearchable, ISoftDeletable
   {
     private string title = string.Empty;
     private string plot = string.Empty;
+
+    public long TmdbId { get; set; }
 
     public string Title
     {
@@ -72,6 +74,5 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public IReadOnlyCollection<Screenshot> Screenshots { get; set; }
       = new List<Screenshot>(0);
-
   }
 }

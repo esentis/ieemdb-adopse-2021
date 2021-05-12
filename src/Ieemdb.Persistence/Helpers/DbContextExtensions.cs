@@ -12,5 +12,14 @@ namespace Esentis.Ieemdb.Persistence.Helpers
       where TEntity : ISearchable
       => source
         .Where(x => EF.Functions.ToTsVector("english", x.NormalizedSearch).Matches(query));
+
+    public static IQueryable<TEntity> FullTextSearchIf<TEntity>(this IQueryable<TEntity> source, bool predicate,
+      string query)
+      where TEntity : ISearchable
+      =>
+        predicate
+          ? source
+            .Where(x => EF.Functions.ToTsVector("english", x.NormalizedSearch).Matches(query))
+          : source;
   }
 }
