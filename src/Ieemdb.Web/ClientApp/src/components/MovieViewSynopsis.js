@@ -7,32 +7,15 @@ import 'react-alice-carousel/lib/alice-carousel.css';
 import MovieCard from './MovieCard';
 import movies from './Movie_Dataset';
 import Moment from "react-moment";
+import axios from 'axios';
+import LoadingSpinner from './LoadingSpinner';
 const responsive = {
   0: { items: 2 },
   1024: { items: 5 },
   1199: { items: 6 },
 };
-function MovieViewSynopsis(props){
-    /*const id=props.id;*/
-    //test giana alla3w se vs
-    //test vol2
-    //τεστ v
-    const items = movies.map(i => <MovieCard
-        id={i.id}
-        Title={i.title} 
-        Poster={i.poster} 
-        Overview={i.overview}
-        ReleaseDate={i.release_date}
-        Genres={i.genres}
-        Actors={i.actors}
-        Writers={i.writers}
-        Directors={i.directors}
-        Rating={i.rating}
-        Duration={i.duration}
-        CountryOrigin={i.countryOrigin}
-        height={"200vh"} 
-        width={"140vw"} />
-        );
+function MovieViewSynopsis(props) {
+    const [data, setData] = useState([]);
     const [opre, setopre] = useState(false);
     const [name, setName] = useState("");
     const [birthday, setBirthday] = useState("");
@@ -40,14 +23,15 @@ function MovieViewSynopsis(props){
     const overview=props.overview;
     const durationHours = props.duration.hours;
     const durationMinutes = props.duration.minutes;
+    const [loading, setLoading] = useState(true);
     const directors = props.directors.map((directors) =>
-      <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors.lastName} </span>
+      <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors.fullName} </span>
     );
     const actors = props.actors.map((actors) =>
-      <span className="spanName">{actors.firstName} </span>
+      <span className="spanName" onClick={() => onActorClick(actors)}>{actors.fullName} </span>
     );
     const writers = props.writers.map((writers) =>
-      <span className="spanName">{writers.firstName} </span>
+      <span className="spanName" onClick={() => onWriterClick(writers)}>{writers.fullName} </span>
     );
     const countryOrigin = props.countryOrigin.map((countryOrigin) =>
       <span>{countryOrigin.name} </span>
@@ -60,20 +44,61 @@ function MovieViewSynopsis(props){
       setopre(current => !current);
     }
     function onActorClick(actors) {
-      setName(actors);
+      setName(actors.fullName);
+      const releaseDate = <Moment format="DD/MM/YYYY">{actors.birthDate}</Moment>
+      setBirthday(releaseDate);
+      setBio(actors.bio);
+      getActorCarousel(actors);
       popupToggle();
     }
     function onDirectorClick(directors) {
-      setName(directors.firstName);
+      setName(directors.fullName);
       const releaseDate = <Moment format="DD/MM/YYYY">{directors.birthDate}</Moment>
       setBirthday(releaseDate);
       setBio(directors.bio);
+      getDirectorCarousel(directors);
       popupToggle();
     }
     function onWriterClick(writers) {
-      setName(writers);
+      setName(writers.fullName);
+      const releaseDate = <Moment format="DD/MM/YYYY">{writers.birthDate}</Moment>
+      setBirthday(releaseDate);
+      setBio(writers.bio);
+      getWriterCarousel(writers);
       popupToggle();
     }
+    async function getDirectorCarousel(directors) {
+      console.log(directors.fullName);
+      await axios({
+        method: 'post', url: `https://${window.location.host}/api/movie/search`, data: {
+          "page": 1, "itemsPerPage": 20, "director": directors.fullName
+        }
+      }).then(res => setData(res.data.results))
+    }
+    async function getActorCarousel(actors) {
+      console.log(actors.fullName);
+      await axios({
+        method: 'post', url: `https://${window.location.host}/api/movie/search`, data: {
+          "page": 1, "itemsPerPage": 20, "actor": actors.fullName
+        }
+      }).then(res => setData(res.data.results))
+    }
+    async function getWriterCarousel(writers) {
+      console.log(writers.fullName);
+      await axios({
+        method: 'post', url: `https://${window.location.host}/api/movie/search`, data: {
+          "page": 1, "itemsPerPage": 20, "writer": writers.fullName
+        }
+      }).then(res => setData(res.data.results))
+    }
+    const items = data.map(i => <MovieCard
+      id={i.id}
+      Title={i.title}
+      Poster={i.posterUrl ? i.posterUrl : "https://media.comicbook.com/files/img/default-movie.png"}
+      height={"250vh"}
+      width={'auto'}
+      posterClass='poster'
+      flag={false} />)
     const [activeIndex, setActiveIndex] = useState(0);
     const slidePrev = () => setActiveIndex(activeIndex - 1);
     const slideNext = () => setActiveIndex(activeIndex + 1);
