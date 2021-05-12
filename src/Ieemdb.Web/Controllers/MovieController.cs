@@ -60,15 +60,14 @@ namespace Esentis.Ieemdb.Web.Controllers
         .ThenInclude(x => x.Genre)
         .Include(x => x.MovieCountries)
         .ThenInclude(x => x.Country)
-        .Project<Movie, MovieDto>(Mapper, "complete")
-        .SingleOrDefaultAsync(m => m.Id == id, token);
+        .SingleOrDefaultAsync(m => m.Id == id,CancellationToken.None);
 
       if (movie == null)
       {
         return NotFound("Movie not found");
       }
 
-      return Ok(movie);
+      return Ok(Mapper.Map<Movie,MovieDto>(movie,"complete"));
     }
 
     /// <summary>
