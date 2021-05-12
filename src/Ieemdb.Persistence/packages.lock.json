@@ -4,9 +4,9 @@
     ".NETCoreApp,Version=v5.0": {
       "Kritikos.Configuration.Peristence.IdentityServer": {
         "type": "Direct",
-        "requested": "[2.0.0, )",
-        "resolved": "2.0.0",
-        "contentHash": "k3fftx9dFGw3dQRDNc29iIuVDKoQfuDWy7G6aH0uTOl97pScQYSu665nOoHmIUwof1rObLLIrkHYW0PE2UUGIg==",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "I15rY+cIO+hjVIpvsg8W88w4D4TJOnqVUxFWrGo2CiCjiTN6JGEHV2ylTs8WZcp2S8SUma0xghCVlKOhMJZgww==",
         "dependencies": {
           "Kritikos.Configuration.Persistence": "2.0.0",
           "Microsoft.AspNetCore.ApiAuthorization.IdentityServer": "5.0.5"
@@ -110,12 +110,6 @@
         "requested": "[1.1.31, )",
         "resolved": "1.1.31",
         "contentHash": "2f2k7bbhDd132ArglCKpzKoWBcp3uzbIFcb4aosnlqIKlfYKDE2HevBVRNVa+LkWFnjXFFWs47Bo96fu8iS//Q=="
-      },
-      "SonarAnalyzer.CSharp": {
-        "type": "Direct",
-        "requested": "[8.20.0.28934, )",
-        "resolved": "8.20.0.28934",
-        "contentHash": "7sorg1+g8sDdzyysEy/fwidXTjVhaVJbu/XZ//bkZJW9BOhXAdb2NV/ZS6VHl3ur2fYUQCFGkb9cZ6NbOI71FA=="
       },
       "StyleCop.Analyzers": {
         "type": "Direct",
