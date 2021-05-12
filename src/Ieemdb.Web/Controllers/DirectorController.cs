@@ -12,6 +12,8 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Models.Dto;
   using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
+  using Kritikos.Extensions.Linq;
+  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Mvc;
@@ -35,29 +37,28 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>A list of <see cref="DirectorDto"/>.</returns>
     [HttpPost("all")]
-    public async Task<ActionResult<List<DirectorDto>>> GetDirectors(PaginationCriteria criteria)
+    public async Task<ActionResult<List<DirectorDto>>> GetDirectors(
+      PersonSearchCriteria criteria,
+      CancellationToken token = default)
     {
-      var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);
-
       var directorsQuery = Context.Directors
         .TagWith("Retrieving all directors")
         .OrderBy(x => x.Id);
 
-      var totalDirectors = await directorsQuery.CountAsync();
+      var totalDirectors = await directorsQuery.CountAsync(token);
 
       if (criteria.Page > ((totalDirectors / criteria.ItemsPerPage) + 1))
       {
         return BadRequest("Page doesn't exist");
       }
 
-      var pagedDirectors = await directorsQuery
-        .Skip(toSkip)
-        .Take(criteria.ItemsPerPage)
-        .ToListAsync();
+      var pagedDirectors = await directorsQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Director, DirectorDto>(Mapper)
+        .ToListAsync(token);
 
       var result = new PagedResult<DirectorDto>
       {
-        Results = pagedDirectors.Select(x => Mapper.Map<Director, DirectorDto>(x)).ToList(),
+        Results = pagedDirectors,
         Page = criteria.Page,
         TotalPages = (totalDirectors / criteria.ItemsPerPage) + 1,
         TotalElements = totalDirectors,
@@ -74,9 +75,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="404">Director not found.</response>
     /// <returns>A single <see cref="DirectorDto"/>.</returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<DirectorDto>> GetDirector(long id,CancellationToken token=default)
+    public async Task<ActionResult<DirectorDto>> GetDirector(long id, CancellationToken token = default)
     {
-      var director = await Context.Directors.Where(x => x.Id == id).SingleOrDefaultAsync(token);
+      var director = await Context.Directors.Where(x => x.Id == id).Project<Director,DirectorDto>(Mapper).SingleOrDefaultAsync(token);
 
       if (director == null)
       {
@@ -86,7 +87,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       Logger.LogInformation(LogTemplates.RequestEntity, nameof(Director), id);
 
-      return Ok(Mapper.Map<Director, DirectorDto>(director));
+      return Ok(director);
     }
 
     /// <summary>
@@ -115,6 +116,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Director's unique ID.</param>
     /// <response code="201">Successfully deleted.</response>
     /// <response code="404">Director not found.</response>
+    /// <returns>No content.</returns>
     [HttpDelete("")]
     public async Task<ActionResult> DeleteDirector(int id, CancellationToken token = default)
     {
@@ -143,10 +145,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="404">Director not found.</response>
     /// <returns>Updated <see cref="DirectorDto"/>.</returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult<DirectorDto>> UpdateDirector(int id, AddDirectorDto dto,
-      CancellationToken token = default)
+    public async Task<ActionResult<DirectorDto>> UpdateDirector(int id, AddDirectorDto dto, CancellationToken token = default)
     {
-      var director = await Context.Directors.Where(x => x.Id == id).SingleOrDefaultAsync(token);
+      var director = await Context.Directors.Where(x => x.Id == id).Project<Director,DirectorDto>(Mapper).SingleOrDefaultAsync(token);
 
       if (director == null)
       {
@@ -154,15 +155,14 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound($"No {nameof(Director)} with Id {id} found in database");
       }
 
-      director.FirstName = dto.FirstName;
-      director.LastName = dto.LastName;
+      director.FullName = dto.FullName;
       director.Bio = dto.Bio;
       director.BirthDate = dto.BirthDate;
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       Logger.LogInformation(LogTemplates.Updated, nameof(Director), director);
 
-      return Ok(Mapper.Map<Director, DirectorDto>(director));
+      return Ok(director);
     }
   }
 }

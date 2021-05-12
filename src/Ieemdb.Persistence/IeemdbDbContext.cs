@@ -2,6 +2,7 @@
 namespace Esentis.Ieemdb.Persistence
 {
   using System;
+  using System.Linq;
 
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
@@ -9,6 +10,8 @@ namespace Esentis.Ieemdb.Persistence
   using Esentis.Ieemdb.Persistence.Models;
 
   using Kritikos.Configuration.Peristence.IdentityServer;
+  using Kritikos.Configuration.Persistence.Contracts.Behavioral;
+  using Kritikos.Configuration.Persistence.Extensions;
 
   using Microsoft.EntityFrameworkCore;
 
@@ -33,7 +36,7 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Country> Countries { get; set; }
 
-    public DbSet<Watchlist> Watchlists{ get; set; }
+    public DbSet<Watchlist> Watchlists { get; set; }
 
     public DbSet<Rating> Ratings { get; set; }
 
@@ -53,18 +56,28 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Favorite> Favorites { get; set; }
 
+    //public DbSet<Actor> People { get; set; }
+
+    //public IQueryable<Actor> Directors = People.Where(x=>true)
+
+    public DbSet<ServiceBatchingProgress> ServiceBatchingProgresses { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
       base.OnModelCreating(builder);
+
       builder.Entity<Actor>()
+        .HasQueryFilter(x => !x.IsDeleted)
         .HasIndex(e => e.NormalizedSearch)
         .IsTsVectorExpressionIndex("english");
 
       builder.Entity<Director>()
+        .HasQueryFilter(x => !x.IsDeleted)
         .HasIndex(e => e.NormalizedSearch)
         .IsTsVectorExpressionIndex("english");
 
       builder.Entity<Movie>()
+        .HasQueryFilter(x => !x.IsDeleted)
         .HasIndex(e => e.NormalizedTitle)
         .IsTsVectorExpressionIndex("english");
 
@@ -73,6 +86,7 @@ namespace Esentis.Ieemdb.Persistence
         .IsTsVectorExpressionIndex("english");
 
       builder.Entity<Writer>()
+        .HasQueryFilter(x => !x.IsDeleted)
         .HasIndex(e => e.NormalizedSearch)
         .IsTsVectorExpressionIndex("english");
 
@@ -89,6 +103,16 @@ namespace Esentis.Ieemdb.Persistence
         e.HasKey("MovieId", "ActorId");
       });
 
+      builder.Entity<Genre>(e =>
+      {
+        e.HasQueryFilter(x => !x.IsDeleted);
+      });
+
+      builder.Entity<Country>(e =>
+      {
+        e.HasQueryFilter(x => !x.IsDeleted);
+      });
+
       builder.Entity<MovieDirector>(e =>
       {
         e.HasOne(mv => mv.Movie)
@@ -101,7 +125,6 @@ namespace Esentis.Ieemdb.Persistence
           .OnDelete(DeleteBehavior.Restrict);
         e.HasKey("MovieId", "DirectorId");
       });
-
 
       builder.Entity<MovieWriter>(e =>
       {
@@ -155,7 +178,6 @@ namespace Esentis.Ieemdb.Persistence
           .WithMany(x => x.Screenshots)
           .OnDelete(DeleteBehavior.Restrict);
       });
-
     }
   }
 }

@@ -11,6 +11,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
 
+  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Authorization;
@@ -65,9 +66,10 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Include(x => x.MovieCountries)
         .ThenInclude(x => x.Country)
         .Where(mv => watchlistsId.Contains(mv.Id))
+        .Project<Movie,MovieDto>(Mapper)
         .ToListAsync(token);
 
-      return Ok(moviesWatchlist.Select(fm => Mapper.Map<Movie, MovieDto>(fm, "complete")));
+      return Ok(moviesWatchlist);
     }
 
     /// <summary>
@@ -112,7 +114,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       Context.Watchlists.Add(movieWatchlist);
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
 
       return Ok("Added successfully");
     }
@@ -144,7 +146,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       }
 
       Context.Watchlists.Remove(movie);
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
 
       return NoContent();
     }
