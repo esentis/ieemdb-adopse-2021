@@ -116,6 +116,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Director's unique ID.</param>
     /// <response code="201">Successfully deleted.</response>
     /// <response code="404">Director not found.</response>
+    /// <returns>No content.</returns>
     [HttpDelete("")]
     public async Task<ActionResult> DeleteDirector(int id, CancellationToken token = default)
     {

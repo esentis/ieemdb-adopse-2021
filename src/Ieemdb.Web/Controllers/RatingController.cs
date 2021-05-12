@@ -41,7 +41,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Add a new rating to a specific movie.
+    /// Add a new rating.
     /// </summary>
     /// <param name="addRatingDto">Provide movie ID, rate and text Review.</param>
     /// <response code="201">Movie successfuly rated.</response>
@@ -87,7 +87,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Remove a rating from a specific movie.
+    /// Remove a rating.
     /// </summary>
     /// <param name="ratingId">Movie's unique ID.</param>
     /// <response code="204">Movie successfuly rated.</response>
@@ -123,24 +123,17 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <summary>
     /// Get all personal ratings of the requester.
     /// </summary>
-    /// <param name="itemsPerPage">Defines how many items should be returned per page. </param>
-    /// <param name="page">Defines the results' page. </param>
-    /// <response code="200">Movie successfuly rated. </response>
-    /// <response code="400">Something went wrong. </response>
-    /// <response code="402">Page doesn't exist. </response>
+    /// <param name="criteria"><see cref="PaginationCriteria"/>.</param>
+    /// <response code="200">Movie successfuly rated.</response>
+    /// <response code="400">User error.</response>
     /// <returns>Returns a list of Ratings.</returns>
     [HttpPost("personal")]
     public async Task<ActionResult<List<Rating>>> PersonalRatings(PaginationCriteria criteria, CancellationToken token = default)
     {
-      var userId = RetrieveUserId().ToString();
-      var user = await userManager.FindByIdAsync(userId);
-      if (user == null)
-      {
-        return BadRequest("Something went wrong.");
-      }
+      var userId = Guid.Parse(RetrieveUserId().ToString());
 
       var ratings = Context.Ratings.Include(x => x.Movie)
-        .Where(x => x.User.Id == user.Id)
+        .Where(x => x.User.Id == userId)
         .OrderBy(x => x.CreatedAt);
       var totalRatings = await ratings.CountAsync(token);
       var pagedRatings = await ratings.Slice(criteria.Page, criteria.ItemsPerPage)

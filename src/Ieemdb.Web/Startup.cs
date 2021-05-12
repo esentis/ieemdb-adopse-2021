@@ -41,6 +41,8 @@ namespace Esentis.Ieemdb.Web
 
   using Refit;
 
+  using Serilog;
+
   using Swashbuckle.AspNetCore.Filters;
   using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -59,13 +61,20 @@ namespace Esentis.Ieemdb.Web
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      var settings = new RefitSettings
+      if (string.IsNullOrEmpty(Configuration["ApiKeys:TMDB"]))
       {
-        AuthorizationHeaderValueGetter = () => Task.FromResult(Configuration["ApiKeys:TMDB"]),
-      };
-      services.AddSingleton(sp => RestService.For<ITheMovieDb>("https://api.themoviedb.org/3", settings));
-      services.AddHostedService<MoviesMetadataUpdateService>();
-      services.AddHostedService<GenreMetadataService>();
+        services.AddSingleton<ITheMovieDb, FakeMovieDb>();
+      }
+      else
+      {
+        var settings = new RefitSettings
+        {
+          AuthorizationHeaderValueGetter = () => Task.FromResult(Configuration["ApiKeys:TMDB"]),
+        };
+        services.AddSingleton(sp => RestService.For<ITheMovieDb>("https://api.themoviedb.org/3", settings));
+      }
+
+      services.AddHostedService<MovieSyncingService>();
       services.AddHostedService<DeletedCleanupService>();
       services.AddHostedService<RefreshTokenCleanupService>();
       services.AddSingleton<IPureMapper>(sp => new PureMapper(MappingConfiguration.Mapping));
@@ -227,6 +236,11 @@ namespace Esentis.Ieemdb.Web
         c.SortPropsAlphabetically();
         c.HideDownloadButton();
         c.HideHostname();
+      });
+
+      app.UseSerilogIngestion(x =>
+      {
+        x.ClientLevelSwitch = Program.LevelSwitch;
       });
 
       app.UseAuthentication();

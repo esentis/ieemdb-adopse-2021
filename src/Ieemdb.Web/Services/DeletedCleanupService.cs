@@ -98,7 +98,7 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteMovies(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedMovies =
-        await ctx.Movies.Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.Movies.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
 
       if (deletedMovies.Count != 0)
       {
@@ -126,7 +126,7 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteActors(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedActors =
-        await ctx.Actors.Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.Actors.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
 
       if (deletedActors.Count != 0)
       {
@@ -141,7 +141,7 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteCountries(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedCountries =
-        await ctx.Countries.Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.Countries.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
 
       if (deletedCountries.Count != 0)
       {
@@ -159,7 +159,7 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteDirectors(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedDirectors =
-        await ctx.Directors.Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.Directors.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
 
       if (deletedDirectors.Count != 0)
       {
@@ -174,7 +174,7 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteWriter(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedWriters =
-        await ctx.Writers.Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.Writers.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
 
       if (deletedWriters.Count != 0)
       {
@@ -189,7 +189,7 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteGenres(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedGenres =
-        await ctx.Genres.Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.Genres.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
 
       if (deletedGenres.Count != 0)
       {

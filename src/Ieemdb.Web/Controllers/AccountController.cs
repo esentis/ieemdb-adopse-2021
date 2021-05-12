@@ -43,7 +43,6 @@ namespace Esentis.Ieemdb.Web.Controllers
     private readonly IEmailSender emailSender;
     private readonly JwtOptions jwtOptions;
 
-    // Constructor
     public AccountController(
       ILogger<AccountController> logger,
       IeemdbDbContext ctx,
@@ -69,6 +68,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">User successfully registered.</response>
     /// <response code="400">Validation Errors.</response>
     /// <response code="409">Registration errors.</response>
+    /// <returns>No content.</returns>
     [AllowAnonymous]
     [HttpPost("")]
     public async Task<ActionResult> RegisterUser([FromBody] UserRegisterDto userRegister)
@@ -109,6 +109,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="token">Token generated.</param>
     /// <response code="200">User successfully registered.</response>
     /// <response code="409">Registration errors.</response>
+    /// <returns>No content.</returns>
     [AllowAnonymous]
     [HttpGet("confirm")]
     public async Task<ActionResult> ConfirmEmail(string email, string token)
@@ -128,6 +129,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Password successfully changed.</response>
     /// <response code="404">User not found.</response>
     /// <response code="409">Password errors.</response>
+    /// <returns>No content.</returns>
     [HttpPost("changePassword")]
     public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
     {
@@ -153,6 +155,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="username">New username.</param>
     /// <response code="200">Username successfully changed.</response>
     /// <response code="404">User not found.</response>
+    /// <returns>No content.</returns>
     [HttpPost("changeUsername")]
     public async Task<ActionResult> ChangeUsername(string username, CancellationToken token = default)
     {
@@ -175,6 +178,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <response code="204">User successfully removed.</response>
     /// <response code="404">User not found.</response>
+    /// <returns>No content.</returns>
     [HttpDelete("")]
     public async Task<ActionResult> RemoveUser(CancellationToken token = default)
     {

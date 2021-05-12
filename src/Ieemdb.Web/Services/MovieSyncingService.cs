@@ -9,6 +9,7 @@ namespace Esentis.Ieemdb.Web.Services
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Joins;
   using Esentis.Ieemdb.Persistence.Models;
+  using Esentis.Ieemdb.Web.Models.Enums;
   using Esentis.Ieemdb.Web.Options;
   using Esentis.Ieemdb.Web.Providers;
   using Esentis.Ieemdb.Web.Providers.Models;
@@ -21,20 +22,22 @@ namespace Esentis.Ieemdb.Web.Services
 
   using Refit;
 
-  public class MoviesMetadataUpdateService : BackgroundService
+  using Genre = Esentis.Ieemdb.Persistence.Models.Genre;
+
+  public class MovieSyncingService : BackgroundService
   {
     private readonly Timer timer;
     private readonly ITheMovieDb tmdbApi;
     private readonly IServiceScopeFactory factory;
     private readonly IeemdbDbContext ctx;
     private readonly ServiceDurations serviceDurations;
-    private readonly ILogger<MoviesMetadataUpdateService> logger;
+    private readonly ILogger<MovieSyncingService> logger;
     private CancellationTokenSource? cancellationTokenSource;
 
-    public MoviesMetadataUpdateService(
+    public MovieSyncingService(
       IServiceScopeFactory factory,
       ITheMovieDb tmdb,
-      ILogger<MoviesMetadataUpdateService> logger,
+      ILogger<MovieSyncingService> logger,
       IOptions<ServiceDurations> durations)
     {
       this.factory = factory;
@@ -45,7 +48,7 @@ namespace Esentis.Ieemdb.Web.Services
         Trigger,
         null,
         TimeSpan.Zero,
-        TimeSpan.FromSeconds(60));
+        TimeSpan.FromSeconds(serviceDurations.DatabaseSeedingInMinutes));
     }
 
     public override void Dispose()
@@ -81,7 +84,23 @@ namespace Esentis.Ieemdb.Web.Services
         {
           using var scope = factory.CreateScope();
           var context = scope.ServiceProvider.GetRequiredService<IeemdbDbContext>();
-          var movies = await tmdbApi.GetRecommended();
+          var progress = await context.ServiceBatchingProgresses.Where(x => x.Name == BackgroundServiceName.MovieSync)
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefaultAsync(stoppingToken);
+          if (progress == null || progress.LastProccessedPage >= progress.TotalPages - 1)
+          {
+            progress = new ServiceBatchingProgress { Name = BackgroundServiceName.MovieSync, LastProccessedPage = 1, };
+            context.ServiceBatchingProgresses.Add(progress);
+          }
+          else
+          {
+            progress.LastProccessedPage++;
+          }
+
+          var movies = await tmdbApi.GetPopular(progress.LastProccessedPage);
+          progress.TotalPages = progress.LastProccessedPage == 1
+            ? movies.total_pages
+            : progress.TotalPages;
 
           var movieTMDBids = movies.results.Select(x => x.id).ToArray();
 
@@ -91,12 +110,13 @@ namespace Esentis.Ieemdb.Web.Services
           List<DetailedMovie> moviesForSave = new();
           List<Actor> actorsToBeSaved = new();
           List<MovieCast> castToBeSavedd = new();
+          var genres = await context.Genres.ToListAsync(stoppingToken);
+          List<MovieGenre> movieGenres = new();
 
           foreach (var m in movies.results.Where(x => existingMovies.All(y => y.TmdbId != x.id)))
           {
             var detailedMovie = await tmdbApi.GetMovieDetails(m.id);
             var movieCast = await tmdbApi.GetMovieCredits(m.id);
-
             moviesForSave.Add(detailedMovie);
             castToBeSavedd.Add(movieCast);
           }
@@ -143,7 +163,9 @@ namespace Esentis.Ieemdb.Web.Services
               PosterUrl = $"https://image.tmdb.org/t/p/w600_and_h900_bestv2{m.poster_path}",
               TrailerUrl = "",
             };
-
+            movieGenres.AddRange(m.genres.Select(x => genres.SingleOrDefault(y => y.TmdbId == x.id))
+              .Where(x => x != null)
+              .Select(x => new MovieGenre { Genre = x, Movie = ms, }));
             var ma = actorsToBeSaved.Where(x =>
                 castToBeSavedd.Any(y => y.id == ms.TmdbId && y.cast.Any(z => z.id == x.TmdbId)))
               .Select(x => new MovieActor
@@ -157,6 +179,8 @@ namespace Esentis.Ieemdb.Web.Services
               .ToList();
             context.MovieActors.AddRange(ma);
           }
+
+          context.MovieGenres.AddRange(movieGenres);
 
           await context.SaveChangesAsync(stoppingToken);
         }
