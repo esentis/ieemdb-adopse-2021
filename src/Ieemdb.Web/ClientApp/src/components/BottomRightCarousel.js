@@ -6,105 +6,63 @@ import 'react-alice-carousel/lib/alice-carousel.css';
 import MovieCard from './MovieCard';
 import { Nav, Col } from 'react-bootstrap';
 import '../Styles/BottomRightCarousel.css'
+import axios from 'axios';
 const responsive = {
     0: { items: 2 },
     568: { items: 3 },
     1024: { items: 6 },
 };
 function BottomRightCarousel() {
-  const [items, setItems] = useState(movies.map(i => <MovieCard
-    id={i.id}
-    Title={i.title}
-    Poster={i.poster}
-    Overview={i.overview}
-    ReleaseDate={i.release_date}
-    Genres={i.genres}
-    Actors={i.actors}
-    Writers={i.writers}
-    Directors={i.directors}
-    Rating={i.rating}
-    Duration={i.duration}
-    CountryOrigin={i.countryOrigin}
-    height={"200vh"}
-    width={"140vw"} />
-  ));
-    
+    const [data, setData] = useState([]);
+    showNewReleases(); // me to poy fortwnei tha deixnei ta new releases
     function showNewReleases() {
-      setItems(moviesTest.map(i => <MovieCard
-        id={i.id}
-        Title={i.title} 
-        Poster={i.posterUrl} 
-        Overview={i.overview}
-        ReleaseDate={i.release_date}
-        Genres={i.genres}
-        Actors={i.actors}
-        Writers={i.writers}
-        Directors={i.directors}
-        Rating={i.rating}
-        Duration={i.duration}
-        CountryOrigin={i.countryOrigin}
-        height={"200vh"}
-        width={"140vw"} />
-      ));
-    }
-
-    function showPopular() {
-      setItems(moviesTest.map(i => <MovieCard
-        id={i.id}
-        Title={i.title}
-        Poster={i.poster}
-        Overview={i.overview}
-        ReleaseDate={i.release_date}
-        Genres={i.genres}
-        Actors={i.actors}
-        Writers={i.writers}
-        Directors={i.directors}
-        Rating={i.rating}
-        Duration={i.duration}
-        CountryOrigin={i.countryOrigin}
-        height={"200vh"}
-        width={"140vw"} />
-      ));
+      loadNewReleases();
     }
 
     function showRecentlyAdded() {
-      setItems(moviesTest.map(i => <MovieCard
-        id={i.id}
-        Title={i.title}
-        Poster={i.poster}
-        Overview={i.overview}
-        ReleaseDate={i.release_date}
-        Genres={i.genres}
-        Actors={i.actors}
-        Writers={i.writers}
-        Directors={i.directors}
-        Rating={i.rating}
-        Duration={i.duration}
-        CountryOrigin={i.countryOrigin}
-        height={"200vh"}
-        width={"140vw"} />
-      ));
+      loadRecentlyAdded();
     }
 
     function showTopRated() {
-      setItems(moviesTest.map(i => <MovieCard
-        id={i.id}
-        Title={i.title}
-        Poster={i.poster}
-        Overview={i.overview}
-        ReleaseDate={i.release_date}
-        Genres={i.genres}
-        Actors={i.actors}
-        Writers={i.writers}
-        Directors={i.directors}
-        Rating={i.rating}
-        Duration={i.duration}
-        CountryOrigin={i.countryOrigin}
-        height={"200vh"}
-        width={"140vw"} />
-      ));
+      loadTopRated();
     }
-    
+    async function loadTopRated() {
+      await axios({
+        method: 'get', url: `https://${window.location.host}/api/movie/top`, data: {
+          "page": 1
+        }
+      }).then(res => setData(res.data.results))
+    }
+    async function loadNewReleases() {
+      await axios({
+        method: 'post', url: `https://${window.location.host}/api/movie/new`, data: {
+          "page": 1 , "itemsPerPage": 20
+        }
+      }).then(res => setData(res.data.results))
+    }
+    async function loadRecentlyAdded() {
+      await axios({
+        method: 'post', url: `https://${window.location.host}/api/movie/latest`, data: {
+          "page": 1, "itemsPerPage": 20
+        }
+      }).then(res => setData(res.data.results))
+    }
+    const items = data.map(i => <MovieCard
+      id={i.id}
+      Title={i.title}
+      Poster={i.posterUrl}
+      Overview={i.overview}
+      ReleaseDate={i.release_date}
+      Genres={i.genres}
+      Actors={i.actors}
+      Writers={i.writers}
+      Directors={i.directors}
+      Rating={i.rating}
+      Duration={i.duration}
+      CountryOrigin={i.countryOrigin}
+      height={"200vh"}
+      width={"140vw"} />
+    );
     const [activeIndex, setActiveIndex] = useState(0);
     const slidePrev = () => setActiveIndex(activeIndex - 1);
     const slideNext = () => setActiveIndex(activeIndex + 1);
@@ -117,11 +75,6 @@ function BottomRightCarousel() {
             <Col>
                 <Nav.Item>
                   <Nav.Link className="nav-bottom-right-link" onClick={showNewReleases}>New Releases</Nav.Link>
-                </Nav.Item>
-            </Col>
-            <Col>
-                <Nav.Item>
-                  <Nav.Link className="nav-bottom-right-link" onClick={showPopular}>Popular</Nav.Link>
                 </Nav.Item>
             </Col>
             <Col>
