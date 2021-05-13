@@ -62,7 +62,7 @@ function SearchView() {
    async function advancedSearchFetch(arg){
         await axios({method:'post',url:`https://${window.location.host}/api/movie/search`,data:{"page":arg+1,"itemsPerPage":postersPerPage,...(MovieTitle?{"titleCriteria":MovieTitle}:{}),
         ...(ActorName?{"actor":ActorName}:{}),...(DirectorName?{"director":DirectorName}:{}),...(WriterName?{"writer":WriterName}:{}),...(FromRating?{"minRating":FromRating}:{}),...(ToRating?{"maxRating":ToRating}:{}),
-        ...(FromDate?{"fromYear":`${FromDate}-01-01`}:{}),...(ToDate?{"toYear":`${ToDate}-12-31`}:{}),...(MinDuration?{"minDuration":MinDuration}:{}),...(MaxDuration?{"maxDuration":MaxDuration}:{}),...(Genres?{"genres":genres}:{})
+        ...(FromDate?{"fromYear":`${FromDate}-01-01`}:{}),...(ToDate?{"toYear":`${ToDate}-12-31`}:{}),...(MinDuration?{"minDurationInMinutes":MinDuration}:{}),...(MaxDuration?{"maxDurationInMinutes":MaxDuration}:{}),...(Genres?{"genres":genres}:{})
     }}
     ).then(function(res){
         setItems({data:res.data.results,
