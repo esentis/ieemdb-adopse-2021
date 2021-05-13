@@ -13,6 +13,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Models.Dto;
 
+  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Authorization;
@@ -39,9 +40,10 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="movieId">Movie's unique ID.</param>
     /// <response code="201">Movie successfuly rated.</response>
-    /// <response code="400">No such user.</response>
+    /// <response code="400">User error.</response>
     /// <response code="404">Movie not found.</response>
     /// <response code="409">User has already favorited the movie.</response>
+    /// <returns>No content.</returns>
     [HttpPost("")]
     public async Task<ActionResult> AddFavorite(long movieId, CancellationToken token = default)
     {
@@ -77,6 +79,8 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <summary>
     /// Returns user's favorited movies.
     /// </summary>
+    /// <response code="200">Returns the list of favorited movies.</response>
+    /// <response code="400">User error.</response>
     /// <returns>List of <see cref="MovieDto"/>.</returns>
     [HttpGet("")]
     public async Task<ActionResult<ICollection<MovieDto>>> GetFavorites(CancellationToken token = default)
@@ -104,16 +108,20 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Include(x => x.MovieCountries)
         .ThenInclude(x => x.Country)
         .Where(mv => favoritedMoviesIds.Contains(mv.Id))
+        .Project<Movie, MovieDto>(Mapper, "complete")
         .ToListAsync(token);
 
-      return Ok(favoriteMovies.Select(fm => Mapper.Map<Movie, MovieDto>(fm, "complete")));
+      return Ok(favoriteMovies);
     }
 
     /// <summary>
     /// Removes a movie from favorites.
     /// </summary>
     /// <param name="movieId">Movie's unique ID.</param>
-    /// <returns>List of <see cref="MovieDto"/>.</returns>
+    /// <response code="204">No content returned.</response>
+    /// <response code="400">User error.</response>
+    /// <response code="404">Favorite not found.</response>
+    /// <returns>No content.</returns>
     [HttpDelete("")]
     public async Task<ActionResult<ICollection<MovieDto>>> RemoveFavorite(
       long movieId,
@@ -126,7 +134,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         return BadRequest("Something went wrong.");
       }
 
-      var movie = await Context.Favorites.SingleOrDefaultAsync(f => f.User == user && f.Movie.Id == movieId,token);
+      var movie = await Context.Favorites.SingleOrDefaultAsync(f => f.User == user && f.Movie.Id == movieId, token);
 
       if (movie == null)
       {

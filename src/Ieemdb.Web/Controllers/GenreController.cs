@@ -12,6 +12,8 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Models.Dto;
   using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
+  using Kritikos.Extensions.Linq;
+  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Mvc;
@@ -35,29 +37,28 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>List of <see cref="GenreDto"/>.</returns>
     [HttpPost("all")]
-    public async Task<ActionResult<List<GenreDto>>> GetGenres(PaginationCriteria criteria)
+    public async Task<ActionResult<List<GenreDto>>> GetGenres(
+      PaginationCriteria criteria,
+      CancellationToken token = default)
     {
-      var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);
-
       var genresQuery = Context.Genres
         .TagWith("Retrieving all genres")
         .OrderBy(x => x.Id);
 
-      var totalGenres = await genresQuery.CountAsync();
+      var totalGenres = await genresQuery.CountAsync(token);
 
       if (criteria.Page > ((totalGenres / criteria.ItemsPerPage) + 1))
       {
         return BadRequest("Page doesn't exist");
       }
 
-      var pagedGenres = await genresQuery
-        .Skip(toSkip)
-        .Take(criteria.ItemsPerPage)
-        .ToListAsync();
+      var pagedGenres = await genresQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Genre, GenreDto>(Mapper)
+        .ToListAsync(token);
 
       var result = new PagedResult<GenreDto>
       {
-        Results = pagedGenres.Select(x => Mapper.Map<Genre, GenreDto>(x)).ToList(),
+        Results = pagedGenres,
         Page = criteria.Page,
         TotalPages = (totalGenres / criteria.ItemsPerPage) + 1,
         TotalElements = totalGenres,
@@ -74,7 +75,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="404">Genre not found.</response>
     /// <returns>Single <see cref="GenreDto"/>.</returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<GenreDto>> GetGenre(long id, CancellationToken token=default )
+    public async Task<ActionResult<GenreDto>> GetGenre(long id, CancellationToken token = default)
     {
       var genre = await Context.Genres.Where(x => x.Id == id).SingleOrDefaultAsync(token);
 
@@ -98,13 +99,15 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="201">Succesfully created.</response>
     /// <returns>Created <see cref="GenreDto"/>.</returns>
     [HttpPost("")]
-    public async Task<ActionResult<GenreDto>> AddGenre([FromBody] AddGenreDto dto)
+    public async Task<ActionResult<GenreDto>> AddGenre(
+      [FromBody] AddGenreDto dto,
+      CancellationToken token = default)
     {
       var genre = Mapper.Map<AddGenreDto, Genre>(dto);
 
       Context.Genres.Add(genre);
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Genre), genre);
 
       return CreatedAtAction(nameof(GetGenre), new { id = genre.Id }, Mapper.Map<Genre, GenreDto>(genre));
@@ -117,9 +120,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="404">Genre not found.</response>
     /// <param name="id">Genre's unique ID.</param>
     [HttpDelete("")]
-    public async Task<ActionResult> DeleteGenre(int id)
+    public async Task<ActionResult> DeleteGenre(int id, CancellationToken token = default)
     {
-      var genre = Context.Genres.Where(x => x.Id == id).SingleOrDefault();
+      var genre =await Context.Genres.Where(x => x.Id == id).SingleOrDefaultAsync(token);
 
       if (genre == null || genre.IsDeleted)
       {
@@ -145,9 +148,9 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="404">Genre not found.</response>
     /// <returns>Updated <see cref="GenreDto"/>.</returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult<GenreDto>> UpdateGenre(int id, AddGenreDto dto,CancellationToken token=default)
+    public async Task<ActionResult<GenreDto>> UpdateGenre(int id, AddGenreDto dto, CancellationToken token = default)
     {
-      var genre =await Context.Genres.Where(x => x.Id == id).SingleOrDefaultAsync(token);
+      var genre = await Context.Genres.Where(x => x.Id == id).SingleOrDefaultAsync(token);
 
       if (genre == null)
       {

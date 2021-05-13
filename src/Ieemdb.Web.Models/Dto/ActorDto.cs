@@ -6,11 +6,9 @@ namespace Esentis.Ieemdb.Web.Models.Dto
   {
     public long Id { get; set; }
 
-    public string FirstName { get; set; }
+    public string FullName { get; set; }
 
-    public string LastName { get; set; }
-
-    public DateTimeOffset BirthDate { get; set; }
+    public DateTime? BirthDate { get; set; }
 
     public string Bio { get; set; }
   }

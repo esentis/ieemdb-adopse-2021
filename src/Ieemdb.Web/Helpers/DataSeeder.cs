@@ -9,6 +9,8 @@ namespace Esentis.Ieemdb.Web.Helpers
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
   using Esentis.Ieemdb.Persistence.Joins;
+  using Esentis.Ieemdb.Persistence.Models;
+  using Esentis.Ieemdb.Web.Providers;
 
   using Microsoft.AspNetCore.Identity;
   using Microsoft.EntityFrameworkCore;
@@ -27,6 +29,7 @@ namespace Esentis.Ieemdb.Web.Helpers
       var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IeemdbUser>>();
       var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IeemdbRole>>();
       var dbContext = scope.ServiceProvider.GetRequiredService<IeemdbDbContext>();
+      var api = scope.ServiceProvider.GetRequiredService<ITheMovieDb>();
 
       if ((await dbContext.Database.GetPendingMigrationsAsync()).Any())
       {
@@ -41,6 +44,10 @@ namespace Esentis.Ieemdb.Web.Helpers
       await SeedRoles(roleManager);
 
       await SeedUsers(logger, userManager, config["Ieemdb:InitialAdminPassword"], config["Ieemdb:InitialAdminEmail"]);
+
+      await SeedGenres(dbContext, api, logger);
+
+      await dbContext.SaveChangesAsync();
     }
 
     private static async Task SeedRoles(RoleManager<IeemdbRole> roleManager)
@@ -61,7 +68,18 @@ namespace Esentis.Ieemdb.Web.Helpers
       }
     }
 
-    private static readonly Random Random = new Random();
+    private static async Task SeedGenres(IeemdbDbContext ctx, ITheMovieDb api, ILogger logger)
+    {
+      if (await ctx.Genres.AnyAsync())
+      {
+        return;
+      }
+
+      var genres = await api.GetGenres();
+      var genreEntities = genres.genres.Select(x => new Genre { Name = x.name, TmdbId = x.id, }).ToList();
+
+      ctx.Genres.AddRange(genreEntities);
+    }
 
     private static async Task SeedUsers(
       ILogger logger,

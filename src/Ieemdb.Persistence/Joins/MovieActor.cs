@@ -13,6 +13,8 @@ namespace Esentis.Ieemdb.Persistence.Joins
       get;
       set;
     }
+
+    public string Character { get; set; }
 #nullable enable
   }
 }
