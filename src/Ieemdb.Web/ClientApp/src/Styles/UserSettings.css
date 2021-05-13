@@ -7,7 +7,7 @@
     }
 
     .center-SnackBar{
-      margin-top:4.5vw;
+      margin-top:1vw;
       position: absolute;
       left: 50%;
       width: 80vw;
@@ -23,6 +23,29 @@
     .submitButton:disabled{
       pointer-events: none;
       opacity: 0.5;
+    }
+
+    .userSettingsButton{
+      width: 100%;
+      background-color: rgb(59, 94, 189);
+      border-radius: 0.7rem;
+      color: white;
+      transition-duration: 0.4s;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+      text-shadow: 2px 2px 5px rgb(0, 0, 0);
+      border: 0rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 20px;
+      font-family: Arial;
+    }
+
+    .userSettingsButton:disabled{
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .passWordValidator{
+     margin-left:5vw;
     }
 
     @media (max-width:1199px){

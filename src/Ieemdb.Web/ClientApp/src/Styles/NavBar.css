@@ -5,12 +5,13 @@
 } 
 .nav-center2{
   margin: 0;
+  display: block;
   position: relative;
-  padding: 10px;
+  padding: 1.0672358591248665vh  0.5208333333333334vw;
   top: 10vh;
   z-index: 0;
-  right: 5%; 
-  width: 16.5vw;
+  width: 16vw;
+  
 }
 /* .has-search .form-control {
   padding-left: 1.575rem;
@@ -50,21 +51,22 @@
   text-decoration:none;
   color:#D3D3D3;
   display:block;
-  padding: 12px;
+  padding: 1.2806830309498398vh 0 1.2806830309498398vh 0 ;
   position:relative;
-  width: 10vw;
+  width: auto;
   font-size: 1.20rem;
-  right: 2.5vw;
+  right: 1vw;
   font-family: Arial;
-}
-.column-left a{
-  text-decoration: none;
 }
 .column-left .linkClass:hover{
   color:white;
   text-decoration:none;
   /* text-shadow:2px 2px 5px #FFFF99; */
 }
+.column-left a{
+  text-decoration: none;
+}
+
 .inputClass{
   height:4vh; 
   box-sizing: border-box;
@@ -113,7 +115,7 @@
   font-size:1.15rem;
 }
 .column-left span{
-  margin-left: 6px;
+  margin-left: 0.3125vw;
 }
 .login-Button{
   background:none;
@@ -147,6 +149,20 @@
 
   }
 } */
+@media(max-width:3440px){
+  .linkClass{right: 1.2vw;}
+}
+
+@media(max-width:2800px){
+  .linkClass{right: 1.5vw;}
+}
+
+@media(max-width:2400px){
+  .linkClass{right: 1.55vw}
+}
+@media(max-width:2000px){
+  .linkClass{right: 2vw}
+}
 @media (max-width:1199px){
   .checkbtn{
     display: block; 
@@ -168,7 +184,7 @@
   }
   .column-left a{
     font-size: 1.1rem;
-    top:10px;
+    top:1.0672358591248665vh;
     background:none;
     margin: 0;
   }
@@ -186,10 +202,10 @@
     font-size: 1rem;
   }
   .inputClass{
-    width: 50%;
+    width: 50vw;
     top:-1vh; 
     margin-top: 3vh;
-    left: 10vw;
+    left: 3vw;
   }
   .advButton{
     display: none;
@@ -206,11 +222,20 @@
     left:100vw;
   }
   #check:checked ~ .nav-center2{
-    left:-3vw;
+    left:-1.5vw;
     display: block;
     background-color:rgba(0,0,0,0.6);
     top: 7%;
     z-index: 1;
     width: 100vw;
   } 
+
+  @media(max-width:550px){
+    #check:checked ~ .nav-center2{
+      left:-3.8vw;
+    } 
+    .inputClass{
+      left: 8vw;
+    }
+  }
 }  

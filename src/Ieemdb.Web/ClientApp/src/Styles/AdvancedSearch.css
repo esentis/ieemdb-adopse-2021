@@ -1,11 +1,12 @@
 .column-right-AdvancedSearch{
-    background-color: rgba(41, 44, 52);
+  background-image: linear-gradient(rgba(41, 44, 52, 0), rgba(41, 44, 52, 0.3), rgba(41, 44, 52, 0.4), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.6), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.8), rgba(41, 44, 52, 0.9), rgba(41, 44, 52, 0.99), rgba(41, 44, 52), rgba(41, 44, 52), rgba(41, 44, 52), rgba(41, 44, 52)), url('https://wallpaperaccess.com/full/3658607.jpg');
     min-height: 100vh;
     position: relative;
     padding: 0%;
     width: 80%;
     margin-left:16.6%;
     font-family: Arial, Helvetica, sans-serif;
+    color: rgba(41, 44, 52);
     }
 
     .AdvancedForm{
@@ -17,7 +18,7 @@
       border-radius: 10px;
       text-align: center;
       justify-content: center;
-      background-color:rgb(40, 42, 49); ; 
+      background-color: #F5F5F5; 
     }
 
     .AdvancedForm p{
@@ -35,20 +36,22 @@ input[type=number]::-webkit-outer-spin-button {
   margin-left: 1vw;
   margin-right: 1vw;
   font-size:1.25rem ;
-  color:white;
+  color:#282828;
 }
 
 .SearchButton{
   position: relative;
   width: 20vw;
-  background: transparent;
-  color: #D3D3D3;
-  border-radius: 30px;
-  border:2px solid white;
-  font-family: Arial, Helvetica, sans-serif;
-  margin-bottom: 3vw;
+  background-color: rgb(59, 94, 189);
+  border-radius: 0.7rem;
+  color: white;
+  transition-duration: 0.4s;
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
   text-shadow: 2px 2px 5px rgb(0, 0, 0);
+  border: 0rem;
+  padding: 0.5rem 1rem;
+  margin-top: 20px;
+  font-family: Arial;
 }
 
 .SearchButton:hover{background-color: #e7e7e7;
@@ -57,16 +60,23 @@ input[type=number]::-webkit-outer-spin-button {
     .AdvancedForm input{
       width: 20vw;
       box-sizing: border-box;
-      background-color: transparent;
-      border: 2px solid white;
+      border-radius: 0.7rem;
+      border: none;
       position:relative;
       border: none; 
-      border-bottom: 2px  solid #D3D3D3 ;
+      border-bottom: 2px solid rgb(59, 94, 189);
       display:inline-block ;
       outline: none;
-      color:#D3D3D3;
-      justify-content: center;
-      text-shadow: 2px 2px 5px rgb(0, 0, 0); 
+      color: rgba(41, 44, 52);
+      font-size:1.2rem ;
+      justify-content: center; 
+      font-family: Arial;
+      background-color: #F5F5F5;
+    }
+
+    .AdvancedForm input::placeholder{
+      font-family: Arial, Helvetica, sans-serif;
+      color:#808080
     }
 
     .GenresSelector{
@@ -80,7 +90,7 @@ input[type=number]::-webkit-outer-spin-button {
     display:inline-block;
     width: 8.5vw;
     margin-top: 3vh;
-    color:"black"
+    color:"white"
     }
      
     @media (max-width:1780px){
@@ -110,19 +120,20 @@ input[type=number]::-webkit-outer-spin-button {
           
           @media (max-width:890px){
             .AdvancedForm{
-              border:0;
-              background:none;
+              border-radius:0.7rem;
+              background-color:rgba(245, 245, 245, 0.8);
               justify-content: center;
-              margin-left: 3vw;
+              margin-left: 0vw;
+             
             }
             .AdvancedForm{
-              width: 90vw;
+              width: 100%;
             }
             .AdvancedForm input ,.GenresSelector{
-              width: 80vw;
+              width: 98%;
             }
             .AdvancedForm .RatingDatesSelector{
-              width:37vw ;
+              width:45% ;
             }
             .AdvancedForm .SearchButton{
               width: 80vw;

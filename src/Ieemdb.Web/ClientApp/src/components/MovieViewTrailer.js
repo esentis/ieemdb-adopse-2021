@@ -4,8 +4,7 @@ import '../Styles/MovieViewTrailer.css';
 
 function MovieViewTrailer(props){
     const url = props.trailer.split('/').pop();
-    console.log(url);
-    
+
     return(
         <Container>
             <Row>

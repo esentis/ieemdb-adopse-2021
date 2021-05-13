@@ -5,24 +5,10 @@ import '../Styles/AdvancedSearch.css'
 
 function RatingSelect(props) {
     
-   const Ratings=[
-            {value:1,
-            label:1,
-            id:1},
-            {value:2,
-            label:2,
-            id:2},
-            {value:3,
-            label:3,
-            id:3},
-            {value:4,
-            label:4,
-            id:4},
-            {value:5,
-            label:5,
-            id:5}
-    ]
-   
+    const Ratings=[];
+    for(var i=1;i<=5;i++){
+        Ratings.push({value:i,label:i});
+    }
 
 return (
     <>
@@ -35,7 +21,7 @@ return (
      <span className="spanClass">To</span>
     <div className="RatingDatesSelector">
         <Select styles={props.style}  
-        options={props.options} placeholder="Select rating"   onChange={props.onChange2} isDisabled={props.isDisabled} value={props.value}/>
+        options={props.options} placeholder="Select rating"   onChange={props.onChange2} value={props.value}/>
     </div> 
     </>
     )
