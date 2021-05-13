@@ -10,6 +10,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
+  using Esentis.Ieemdb.Web.Models.Dto;
 
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
@@ -135,6 +136,29 @@ namespace Esentis.Ieemdb.Web.Controllers
       await Context.SaveChangesAsync();
 
       return NoContent();
+    }
+
+    /// <summary>
+    /// Checks if a movie is favorited.
+    /// </summary>
+    /// <param name="movieId">Movie's unique ID. </param>
+    /// <response code="200">Returns True or False.</response>
+    /// <response code="400">Something went wrong. </response>
+    /// <returns>True or False.</returns>
+    [HttpPost("check")]
+    public async Task<ActionResult<FavoriteDto>> GetWatchlist(long movieId, CancellationToken token = default)
+    {
+      var userId = RetrieveUserId().ToString();
+      var user = await userManager.FindByIdAsync(userId);
+
+      if (user == null)
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var inList = await Context.Favorites.AnyAsync(x => x.Movie.Id == movieId && x.User.Id == user.Id, token);
+
+      return Ok(inList);
     }
   }
 }
