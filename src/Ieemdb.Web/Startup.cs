@@ -17,10 +17,8 @@ namespace Esentis.Ieemdb.Web
   using Esentis.Ieemdb.Web.Services;
 
   using Kritikos.Configuration.Persistence.Extensions;
-  using Kritikos.Configuration.Persistence.Interceptors;
   using Kritikos.Configuration.Persistence.Interceptors.SaveChanges;
   using Kritikos.Configuration.Persistence.Interceptors.Services;
-  using Kritikos.Configuration.Persistence.Services;
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 

@@ -1,6 +1,5 @@
 namespace Esentis.Ieemdb.Web.Controllers
 {
-  using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Threading;
@@ -11,7 +10,6 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
-  using Esentis.Ieemdb.Web.Models.Dto;
 
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
@@ -97,16 +95,8 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Select(x => x.Id)
         .ToListAsync(token);
 
-      var favoriteMovies = await Context.Movies.Include(x => x.MovieActors)
-        .ThenInclude(x => x.Actor)
-        .Include(x => x.MovieDirectors)
-        .ThenInclude(x => x.Director)
-        .Include(x => x.MovieWriters)
-        .ThenInclude(x => x.Writer)
-        .Include(x => x.MovieGenres)
-        .ThenInclude(x => x.Genre)
-        .Include(x => x.MovieCountries)
-        .ThenInclude(x => x.Country)
+      var favoriteMovies = await Context.Movies.Include(x => x.People)
+        .ThenInclude(x => x.Person)
         .Where(mv => favoritedMoviesIds.Contains(mv.Id))
         .Project<Movie, MovieDto>(Mapper, "complete")
         .ToListAsync(token);
