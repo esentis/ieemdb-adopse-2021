@@ -143,6 +143,9 @@ namespace Esentis.Ieemdb.Web.Services
                 BirthDay = DateTime.TryParse(personForSave.birthday, out var birth)
                   ? birth
                   : null,
+                DeathDay = DateTime.TryParse(personForSave.deathday, out var death)
+                  ? death
+                  : null,
                 FullName = personForSave.name,
                 Image = $"https://image.tmdb.org/t/p/w600_and_h900_bestv2{personForSave.profile_path}",
                 TmdbId = personForSave.id,
@@ -179,7 +182,7 @@ namespace Esentis.Ieemdb.Web.Services
               Duration = TimeSpan.FromMinutes(detailedMovie.runtime),
               Plot = detailedMovie.overview,
               TmdbId = detailedMovie.id,
-              ReleaseDate = DateTimeOffset.Parse(detailedMovie.release_date),
+              ReleaseDate = DateTimeOffset.TryParse(detailedMovie.release_date, out var releaseDate) ? releaseDate : null,
               Title = detailedMovie.title,
               PosterUrl = $"https://image.tmdb.org/t/p/w600_and_h900_bestv2{detailedMovie.poster_path}",
             };

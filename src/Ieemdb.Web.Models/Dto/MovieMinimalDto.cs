@@ -21,7 +21,7 @@ namespace Esentis.Ieemdb.Web.Models
 
     public List<GenreDto> Genres { get; set; }
 
-    public DateTimeOffset ReleaseDate { get; set; }
+    public DateTimeOffset? ReleaseDate { get; set; }
 
     public string PosterUrl { get; set; }
 

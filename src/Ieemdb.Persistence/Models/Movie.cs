@@ -44,7 +44,7 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public double AverageRating { get; set; }
 
-    public DateTimeOffset ReleaseDate { get; set; }
+    public DateTimeOffset? ReleaseDate { get; set; }
 
     public bool Featured { get; set; }
 
