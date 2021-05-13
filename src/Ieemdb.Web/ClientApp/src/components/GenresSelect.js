@@ -6,7 +6,6 @@ import '../Styles/AdvancedSearch.css'
 function GenresSelect(props) {
 
     const [Genres,setGenres]=useState();
-    const [loading,setLoading]=useState(true);
    async function getGenres(){
     await axios({method:'post',url:`https://${window.location.host}/api/genre/all`,data:{"page":1,"itemsPerPage":50,}}).then(function(res){
     const genres=res.data.results.map((genre,index)=>{
