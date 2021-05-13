@@ -10,6 +10,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Models.Dto;
+  using Esentis.Ieemdb.Web.Models.Enums;
   using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
   using Kritikos.Extensions.Linq;
@@ -35,13 +36,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="criteria">Pagination criteria.</param>
     /// <response code="200">Returns all writers.</response>
     /// <response code="400">Page doesn't exist.</response>
-    /// <returns>List of <see cref="WriterDto"/>.</returns>
+    /// <returns>List of <see cref="PersonDto"/>.</returns>
     [HttpPost("all")]
-    public async Task<ActionResult<List<WriterDto>>> GetWriters(
+    public async Task<ActionResult<List<PersonDto>>> GetWriters(
       PaginationCriteria criteria,
       CancellationToken token = default)
     {
-      var writersQuery = Context.Writers
+      var writersQuery = Context.People.Where(p=>p.KnownFor==DepartmentEnums.Writing)
         .TagWith("Retrieving all writers")
         .OrderBy(x => x.Id);
 
@@ -55,10 +56,10 @@ namespace Esentis.Ieemdb.Web.Controllers
       var count = await writersQuery.CountAsync(token);
 
       var pagedWriters = await writersQuery.Slice(criteria.Page, criteria.ItemsPerPage)
-        .Project<Writer, WriterDto>(Mapper)
+        .Project<Person, PersonDto>(Mapper)
         .ToListAsync(token);
 
-      PagedResult<WriterDto> results = new()
+      PagedResult<PersonDto> results = new()
       {
         Page = criteria.Page,
         Results = pagedWriters,
@@ -75,21 +76,22 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Writer's unique ID.</param>
     /// <response code="200">Returns a single writer.</response>
     /// <response code="404">Writer not found.</response>
-    /// <returns>Single <see cref="WriterDto"/>.</returns>
+    /// <returns>Single <see cref="PersonDto"/>.</returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<WriterDto>> GetWriter(long id, CancellationToken token = default)
+    public async Task<ActionResult<PersonDto>> GetWriter(long id, CancellationToken token = default)
     {
-      var writer = await Context.Writers.SingleOrDefaultAsync(x => x.Id == id, token);
+      var writer = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Writing)
+        .SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (writer == null)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Writer), id);
-        return NotFound($"No {nameof(Writer)} with Id {id} found in database");
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
+        return NotFound($"No {nameof(Person)} with Id {id} found in database");
       }
 
-      Logger.LogInformation(LogTemplates.RequestEntity, nameof(Writer), id);
+      Logger.LogInformation(LogTemplates.RequestEntity, nameof(Person), id);
 
-      return Ok(Mapper.Map<Writer, WriterDto>(writer));
+      return Ok(Mapper.Map<Person, PersonDto>(writer));
     }
 
     /// <summary>
@@ -97,18 +99,18 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="dto">Writer information.</param>
     /// <response code="201">Successfully added.</response>
-    /// <returns>Created <see cref="WriterDto"/>.</returns>
+    /// <returns>Created <see cref="PersonDto"/>.</returns>
     [HttpPost("")]
-    public async Task<ActionResult<WriterDto>> AddWriter([FromBody] AddWriterDto dto, CancellationToken token = default)
+    public async Task<ActionResult<PersonDto>> AddWriter([FromBody] AddPersonDto dto, CancellationToken token = default)
     {
-      var writer = Mapper.Map<AddWriterDto, Writer>(dto);
+      var writer = Mapper.Map<AddPersonDto, Person>(dto);
 
-      Context.Writers.Add(writer);
+      Context.People.Add(writer);
 
       await Context.SaveChangesAsync(token);
-      Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Writer), writer);
+      Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Person), writer);
 
-      return CreatedAtAction(nameof(GetWriter), new { id = writer.Id }, Mapper.Map<Writer, WriterDto>(writer));
+      return CreatedAtAction(nameof(GetWriter), new { id = writer.Id }, Mapper.Map<Person, PersonDto>(writer));
     }
 
     /// <summary>
@@ -120,18 +122,19 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpDelete("")]
     public async Task<ActionResult> DeleteWriter(int id, CancellationToken token = default)
     {
-      var writer = await Context.Writers.SingleOrDefaultAsync(x => x.Id == id, token);
+      var writer = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Writing)
+        .SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (writer == null || writer.IsDeleted)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Writer), id);
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
         return NotFound("No writer found in the database");
       }
 
       writer.IsDeleted = true;
 
       await Context.SaveChangesAsync(token);
-      Logger.LogInformation(LogTemplates.Deleted, nameof(Writer), id);
+      Logger.LogInformation(LogTemplates.Deleted, nameof(Person), id);
 
       return NoContent();
     }
@@ -141,26 +144,29 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="id">Writer's unique ID.</param>
     /// <param name="dto">Writer's information.</param>
-    /// <returns>Updated <see cref="WriterDto"/>.</returns>
+    /// <returns>Updated <see cref="PersonDto"/>.</returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult<WriterDto>> UpdateWriter(int id, AddWriterDto dto, CancellationToken token = default)
+    public async Task<ActionResult<PersonDto>> UpdateWriter(int id, AddPersonDto dto, CancellationToken token = default)
     {
-      var writer = await Context.Writers.SingleOrDefaultAsync(x => x.Id == id, token);
+      var writer = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Writing)
+        .SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (writer == null)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Writer), id);
-        return NotFound($"No {nameof(Writer)} with Id {id} found in database");
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
+        return NotFound($"No {nameof(Person)} with Id {id} found in database");
       }
 
       writer.FullName = dto.FullName;
       writer.Bio = dto.Bio;
-      writer.BirthDate = dto.BirthDate;
+      writer.BirthDay = dto.BirthDate;
+      writer.DeathDay = dto.DeathDate;
+      writer.Image = dto.Image;
 
       await Context.SaveChangesAsync();
-      Logger.LogInformation(LogTemplates.Updated, nameof(Writer), writer);
+      Logger.LogInformation(LogTemplates.Updated, nameof(Person), writer);
 
-      return Ok(Mapper.Map<Writer, WriterDto>(writer));
+      return Ok(Mapper.Map<Person, PersonDto>(writer));
     }
   }
 }

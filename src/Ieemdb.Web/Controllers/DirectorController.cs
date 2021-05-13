@@ -10,6 +10,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Models.Dto;
+  using Esentis.Ieemdb.Web.Models.Enums;
   using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
   using Kritikos.Extensions.Linq;
@@ -35,13 +36,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="criteria">Pagination criteria.</param>
     /// <response code="200">Returns the directors.</response>
     /// <response code="400">Page doesn't exist.</response>
-    /// <returns>A list of <see cref="DirectorDto"/>.</returns>
+    /// <returns>A list of <see cref="PersonDto"/>.</returns>
     [HttpPost("all")]
-    public async Task<ActionResult<List<DirectorDto>>> GetDirectors(
+    public async Task<ActionResult<List<PersonDto>>> GetDirectors(
       PersonSearchCriteria criteria,
       CancellationToken token = default)
     {
-      var directorsQuery = Context.Directors
+      var directorsQuery = Context.People.Where(p => p.KnownFor == DepartmentEnums.Directing)
         .TagWith("Retrieving all directors")
         .OrderBy(x => x.Id);
 
@@ -53,10 +54,10 @@ namespace Esentis.Ieemdb.Web.Controllers
       }
 
       var pagedDirectors = await directorsQuery.Slice(criteria.Page, criteria.ItemsPerPage)
-        .Project<Director, DirectorDto>(Mapper)
+        .Project<Person, PersonDto>(Mapper)
         .ToListAsync(token);
 
-      var result = new PagedResult<DirectorDto>
+      var result = new PagedResult<PersonDto>
       {
         Results = pagedDirectors,
         Page = criteria.Page,
@@ -73,19 +74,19 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Director's unique ID.</param>
     /// <response code="200">Returns single director.</response>
     /// <response code="404">Director not found.</response>
-    /// <returns>A single <see cref="DirectorDto"/>.</returns>
+    /// <returns>A single <see cref="PersonDto"/>.</returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<DirectorDto>> GetDirector(long id, CancellationToken token = default)
+    public async Task<ActionResult<PersonDto>> GetDirector(long id, CancellationToken token = default)
     {
-      var director = await Context.Directors.Where(x => x.Id == id).Project<Director,DirectorDto>(Mapper).SingleOrDefaultAsync(token);
+      var director = await Context.People.Where(p => (p.KnownFor == DepartmentEnums.Directing) && p.Id == id).Project<Person, PersonDto>(Mapper).SingleOrDefaultAsync(token);
 
       if (director == null)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Director), id);
-        return NotFound($"No {nameof(Director)} with Id {id} found in database");
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
+        return NotFound($"No {nameof(Person)} with Id {id} found in database");
       }
 
-      Logger.LogInformation(LogTemplates.RequestEntity, nameof(Director), id);
+      Logger.LogInformation(LogTemplates.RequestEntity, nameof(Person), id);
 
       return Ok(director);
     }
@@ -95,19 +96,18 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="dto">Director information.</param>
     /// <response code="201">Successfully added director.</response>
-    /// <returns>Created <see cref="DirectorDto"/>.</returns>
+    /// <returns>Created <see cref="PersonDto"/>.</returns>
     [HttpPost("")]
-    public async Task<ActionResult<DirectorDto>> AddDirector([FromBody] AddDirectorDto dto)
+    public async Task<ActionResult<PersonDto>> AddDirector([FromBody] AddPersonDto dto)
     {
-      var director = Mapper.Map<AddDirectorDto, Director>(dto);
+      var director = Mapper.Map<AddPersonDto, Person>(dto);
 
-      Context.Directors.Add(director);
+      Context.People.Add(director);
 
       await Context.SaveChangesAsync();
-      Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Director), director);
+      Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Person), director);
 
-      return CreatedAtAction(nameof(GetDirector), new { id = director.Id },
-        Mapper.Map<Director, DirectorDto>(director));
+      return CreatedAtAction(nameof(GetDirector), new { id = director.Id }, Mapper.Map<Person, PersonDto>(director));
     }
 
     /// <summary>
@@ -120,18 +120,18 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpDelete("")]
     public async Task<ActionResult> DeleteDirector(int id, CancellationToken token = default)
     {
-      var director = await Context.Directors.Where(x => x.Id == id).SingleOrDefaultAsync(token);
+      var director = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Directing).Where(x => x.Id == id).SingleOrDefaultAsync(token);
 
       if (director == null || director.IsDeleted)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Director), id);
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
         return NotFound("No director found in the database");
       }
 
       director.IsDeleted = true;
 
       await Context.SaveChangesAsync();
-      Logger.LogInformation(LogTemplates.Deleted, nameof(Director), id);
+      Logger.LogInformation(LogTemplates.Deleted, nameof(Person), id);
 
       return NoContent();
     }
@@ -143,24 +143,26 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="dto">Director's information.</param>
     /// <response code="200">Director successfully updated.</response>
     /// <response code="404">Director not found.</response>
-    /// <returns>Updated <see cref="DirectorDto"/>.</returns>
+    /// <returns>Updated <see cref="PersonDto"/>.</returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult<DirectorDto>> UpdateDirector(int id, AddDirectorDto dto, CancellationToken token = default)
+    public async Task<ActionResult<PersonDto>> UpdateDirector(int id, AddPersonDto dto, CancellationToken token = default)
     {
-      var director = await Context.Directors.Where(x => x.Id == id).Project<Director,DirectorDto>(Mapper).SingleOrDefaultAsync(token);
+      var director = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Directing).Where(x => x.Id == id).Project<Person,PersonDto>(Mapper).SingleOrDefaultAsync(token);
 
       if (director == null)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Director), id);
-        return NotFound($"No {nameof(Director)} with Id {id} found in database");
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
+        return NotFound($"No {nameof(Person)} with Id {id} found in database");
       }
 
       director.FullName = dto.FullName;
       director.Bio = dto.Bio;
-      director.BirthDate = dto.BirthDate;
+      director.BirthDay = dto.BirthDate;
+      director.DeathDay = dto.DeathDate;
+      director.Image = dto.Image;
 
       await Context.SaveChangesAsync(token);
-      Logger.LogInformation(LogTemplates.Updated, nameof(Director), director);
+      Logger.LogInformation(LogTemplates.Updated, nameof(Person), director);
 
       return Ok(director);
     }

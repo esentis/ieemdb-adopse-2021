@@ -1,8 +1,5 @@
 namespace Esentis.Ieemdb.Web.Providers
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Web.Models.MovieDBDto;
@@ -22,6 +19,9 @@ namespace Esentis.Ieemdb.Web.Providers
     [Get("/genre/movie/list")]
     Task<GenreResults> GetGenres();
 
+    [Get("/configuration/countries")]
+    Task<CountryDB[]> GetCountries();
+
     [Get("/movie/popular")]
     Task<SearchResult<MovieDB>> GetPopular(int page = 1);
 
@@ -30,6 +30,12 @@ namespace Esentis.Ieemdb.Web.Providers
 
     [Get("/movie/{id}/credits")]
     Task<MovieCast> GetMovieCredits(long id);
+
+    [Get("/movie/{id}/videos")]
+    Task<VideoResults> GetMovieVideos(long id);
+
+    [Get("/movie/{id}/images")]
+    Task<ImageResults> GetMovieImages(long id);
   }
 
   public class FakeMovieDb : ITheMovieDb
@@ -54,6 +60,14 @@ namespace Esentis.Ieemdb.Web.Providers
 
     /// <inheritdoc />
     public async Task<MovieCast> GetMovieCredits(long id) => new MovieCast();
+
+    /// <inheritdoc />
+    public async Task<VideoResults> GetMovieVideos(long id) => new VideoResults();
+
+    /// <inheritdoc />
+    public async Task<ImageResults> GetMovieImages(long id) => new ImageResults();
+
+    public async Task<CountryDB[]> GetCountries() => new CountryDB[1];
 
     #endregion
   }

@@ -28,8 +28,6 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public string NormalizedTitle { get; private set; }
 
-    public string TrailerUrl { get; set; }
-
     public TimeSpan Duration { get; set; }
 
     public string Plot
@@ -57,22 +55,20 @@ namespace Esentis.Ieemdb.Persistence.Models
     public IReadOnlyCollection<MovieGenre> MovieGenres { get; set; }
       = new List<MovieGenre>(0);
 
-    public IReadOnlyCollection<MovieActor> MovieActors { get; set; }
-      = new List<MovieActor>(0);
-
-    public IReadOnlyCollection<MovieDirector> MovieDirectors { get; set; }
-      = new List<MovieDirector>(0);
-
-    public IReadOnlyCollection<MovieWriter> MovieWriters { get; set; }
-      = new List<MovieWriter>(0);
-
     public IReadOnlyCollection<MovieCountry> MovieCountries { get; set; }
       = new List<MovieCountry>(0);
 
     public IReadOnlyCollection<Rating> Ratings { get; set; }
       = new List<Rating>(0);
 
-    public IReadOnlyCollection<Screenshot> Screenshots { get; set; }
-      = new List<Screenshot>(0);
+    public IReadOnlyCollection<Image> Images { get; set; }
+      = new List<Image>(0);
+
+    public IReadOnlyCollection<Video> Videos { get; set; }
+      = new List<Video>(0);
+
+    public IReadOnlyCollection<MoviePerson> People { get; set; }
+      = new List<MoviePerson>(0);
+
   }
 }

@@ -11,6 +11,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Models.Dto;
+  using Esentis.Ieemdb.Web.Models.Enums;
   using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
   using Kritikos.Extensions.Linq;
@@ -36,14 +37,14 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="criteria">Paging criteria.</param>
     /// <response code="200">Returns list of Actors.</response>
     /// <response code="400">Page doesn't exist.</response>
-    /// <returns>List of <see cref="ActorDto"/>.</returns>
+    /// <returns>List of <see cref="PersonDto"/>.</returns>
     [HttpPost("all")]
-    public async Task<ActionResult<List<ActorDto>>> GetActors(PaginationCriteria criteria,
+    public async Task<ActionResult<List<PersonDto>>> GetActors(PaginationCriteria criteria,
       CancellationToken token = default)
     {
       var toSkip = criteria.ItemsPerPage * (criteria.Page - 1);
 
-      var actorsQuery = Context.Actors
+      var actorsQuery = Context.People.Where(p => p.KnownFor == DepartmentEnums.Acting)
         .TagWith("Retrieving all actors")
         .OrderBy(x => x.Id);
 
@@ -59,9 +60,9 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Take(criteria.ItemsPerPage)
         .ToListAsync(token);
 
-      var result = new PagedResult<ActorDto>
+      var result = new PagedResult<PersonDto>
       {
-        Results = pagedActors.Select(x => Mapper.Map<Actor, ActorDto>(x)).ToList(),
+        Results = pagedActors.Select(x => Mapper.Map<Person, PersonDto>(x)).ToList(),
         Page = criteria.Page,
         TotalPages = (totalActors / criteria.ItemsPerPage) + 1,
         TotalElements = totalActors,
@@ -76,13 +77,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="criteria">Search criteria.</param>
     /// <response code="200">Returns found Actors.</response>
     /// <response code="400">Page doesn't exist.</response>
-    /// <returns>List of <see cref="ActorDto"/>.</returns>
+    /// <returns>List of <see cref="PersonDto"/>.</returns>
     [HttpPost("search")]
-    public async Task<ActionResult<List<ActorDto>>> Search(
+    public async Task<ActionResult<List<PersonDto>>> Search(
       PersonSearchCriteria criteria,
       CancellationToken token = default)
     {
-      var actorsQuery = Context.Actors
+      var actorsQuery = Context.People.Where(p => p.KnownFor == DepartmentEnums.Acting)
         .TagWith($"Searching for {criteria.Query}")
         .FullTextSearchIf(string.IsNullOrWhiteSpace(criteria.Query), criteria.Query)
         .OrderBy(x => x.Id);
@@ -95,10 +96,10 @@ namespace Esentis.Ieemdb.Web.Controllers
       }
 
       var pagedActors = await actorsQuery.Slice(criteria.Page, criteria.ItemsPerPage)
-        .Project<Actor, ActorDto>(Mapper)
+        .Project<Person, PersonDto>(Mapper)
         .ToListAsync(token);
 
-      var result = new PagedResult<ActorDto>
+      var result = new PagedResult<PersonDto>
       {
         Results = pagedActors,
         Page = criteria.Page,
@@ -115,21 +116,22 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Actor's ID.</param>
     /// <response code="200">Success returns single Actor.</response>
     /// <response code="404">Actor was not found.</response>
-    /// <returns>Single <see cref="ActorDto"/>.</returns>
+    /// <returns>Single <see cref="PersonDto"/>.</returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<ActorDto>> GetActor(long id, CancellationToken token = default)
+    public async Task<ActionResult<PersonDto>> GetActor(long id, CancellationToken token = default)
     {
-      var actor = await Context.Actors.SingleOrDefaultAsync(x => x.Id == id, token);
+      var actor = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Acting)
+        .SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (actor == null)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Actor), id);
-        return NotFound($"No {nameof(Actor)} with Id {id} found in database");
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
+        return NotFound($"No {nameof(Person)} with Id {id} found in database");
       }
 
-      Logger.LogInformation(LogTemplates.RequestEntity, nameof(Actor), id);
+      Logger.LogInformation(LogTemplates.RequestEntity, nameof(Person), id);
 
-      return Ok(Mapper.Map<Actor, ActorDto>(actor));
+      return Ok(Mapper.Map<Person, PersonDto>(actor));
     }
 
     /// <summary>
@@ -137,18 +139,18 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="dto">Actor information.</param>
     /// <response code="201">Actor successfully added.</response>
-    /// <returns>Created <see cref="ActorDto"/>.</returns>
+    /// <returns>Created <see cref="PersonDto"/>.</returns>
     [HttpPost("")]
-    public async Task<ActionResult<ActorDto>> AddActor([FromBody] AddActorDto dto, CancellationToken token = default)
+    public async Task<ActionResult<PersonDto>> AddActor([FromBody] AddPersonDto dto, CancellationToken token = default)
     {
-      var actor = Mapper.Map<AddActorDto, Actor>(dto);
+      var actor = Mapper.Map<AddPersonDto, Person>(dto);
 
-      Context.Actors.Add(actor);
+      Context.People.Add(actor);
 
       await Context.SaveChangesAsync(token);
-      Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Actor), actor);
+      Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Person), actor);
 
-      return CreatedAtAction(nameof(GetActor), new { id = actor.Id }, Mapper.Map<Actor, ActorDto>(actor));
+      return CreatedAtAction(nameof(GetActor), new { id = actor.Id }, Mapper.Map<Person, PersonDto>(actor));
     }
 
     /// <summary>
@@ -161,18 +163,19 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpDelete("")]
     public async Task<ActionResult> DeleteActor(int id, CancellationToken token = default)
     {
-      var actor = await Context.Actors.SingleOrDefaultAsync(x => x.Id == id, token);
+      var actor = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Acting)
+        .SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (actor == null || actor.IsDeleted)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Actor), id);
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
         return NotFound("No actor found in the database");
       }
 
       actor.IsDeleted = true;
 
       await Context.SaveChangesAsync();
-      Logger.LogInformation(LogTemplates.Deleted, nameof(Actor), id);
+      Logger.LogInformation(LogTemplates.Deleted, nameof(Person), id);
 
       return NoContent();
     }
@@ -184,26 +187,29 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="dto">Actor's information.</param>
     /// <response code="200">Returns updated Actor.</response>
     /// <response code="404">No actor found.</response>
-    /// <returns>Updated <see cref="ActorDto"/>.</returns>
+    /// <returns>Updated <see cref="PersonDto"/>.</returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult<ActorDto>> UpdateActor(int id, AddActorDto dto, CancellationToken token = default)
+    public async Task<ActionResult<PersonDto>> UpdateActor(int id, AddPersonDto dto, CancellationToken token = default)
     {
-      var actor = await Context.Actors.SingleOrDefaultAsync(x => x.Id == id, token);
+      var actor = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Acting)
+        .SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (actor == null)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Actor), id);
-        return NotFound($"No {nameof(Actor)} with Id {id} found in database");
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
+        return NotFound($"No {nameof(Person)} with Id {id} found in database");
       }
 
       actor.FullName = dto.FullName;
       actor.Bio = dto.Bio;
-      actor.BirthDate = dto.BirthDate;
+      actor.BirthDay = dto.BirthDate;
+      actor.DeathDay = dto.DeathDate;
+      actor.Image = dto.Image;
 
       await Context.SaveChangesAsync();
-      Logger.LogInformation(LogTemplates.Updated, nameof(Actor), actor);
+      Logger.LogInformation(LogTemplates.Updated, nameof(Person), actor);
 
-      return Ok(Mapper.Map<Actor, ActorDto>(actor));
+      return Ok(Mapper.Map<Person, PersonDto>(actor));
     }
   }
 }

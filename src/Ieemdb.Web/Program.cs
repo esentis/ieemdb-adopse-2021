@@ -1,7 +1,6 @@
 namespace Esentis.Ieemdb.Web
 {
   using System;
-  using System.Security.Cryptography.X509Certificates;
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
@@ -17,8 +16,6 @@ namespace Esentis.Ieemdb.Web
   using Microsoft.Extensions.Hosting;
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Logging.Abstractions;
-
-  using Refit;
 
   using Serilog;
   using Serilog.Core;

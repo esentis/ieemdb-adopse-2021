@@ -55,18 +55,10 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Select(x => x.Id)
         .ToListAsync(token);
 
-      var moviesWatchlist = await Context.Movies.Include(x => x.MovieActors)
-        .ThenInclude(x => x.Actor)
-        .Include(x => x.MovieDirectors)
-        .ThenInclude(x => x.Director)
-        .Include(x => x.MovieWriters)
-        .ThenInclude(x => x.Writer)
-        .Include(x => x.MovieGenres)
-        .ThenInclude(x => x.Genre)
-        .Include(x => x.MovieCountries)
-        .ThenInclude(x => x.Country)
+      var moviesWatchlist = await Context.Movies.Include(x => x.People)
+        .ThenInclude(x => x.Person)
         .Where(mv => watchlistsId.Contains(mv.Id))
-        .Project<Movie,MovieDto>(Mapper)
+        .Project<Movie,MovieMinimalDto>(Mapper)
         .ToListAsync(token);
 
       return Ok(moviesWatchlist);
