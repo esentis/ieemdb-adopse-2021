@@ -2,6 +2,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 {
   using System.Collections.Generic;
   using System.Linq;
+  using System.Threading;
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
@@ -9,7 +10,10 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Models.Dto;
+  using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
+  using Kritikos.Extensions.Linq;
+  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Mvc;
@@ -26,53 +30,56 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Returns all writers. You can pass parameters to handle page and result items.
-    /// Defaults to 20 items per page.
+    /// Returns all Writers.
     /// </summary>
-    /// <param name="itemsPerPage"></param>
-    /// <param name="page"></param>
-    /// <returns></returns>
-    [HttpGet("")]
-    public async Task<ActionResult<List<WriterDto>>> GetWriters(int itemsPerPage = 20, int page = 1)
+    /// <param name="criteria">Pagination criteria.</param>
+    /// <response code="200">Returns all writers.</response>
+    /// <response code="400">Page doesn't exist.</response>
+    /// <returns>List of <see cref="WriterDto"/>.</returns>
+    [HttpPost("all")]
+    public async Task<ActionResult<List<WriterDto>>> GetWriters(
+      PaginationCriteria criteria,
+      CancellationToken token = default)
     {
-      var toSkip = itemsPerPage * (page - 1);
-
       var writersQuery = Context.Writers
         .TagWith("Retrieving all writers")
         .OrderBy(x => x.Id);
 
-      var totalWriters = await writersQuery.CountAsync();
+      var totalWriters = await writersQuery.CountAsync(token);
 
-      if (page > ((totalWriters / itemsPerPage) + 1))
+      if (criteria.Page > ((totalWriters / criteria.ItemsPerPage) + 1))
       {
         return BadRequest("Page doesn't exist");
       }
 
-      var pagedWriters = await writersQuery
-        .Skip(toSkip)
-        .Take(itemsPerPage)
-        .ToListAsync();
+      var count = await writersQuery.CountAsync(token);
 
-      var result = new PagedResult<WriterDto>
+      var pagedWriters = await writersQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Writer, WriterDto>(Mapper)
+        .ToListAsync(token);
+
+      PagedResult<WriterDto> results = new()
       {
-        Results = pagedWriters.Select(x => Mapper.Map<Writer, WriterDto>(x)).ToList(),
-        Page = page,
-        TotalPages = (totalWriters / itemsPerPage) + 1,
-        TotalElements = totalWriters,
+        Page = criteria.Page,
+        Results = pagedWriters,
+        TotalElements = count,
+        TotalPages = (count / criteria.ItemsPerPage) + 1,
       };
 
-      return Ok(result);
+      return Ok(results);
     }
 
     /// <summary>
-    /// Returns a writer provided an ID.
+    /// Returns a single Writer.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+    /// <param name="id">Writer's unique ID.</param>
+    /// <response code="200">Returns a single writer.</response>
+    /// <response code="404">Writer not found.</response>
+    /// <returns>Single <see cref="WriterDto"/>.</returns>
     [HttpGet("{id}")]
-    public ActionResult<WriterDto> GetWriter(long id)
+    public async Task<ActionResult<WriterDto>> GetWriter(long id, CancellationToken token = default)
     {
-      var writer = Context.Writers.SingleOrDefault(x => x.Id == id);
+      var writer = await Context.Writers.SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (writer == null)
       {
@@ -86,57 +93,59 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Adds a writer provided the necessary information.
+    /// Adds a Writer.
     /// </summary>
-    /// <param name="dto"></param>
-    /// <returns></returns>
+    /// <param name="dto">Writer information.</param>
+    /// <response code="201">Successfully added.</response>
+    /// <returns>Created <see cref="WriterDto"/>.</returns>
     [HttpPost("")]
-    public async Task<ActionResult<WriterDto>> AddWriter([FromBody] AddWriterDto dto)
+    public async Task<ActionResult<WriterDto>> AddWriter([FromBody] AddWriterDto dto, CancellationToken token = default)
     {
       var writer = Mapper.Map<AddWriterDto, Writer>(dto);
 
       Context.Writers.Add(writer);
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Writer), writer);
 
       return CreatedAtAction(nameof(GetWriter), new { id = writer.Id }, Mapper.Map<Writer, WriterDto>(writer));
     }
 
     /// <summary>
-    /// We delete a user provided an ID.
+    /// Deletes a Writer.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+    /// <param name="id">Writer's unique ID.</param>
+    /// <response code="204">Successfully deleted.</response>
+    /// <response code="404">Writer not found.</response>
     [HttpDelete("")]
-    public async Task<ActionResult> DeleteWriter(int id)
+    public async Task<ActionResult> DeleteWriter(int id, CancellationToken token = default)
     {
-      var writer = Context.Writers.SingleOrDefault(x => x.Id == id);
+      var writer = await Context.Writers.SingleOrDefaultAsync(x => x.Id == id, token);
 
-      if (writer == null)
+      if (writer == null || writer.IsDeleted)
       {
         Logger.LogWarning(LogTemplates.NotFound, nameof(Writer), id);
         return NotFound("No writer found in the database");
       }
 
-      Context.Writers.Remove(writer);
+      writer.IsDeleted = true;
 
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       Logger.LogInformation(LogTemplates.Deleted, nameof(Writer), id);
 
       return NoContent();
     }
 
     /// <summary>
-    /// We update a writer provided all the necessary information. Id is required.
+    /// Updates a Writer.
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="dto"></param>
-    /// <returns></returns>
+    /// <param name="id">Writer's unique ID.</param>
+    /// <param name="dto">Writer's information.</param>
+    /// <returns>Updated <see cref="WriterDto"/>.</returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult<WriterDto>> UpdateWriter(int id, AddWriterDto dto)
+    public async Task<ActionResult<WriterDto>> UpdateWriter(int id, AddWriterDto dto, CancellationToken token = default)
     {
-      var writer = Context.Writers.SingleOrDefault(x => x.Id == id);
+      var writer = await Context.Writers.SingleOrDefaultAsync(x => x.Id == id, token);
 
       if (writer == null)
       {
@@ -144,8 +153,7 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound($"No {nameof(Writer)} with Id {id} found in database");
       }
 
-      writer.FirstName = dto.FirstName;
-      writer.LastName = dto.LastName;
+      writer.FullName = dto.FullName;
       writer.Bio = dto.Bio;
       writer.BirthDate = dto.BirthDate;
 

@@ -32,8 +32,8 @@ function BottomRightCarousel() {
     function showNewReleases() {
       setItems(moviesTest.map(i => <MovieCard
         id={i.id}
-        Title={i.title}
-        Poster={i.poster}
+        Title={i.title} 
+        Poster={i.posterUrl} 
         Overview={i.overview}
         ReleaseDate={i.release_date}
         Genres={i.genres}

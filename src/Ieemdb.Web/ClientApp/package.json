@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.4.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
@@ -11,8 +12,9 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "jquery": "^3.5.1",
+    "jwt-decode": "^3.1.2",
     "mdbreact": "^5.0.1",
-    "merge": "^1.2.1",
+    "merge": ">=2.1.1",
     "moment": "^2.29.1",
     "oidc-client": "^1.9.0",
     "react": "^16.0.0",
@@ -31,6 +33,7 @@
     "react-scripts": "^3.4.4",
     "react-select": "^4.3.0",
     "react-share": "^4.4.0",
+    "react-spinners": "^0.10.6",
     "reactstrap": "^8.4.1",
     "rimraf": "^2.6.2"
   },

@@ -4,17 +4,19 @@ import '../Styles/MovieViewSynopsis.css';
 function MovieViewSynopsis(props){
     /*const id=props.id;*/
     const overview=props.overview;
+    const durationHours = props.duration.hours;
+    const durationMinutes = props.duration.minutes;
     const directors = props.directors.map((directors) =>
-        <span className="span">{directors} </span>
+        <span className="span">{directors.firstName} {directors.lastName} </span>
     );
     const actors = props.actors.map((actors) =>
-        <span className="span">{actors} </span>
+        <span className="span">{actors.firstName} {actors.lastName}</span>
     );
     const writers = props.writers.map((writers) =>
-        <span className="span">{writers} </span>
+        <span className="span">{writers.firstName} {writers.lastName} </span>
     );
     const countryOrigin = props.countryOrigin.map((countryOrigin) =>
-        <span className="span">{countryOrigin} </span>
+        <span className="span">{countryOrigin.name}</span>
     );
     function onWatchlistButtonClick(){
         //Otan kanei click sto ADD TO WATCHLIST button
@@ -28,6 +30,10 @@ function MovieViewSynopsis(props){
             <Row className="rowTab">
                 <p className="smallTitles">SYNOPSIS</p>
                 <p className="text">{overview}</p>
+                {durationMinutes > 0
+                    ? <p className="text" style={{cursor:'auto'}}>Duration: {durationHours} hours and {durationMinutes} minutes</p>
+                    : <p className="text" style={{cursor:'auto'}}>Duration: {durationHours} hours</p>
+                }
             </Row>
             <Row className="rowTab2">
                 <Col>

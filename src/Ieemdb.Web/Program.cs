@@ -4,8 +4,11 @@ namespace Esentis.Ieemdb.Web
   using System.Security.Cryptography.X509Certificates;
   using System.Threading.Tasks;
 
+  using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Helpers.Extensions;
+
+  using Kritikos.Configuration.Persistence.Extensions;
 
   using Microsoft.ApplicationInsights.Extensibility;
   using Microsoft.AspNetCore.Hosting;
@@ -14,6 +17,8 @@ namespace Esentis.Ieemdb.Web
   using Microsoft.Extensions.Hosting;
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Logging.Abstractions;
+
+  using Refit;
 
   using Serilog;
   using Serilog.Core;
@@ -37,6 +42,7 @@ namespace Esentis.Ieemdb.Web
       {
         var host = CreateHostBuilder(args).Build();
         logger = host.Services.GetRequiredService<ILogger<Startup>>();
+        await host.MigrateAsync<IeemdbDbContext>();
         await host.Services.SeedDatabase();
 
         await host.RunAsync();

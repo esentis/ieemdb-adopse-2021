@@ -38,6 +38,15 @@
           "Microsoft.SourceLink.Common": "1.0.0"
         }
       },
+      "Refit": {
+        "type": "Direct",
+        "requested": "[6.0.38, )",
+        "resolved": "6.0.38",
+        "contentHash": "1wKjkHYDUp6TrQ0fK6w6CXguJ+kkGYj2IpPMfzyLQM+uinDYzYqWQ0kcsGxmTWGuWM4rYbUZN7IYFtSDD4x0Yw==",
+        "dependencies": {
+          "System.Net.Http.Json": "5.0.0"
+        }
+      },
       "SerilogAnalyzer": {
         "type": "Direct",
         "requested": "[0.15.0, )",
@@ -79,6 +88,11 @@
         "type": "Transitive",
         "resolved": "1.2.0.333",
         "contentHash": "7mwxcwa3xZnyU71OTqSgntCDpsZ5gkc4saXhuJeyg5Xc+3xiQxzyhy26uG8rVF8Z7GKpXCsHCL3rd5ZomA+a/A=="
+      },
+      "System.Net.Http.Json": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "3CPSQpCzEmI9o+1G79TnPCjF40omCdnoXj2Rg76BDwGj5+LZnFPjV+t35eedlvl+uthmholk/XXxXTYgJWSexw=="
       }
     }
   }
