@@ -6,6 +6,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
+  using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
@@ -92,6 +93,45 @@ namespace Esentis.Ieemdb.Web.Controllers
       Logger.LogInformation(LogTemplates.RequestEntity, nameof(Person), id);
 
       return Ok(Mapper.Map<Person, PersonDto>(writer));
+    }
+
+    /// <summary>
+    /// Searches for a Writer.
+    /// </summary>
+    /// <param name="criteria">Search criteria.</param>
+    /// <response code="200">Returns found Writers.</response>
+    /// <response code="400">Page doesn't exist.</response>
+    /// <returns>List of <see cref="PersonDto"/>.</returns>
+    [HttpPost("search")]
+    public async Task<ActionResult<List<PersonDto>>> Search(
+      PersonSearchCriteria criteria,
+      CancellationToken token = default)
+    {
+      var writersQuery = Context.People.Where(p => p.KnownFor == DepartmentEnums.Writing)
+        .TagWith($"Searching for {criteria.Query}")
+        .FullTextSearchIf(string.IsNullOrWhiteSpace(criteria.Query), criteria.Query)
+        .OrderBy(x => x.Id);
+
+      var totalWriters = await writersQuery.CountAsync(token);
+
+      if (criteria.Page > ((totalWriters / criteria.ItemsPerPage) + 1))
+      {
+        return BadRequest("Page doesn't exist");
+      }
+
+      var pagedWriters = await writersQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Person, PersonDto>(Mapper)
+        .ToListAsync(token);
+
+      var result = new PagedResult<PersonDto>
+      {
+        Results = pagedWriters,
+        Page = criteria.Page,
+        TotalPages = (totalWriters / criteria.ItemsPerPage) + 1,
+        TotalElements = totalWriters,
+      };
+
+      return Ok(result);
     }
 
     /// <summary>

@@ -6,6 +6,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
+  using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
@@ -39,11 +40,50 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <returns>A list of <see cref="PersonDto"/>.</returns>
     [HttpPost("all")]
     public async Task<ActionResult<List<PersonDto>>> GetDirectors(
-      PersonSearchCriteria criteria,
+      PaginationCriteria criteria,
       CancellationToken token = default)
     {
       var directorsQuery = Context.People.Where(p => p.KnownFor == DepartmentEnums.Directing)
         .TagWith("Retrieving all directors")
+        .OrderBy(x => x.Id);
+
+      var totalDirectors = await directorsQuery.CountAsync(token);
+
+      if (criteria.Page > ((totalDirectors / criteria.ItemsPerPage) + 1))
+      {
+        return BadRequest("Page doesn't exist");
+      }
+
+      var pagedDirectors = await directorsQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Person, PersonDto>(Mapper)
+        .ToListAsync(token);
+
+      var result = new PagedResult<PersonDto>
+      {
+        Results = pagedDirectors,
+        Page = criteria.Page,
+        TotalPages = (totalDirectors / criteria.ItemsPerPage) + 1,
+        TotalElements = totalDirectors,
+      };
+
+      return Ok(result);
+    }
+
+    /// <summary>
+    /// Searches for a Director.
+    /// </summary>
+    /// <param name="criteria">Search criteria.</param>
+    /// <response code="200">Returns found Actors.</response>
+    /// <response code="400">Page doesn't exist.</response>
+    /// <returns>List of <see cref="PersonDto"/>.</returns>
+    [HttpPost("search")]
+    public async Task<ActionResult<List<PersonDto>>> Search(
+      PersonSearchCriteria criteria,
+      CancellationToken token = default)
+    {
+      var directorsQuery = Context.People.Where(p => p.KnownFor == DepartmentEnums.Directing)
+        .TagWith($"Searching for {criteria.Query}")
+        .FullTextSearchIf(string.IsNullOrWhiteSpace(criteria.Query), criteria.Query)
         .OrderBy(x => x.Id);
 
       var totalDirectors = await directorsQuery.CountAsync(token);
