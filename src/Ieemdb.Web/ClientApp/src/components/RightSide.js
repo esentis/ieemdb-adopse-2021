@@ -40,7 +40,7 @@ function RightSide() {
             <Route path={'/:SearchType/value=:value?'} children={<SearchView/>} />
             <Route path={'/:SearchType/GenreValue=:value?/Id=:GenreId?'} children={<SearchView/>} />
             <Route path={'/AdminPanel'} children={CheckLoginState() && Role==='ADMINISTRATOR'? <AdminPanel /> : <Redirect push to="/Login" /> } />
-            <Route path={'/:SearchType/MovieTitle=:MovieTitle? ActorName=:ActorName? DirectorName=:DirectorName? WriterName=:WriterName? Duration=:Duration? Genres=:Genres? FromRating=:FromRating? ToRating=:ToRating? FromDate=:FromDate? ToDate=:ToDate?'} 
+            <Route path={'/:SearchType/MovieTitle=:MovieTitle? ActorName=:ActorName? DirectorName=:DirectorName? WriterName=:WriterName? MinDuration=:MinDuration? MaxDuration=:MaxDuration? Genres=:Genres? FromRating=:FromRating? ToRating=:ToRating? FromDate=:FromDate? ToDate=:ToDate?'} 
               children={ CheckLoginState() ? <SearchView /> : <Redirect push to="/Login" />} />
         </Switch>
         </Row>
