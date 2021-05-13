@@ -15,6 +15,7 @@ const responsive = {
   1199: { items: 6 },
 };
 function MovieViewSynopsis(props) {
+    //commit gia to vs
     const [data, setData] = useState([]);
     const [opre, setopre] = useState(false);
     const [name, setName] = useState("");
