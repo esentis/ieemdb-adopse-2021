@@ -44,6 +44,10 @@ namespace Esentis.Ieemdb.Web.Controllers
       var movie = await Context.Movies
         .Include(x => x.People)
         .ThenInclude(x => x.Person)
+        .Include(x => x.MovieGenres)
+        .ThenInclude(x => x.Genre)
+        .Include(x => x.MovieCountries)
+        .ThenInclude(x => x.Country)
         .SingleOrDefaultAsync(m => m.Id == id, CancellationToken.None);
 
       if (movie == null)

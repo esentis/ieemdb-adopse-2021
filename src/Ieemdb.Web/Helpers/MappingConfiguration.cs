@@ -16,7 +16,8 @@ namespace Esentis.Ieemdb.Web.Helpers
   {
     public static readonly IPureMapperConfig Mapping = new PureMapperConfig()
       .Map<Genre, GenreDto>(mapper => genre => new GenreDto() { Name = genre.Name, Id = genre.Id, })
-      .Map<Country, CountryDto>(mapper => country => new CountryDto() { Name = country.Name, Id = country.Id })
+      .Map<Country, CountryDto>(mapper =>
+        country => new CountryDto() { Name = country.Name, Id = country.Id, Iso = country.Iso })
       .Map<GenreDto, Genre>(mapper => genreDto => new Genre() { Name = genreDto.Name, Id = genreDto.Id, })
       .Map<AddGenreDto, Genre>(mapper => addGenre => new Genre() { Name = addGenre.Name, })
       .Map<Movie, MovieMinimalDto>(mapper => movie => new MovieMinimalDto()
@@ -44,6 +45,8 @@ namespace Esentis.Ieemdb.Web.Helpers
           ReleaseDate = movie.ReleaseDate,
           People = movie.People.Select(x => mapper.Resolve<Person, PersonDto>().Invoke(x.Person)).ToList(),
           Genres = movie.MovieGenres.Select(x => mapper.Resolve<Genre, GenreDto>().Invoke(x.Genre)).ToList(),
+          Countries =
+            movie.MovieCountries.Select(x => mapper.Resolve<Country, CountryDto>().Invoke(x.Country)).ToList(),
         },
         name: "complete")
       .Map<UpdateMovieDto, Movie>(mapper => (source, destination) => UpdateMovie(source, destination, mapper))
@@ -79,16 +82,13 @@ namespace Esentis.Ieemdb.Web.Helpers
         Image = dto.Image,
         KnownFor = dto.knownFor,
       })
-      .Map<Image, ImageDto>(mapper => dto => new ImageDto()
-      {
-        Url = new Uri(dto.Url),
-        Id = dto.Id,
-      })
+      .Map<Image, ImageDto>(mapper => dto => new ImageDto() { Url = new Uri(dto.Url), Id = dto.Id, })
       .Map<Video, VideoDto>(mapper => dto => new VideoDto()
       {
         Id = dto.Id,
         TmdbId = dto.TmdbId,
-        Key = dto.Key,Site = dto.Site,
+        Key = dto.Key,
+        Site = dto.Site,
         Type = dto.Type.ToString(),
       })
       .Map<Watchlist, WatchlistDto>(mapper => watchlist => new WatchlistDto()

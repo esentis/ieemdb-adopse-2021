@@ -5,5 +5,7 @@ namespace Esentis.Ieemdb.Web.Models.Dto
     public long Id { get; set; }
 
     public string Name { get; set; }
+
+    public string Iso { get; set; }
   }
 }
