@@ -80,7 +80,6 @@ namespace Esentis.Ieemdb.Web.Helpers
         DeathDay = dto.DeathDate,
         FullName = dto.FullName,
         Image = dto.Image,
-        KnownFor = dto.knownFor,
       })
       .Map<Image, ImageDto>(mapper => dto => new ImageDto() { Url = new Uri(dto.Url), Id = dto.Id, })
       .Map<Video, VideoDto>(mapper => dto => new VideoDto()

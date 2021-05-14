@@ -144,6 +144,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     public async Task<ActionResult<PersonDto>> AddWriter([FromBody] AddPersonDto dto, CancellationToken token = default)
     {
       var writer = Mapper.Map<AddPersonDto, Person>(dto);
+      writer.KnownFor = DepartmentEnums.Writing;
 
       Context.People.Add(writer);
 

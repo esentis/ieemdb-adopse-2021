@@ -90,16 +90,19 @@ namespace Esentis.Ieemdb.Web.Controllers
           x => x.ReleaseDate <= criteria.ToYear)
         .WhereIf(
           criteria.Actor != null,
-          x => Context.MoviePeople.Any(a =>
-            a.Person.NormalizedFullName.Contains(criteria.Actor!.NormalizeSearch()) && x.Id == a.Movie.Id))
+          x => Context.MoviePeople.Where(p => p.Person.KnownFor == DepartmentEnums.Acting)
+            .Any(a =>
+              a.Person.NormalizedFullName.Contains(criteria.Actor!.NormalizeSearch()) && x.Id == a.Movie.Id))
         .WhereIf(
           criteria.Director != null,
-          x => Context.MoviePeople.Any(a =>
-            a.Person.NormalizedFullName.Contains(criteria.Director!.NormalizeSearch()) && x.Id == a.Movie.Id))
+          x => Context.MoviePeople.Where(p => p.Person.KnownFor == DepartmentEnums.Directing)
+            .Any(a =>
+              a.Person.NormalizedFullName.Contains(criteria.Director!.NormalizeSearch()) && x.Id == a.Movie.Id))
         .WhereIf(
           criteria.Writer != null,
-          x => Context.MoviePeople.Any(a =>
-            a.Person.NormalizedFullName.Contains(criteria.Writer!.NormalizeSearch()) && x.Id == a.Movie.Id))
+          x => Context.MoviePeople.Where(p => p.Person.KnownFor == DepartmentEnums.Writing)
+            .Any(a =>
+              a.Person.NormalizedFullName.Contains(criteria.Writer!.NormalizeSearch()) && x.Id == a.Movie.Id))
         .WhereIf(
           criteria.MinRating != null,
           x => Context.Ratings.Any(r => r.Rate >= criteria.MinRating && r.Movie.Id == x.Id))
