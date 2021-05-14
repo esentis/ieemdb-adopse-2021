@@ -2,14 +2,20 @@ namespace Esentis.Ieemdb.Web.Controllers
 {
   using System.Collections.Generic;
   using System.Linq;
+  using System.Threading;
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
+  using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Models.Dto;
+  using Esentis.Ieemdb.Web.Models.Enums;
+  using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
+  using Kritikos.Extensions.Linq;
+  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Mvc;
@@ -26,44 +32,37 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Returns all directors. You can pass parameters to handle page and result items.
-    /// Defaults to 20 items per page.
+    /// Returns all Directors.
     /// </summary>
-    /// <param name="itemsPerPage"></param>
-    /// <param name="page"></param>
-    /// <returns></returns>
-    [HttpGet("")]
-    public async Task<ActionResult<List<DirectorDto>>> GetDirectors(int itemsPerPage = 20, int page = 1)
+    /// <param name="criteria">Pagination criteria.</param>
+    /// <response code="200">Returns the directors.</response>
+    /// <response code="400">Page doesn't exist.</response>
+    /// <returns>A list of <see cref="PersonDto"/>.</returns>
+    [HttpPost("all")]
+    public async Task<ActionResult<List<PersonDto>>> GetDirectors(
+      PaginationCriteria criteria,
+      CancellationToken token = default)
     {
-      // We calculate how many items we shall skip to get next page (page offset).
-      var toSkip = itemsPerPage * (page - 1);
-
-      // We prepare the query without executing it.
-      var directorsQuery = Context.Directors
+      var directorsQuery = Context.People.Where(p => p.KnownFor == DepartmentEnums.Directing)
         .TagWith("Retrieving all directors")
         .OrderBy(x => x.Id);
 
-      // We calculate how many directors are in database.
-      var totalDirectors = await directorsQuery.CountAsync();
+      var totalDirectors = await directorsQuery.CountAsync(token);
 
-      // If page provided doesn't exist we return bad request.
-      if (page > ((totalDirectors / itemsPerPage) + 1))
+      if (criteria.Page > ((totalDirectors / criteria.ItemsPerPage) + 1))
       {
         return BadRequest("Page doesn't exist");
       }
 
-      // We create the paged query request.
-      var pagedDirectors = await directorsQuery
-        .Skip(toSkip)
-        .Take(itemsPerPage)
-        .ToListAsync();
+      var pagedDirectors = await directorsQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Person, PersonDto>(Mapper)
+        .ToListAsync(token);
 
-      // We create the result, which is paged.
-      var result = new PagedResult<DirectorDto>
+      var result = new PagedResult<PersonDto>
       {
-        Results = pagedDirectors.Select(x => Mapper.Map<Director, DirectorDto>(x)).ToList(),
-        Page = page,
-        TotalPages = (totalDirectors / itemsPerPage) + 1,
+        Results = pagedDirectors,
+        Page = criteria.Page,
+        TotalPages = (totalDirectors / criteria.ItemsPerPage) + 1,
         TotalElements = totalDirectors,
       };
 
@@ -71,111 +70,142 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Returns a Director provided an ID.
+    /// Searches for a Director.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpGet("{id}")]
-    public ActionResult<DirectorDto> GetDirector(long id)
+    /// <param name="criteria">Search criteria.</param>
+    /// <response code="200">Returns found Actors.</response>
+    /// <response code="400">Page doesn't exist.</response>
+    /// <returns>List of <see cref="PersonDto"/>.</returns>
+    [HttpPost("search")]
+    public async Task<ActionResult<List<PersonDto>>> Search(
+      PersonSearchCriteria criteria,
+      CancellationToken token = default)
     {
-      // Returns the first director found with the spcefic ID. If not found, the result is null.
-      var director = Context.Directors.Where(x => x.Id == id).SingleOrDefault();
+      var directorsQuery = Context.People.Where(p => p.KnownFor == DepartmentEnums.Directing)
+        .TagWith($"Searching for {criteria.Query}")
+        .FullTextSearchIf(string.IsNullOrWhiteSpace(criteria.Query), criteria.Query)
+        .OrderBy(x => x.Id);
 
-      // If we haven't found a Director we return a not found response.
-      if (director == null)
+      var totalDirectors = await directorsQuery.CountAsync(token);
+
+      if (criteria.Page > ((totalDirectors / criteria.ItemsPerPage) + 1))
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Director), id);
-        return NotFound($"No {nameof(Director)} with Id {id} found in database");
+        return BadRequest("Page doesn't exist");
       }
 
-      Logger.LogInformation(LogTemplates.RequestEntity, nameof(Director), id);
+      var pagedDirectors = await directorsQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Person, PersonDto>(Mapper)
+        .ToListAsync(token);
 
-      // Everything went ok, we map the found director to a dto and return it to client.
-      return Ok(Mapper.Map<Director, DirectorDto>(director));
+      var result = new PagedResult<PersonDto>
+      {
+        Results = pagedDirectors,
+        Page = criteria.Page,
+        TotalPages = (totalDirectors / criteria.ItemsPerPage) + 1,
+        TotalElements = totalDirectors,
+      };
+
+      return Ok(result);
     }
 
     /// <summary>
-    /// Adds a Director provided the necessary information.
+    /// Returns a single Director.
     /// </summary>
-    /// <param name="dto"></param>
-    /// <returns></returns>
-    [HttpPost("")]
-    public async Task<ActionResult<DirectorDto>> AddDirector([FromBody] AddDirectorDto dto)
+    /// <param name="id">Director's unique ID.</param>
+    /// <response code="200">Returns single director.</response>
+    /// <response code="404">Director not found.</response>
+    /// <returns>A single <see cref="PersonDto"/>.</returns>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<PersonDto>> GetDirector(long id, CancellationToken token = default)
     {
-      // We map the provided director dto to an actual Director model.
-      var director = Mapper.Map<AddDirectorDto, Director>(dto);
+      var director = await Context.People.Where(p => (p.KnownFor == DepartmentEnums.Directing) && p.Id == id).Project<Person, PersonDto>(Mapper).SingleOrDefaultAsync(token);
 
-      // We add the director in the database.
-      Context.Directors.Add(director);
-
-      // And we save it
-      await Context.SaveChangesAsync();
-      Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Director), director);
-
-      // We return the url where the entity was created.
-      return CreatedAtAction(nameof(GetDirector), new { id = director.Id }, Mapper.Map<Director, DirectorDto>(director));
-    }
-
-    /// <summary>
-    /// We delete a user provided an ID.
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpDelete("")]
-    public async Task<ActionResult> DeleteDirector(int id)
-    {
-      // We search for the director if it exists in our db.
-      var director = Context.Directors.Where(x => x.Id == id).SingleOrDefault();
-
-      // If not, we return a not found response.
       if (director == null)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Director), id);
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
+        return NotFound($"No {nameof(Person)} with Id {id} found in database");
+      }
+
+      Logger.LogInformation(LogTemplates.RequestEntity, nameof(Person), id);
+
+      return Ok(director);
+    }
+
+    /// <summary>
+    /// Adds a Director.
+    /// </summary>
+    /// <param name="dto">Director information.</param>
+    /// <response code="201">Successfully added director.</response>
+    /// <returns>Created <see cref="PersonDto"/>.</returns>
+    [HttpPost("")]
+    public async Task<ActionResult<PersonDto>> AddDirector([FromBody] AddPersonDto dto)
+    {
+      var director = Mapper.Map<AddPersonDto, Person>(dto);
+      director.KnownFor = DepartmentEnums.Directing;
+
+      Context.People.Add(director);
+
+      await Context.SaveChangesAsync();
+      Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Person), director);
+
+      return CreatedAtAction(nameof(GetDirector), new { id = director.Id }, Mapper.Map<Person, PersonDto>(director));
+    }
+
+    /// <summary>
+    /// Removes a Director.
+    /// </summary>
+    /// <param name="id">Director's unique ID.</param>
+    /// <response code="201">Successfully deleted.</response>
+    /// <response code="404">Director not found.</response>
+    /// <returns>No content.</returns>
+    [HttpDelete("")]
+    public async Task<ActionResult> DeleteDirector(int id, CancellationToken token = default)
+    {
+      var director = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Directing).Where(x => x.Id == id).SingleOrDefaultAsync(token);
+
+      if (director == null || director.IsDeleted)
+      {
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
         return NotFound("No director found in the database");
       }
 
-      // We remove the director if there is one.
-      Context.Directors.Remove(director);
+      director.IsDeleted = true;
 
-      // We save the changes in our db.
       await Context.SaveChangesAsync();
-      Logger.LogInformation(LogTemplates.Deleted, nameof(Director), id);
+      Logger.LogInformation(LogTemplates.Deleted, nameof(Person), id);
 
-      // An empty success response.
       return NoContent();
     }
 
     /// <summary>
-    /// We update a Director provided all the necessary information. Id is required.
+    /// Updates a Director.
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="dto"></param>
-    /// <returns></returns>
+    /// <param name="id">Director's unique ID.</param>
+    /// <param name="dto">Director's information.</param>
+    /// <response code="200">Director successfully updated.</response>
+    /// <response code="404">Director not found.</response>
+    /// <returns>Updated <see cref="PersonDto"/>.</returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult<DirectorDto>> UpdateDirector(int id, AddDirectorDto dto)
+    public async Task<ActionResult<PersonDto>> UpdateDirector(int id, AddPersonDto dto, CancellationToken token = default)
     {
-      // We search for the director to update
-      var director = Context.Directors.Where(x => x.Id == id).SingleOrDefault();
+      var director = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Directing).Where(x => x.Id == id).Project<Person,PersonDto>(Mapper).SingleOrDefaultAsync(token);
 
-      // If there is not director found we return a not found response.
       if (director == null)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Director), id);
-        return NotFound($"No {nameof(Director)} with Id {id} found in database");
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), id);
+        return NotFound($"No {nameof(Person)} with Id {id} found in database");
       }
 
-      // Otherwise, we expicitly update the found director with newer values.
-      director.FirstName = dto.FirstName;
-      director.LastName = dto.LastName;
+      director.FullName = dto.FullName;
       director.Bio = dto.Bio;
-      director.BirthDate = dto.BirthDate;
+      director.BirthDay = dto.BirthDate;
+      director.DeathDay = dto.DeathDate;
+      director.Image = dto.Image;
 
-      // And we just save the changes to commit on previous updates.
-      await Context.SaveChangesAsync();
-      Logger.LogInformation(LogTemplates.Updated, nameof(Director), director);
+      await Context.SaveChangesAsync(token);
+      Logger.LogInformation(LogTemplates.Updated, nameof(Person), director);
 
-      // We map the actual Director entity to a dto and return the updated director to the client.
-      return Ok(Mapper.Map<Director, DirectorDto>(director));
+      return Ok(director);
     }
   }
 }

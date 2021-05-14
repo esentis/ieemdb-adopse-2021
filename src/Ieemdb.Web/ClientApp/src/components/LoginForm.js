@@ -5,10 +5,12 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 /*import auth from './auth';*/
 import { useHistory } from 'react-router-dom';
+import jwt_decode from "jwt-decode";
 import {/*useLoginState,*/ useChangeLoginState,useUpdateRole} from './GlobalContext';
 function LoginForm() {
   const [userNameLogin, setUserNameLogin] = useState("");
-  const [passwordLogin, setPasswordLogin] = useState("")
+  const [passwordLogin, setPasswordLogin] = useState("");
+  const [disableButton,setDisableButton]=useState(true);
   /*const [deviceName, setDeviceName] = useState("");*/
   const history = useHistory();
   const [open,setOpen]=useState(false);
@@ -34,23 +36,40 @@ function LoginForm() {
         localStorage.setItem('username',userNameLogin);
         isLoggedIn(true);
         history.push("/");
-        updateRole(res.data.role);
-        localStorage.setItem('role',res.data.role);
+        var decoded = jwt_decode(res.data.accessToken);
+        var role=Object.values(decoded)[5];
+        updateRole(role);
       }
     })
     .catch(error=>{
       setOpen(true);
     });
   }
+
+ function onFormChange(e){
+    var userName=userNameLogin;
+    var passWord=passwordLogin;
+    if(e.target.name==="username"){
+        userName=e.target.value;
+    }else if(e.target.name==="password"){
+        passWord=e.target.value;
+    } 
+
+    if(userName.length<5||passWord.length<5){
+      setDisableButton(true)
+    }else{setDisableButton(false)}
+  }
+
+
   return (
     <div className="backForm">
       <label className="formTitle">Login to your account</label>
-      <form className="divForm" onSubmit={handleSubmitLogin}>
+      <form className="divForm" onSubmit={handleSubmitLogin} onChange={onFormChange} autoComplete="off">
         <label className="formText">Username</label>
-        <input className="formInput" type="text" placeholder="Your username here" value={userNameLogin} onChange={e => setUserNameLogin(e.target.value)}/>
+        <input className="formInput" type="text" name="username" placeholder="Your username here" value={userNameLogin} onChange={e => setUserNameLogin(e.target.value)}/>
         <label className="formText">Password</label>
-        <input className="formInput" type="password" placeholder="Your password here" value={passwordLogin} onChange={e => setPasswordLogin(e.target.value)}/>
-        <input className="formButton" type="submit" value="Login" />
+        <input className="formInput" type="password" name="password" placeholder="Your password here" value={passwordLogin} onChange={e => setPasswordLogin(e.target.value)}/>
+        <input className="formButton" type="submit" value="Login" disabled={disableButton} />
       </form>
       <div className="snackbar"><Snackbar open={open} autoHideDuration={6000} onClose={CloseSnackBar} anchorOrigin={{vertical:'bottom',horizontal:'center'}}  >
             <Alert onClose={CloseSnackBar} severity={"error"}>

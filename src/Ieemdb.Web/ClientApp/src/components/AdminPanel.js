@@ -4,11 +4,12 @@ import '../Styles/AdminPanel.css';
 import {useUpdatePage} from './GlobalContext';
 import TopRight from './TopRight';
 import MovieCard from './MovieCard';
-import movies from './Movie_Dataset';
 import AdminSearchbar from './AdminSearchbar';
 import Results from './Results';
-import Paginate from 'react-paginate';
-import '../Styles/Paginate.css'
+import '../Styles/Paginate.css';
+import axios from 'axios';
+import Paginate from './Paginate';
+
 
 
 function AdminPanel() {
@@ -16,64 +17,78 @@ function AdminPanel() {
     const setPage=useUpdatePage();
     useEffect(() => {
         setPage("1")
-        setFeatured(movies)},[setPage]);
+        async function fetchData(){
+            await axios({method:'post',url:`https://${window.location.host}/api/movie/search`,data:{"page":1,"itemsPerPage":20,"isFeatured": true}})
+            .then(function(res){setFeatured(res.data.results)
+            setLoading(false)});}
+        fetchData();
+    },[setPage]);
         
+        const [value,setValue]=useState();
+        const [loading,setLoading]=useState(true);
+        const [currentPage,setCurrentPage]=useState(0);
         const [featured,setFeatured]=useState([]);
-        const [unFeatured,setUnFeatured]=useState([]);
         const [searchValue,setSearchValue]=useState("");
-        const [results,setResults]=useState([]);
         const [display,setDisplay]=useState("none");
+        const [items,setItems]=useState({
+            data:[],
+            totalResults:0,
+            pageCount:0
+        });
 
-        const removeFeatured=(arg)=>{
+       async function removeFeatured(arg){
             const newFeatured=featured.filter((movie)=>arg!==movie.id)
             setFeatured(newFeatured);
-            setUnFeatured([...unFeatured,arg]);
+            await axios.post(`https://localhost:5001/api/movie/unfeature?id=${arg}`)
+            
         }
 
-        const addFeatured=(id,poster,title)=>{
-            const newFeatured=[...featured,{id,poster,title}]
+        async function addFeatured(id,posterUrl,title){
+            const newFeatured=[...featured,{id,posterUrl,title}]
             setFeatured(newFeatured);
-            const newUnFeatured=unFeatured.filter((movie)=>id!==movie);
-            setUnFeatured(newUnFeatured);
-        }
-
-        function saveClick(){
-            console.log("unfeatured:",unFeatured);
-            const newFeatured=featured.map(x=>x.id);
-            console.log("newFeatured:",newFeatured);
+            await axios.post(`https://localhost:5001/api/movie/feature?id=${id}`)
         }
 
         const title=' Current Featured Movies';
-        const items=featured.map(i => <MovieCard 
+        const movies=featured.map(i => <MovieCard 
         id={i.id}
         Title={i.title} 
-        Poster={i.poster}
+        Poster={i.posterUrl?i.posterUrl:"https://media.comicbook.com/files/img/default-movie.png"} 
         height={"250vh"} 
         width={'auto'}
         posterClass='poster-Admin'
         flag={true}
         onClick={removeFeatured} />)
 
-        function onEnter(e){
-            const searchResults=[];  
+        const postersPerPage=10;
+        async function fetchData(arg){
+            console.log("admin value:",value);
+            await axios({method:'post',url:`https://${window.location.host}/api/movie/search`,data:{"page":arg+1,"itemsPerPage":postersPerPage,"titleCriteria": value}})
+            .then(function (res){
+            setItems({data:res.data.results,
+                  pageCount:Math.ceil(res.data.totalElements/postersPerPage),
+                  totalResults:res.data.totalElements })});
+} 
+
+       async function onEnter(e){
             if (e.keyCode===13){
+                setCurrentPage(0);
             if(e.target.value.length>0){
-                movies.map(movie=>searchResults.push(movie));
                 setSearchValue(e.target.value);
-                setResults(searchResults);
+                fetchData(0);            
                 setDisplay("flex"); 
             }             
         }}
 
-    const [currentPage,setCurrentPage]=useState(0);
-    const [postersPerPage]=useState(10);
+    
 
-    const indexOfLastPoster=currentPage * postersPerPage;
-    const currentPosters=results.slice(indexOfLastPoster,indexOfLastPoster+postersPerPage);
-    const pageCount = Math.ceil(results.length / postersPerPage);
-
+    function onChange(e){
+        setValue(e.target.value);
+    }   
+    
     function handlePageClick({selected:selectedPage}){
         setCurrentPage(selectedPage);
+        fetchData(selectedPage);
         document.body.scrollTop=0;
         document.documentElement.scrollTop = 0;
     }
@@ -82,22 +97,13 @@ function AdminPanel() {
         <>
         <Col className="column-right-Admin">
         <TopRight title={title}
-                  items={items}
-                  ColClassName={""} />
-                <div className='DivButton'><button className='buttonSave' onClick={saveClick}>Save Changes</button></div>
-                <AdminSearchbar onKeyUp={onEnter} />
-                <div className='resultsTitles' style={{display:display}}><p className="ResultTitle">Results for "{searchValue}"<span className="ResultsLength">{movies.length} Movies</span></p></div>
-                <div className='resultsDiv'><Results results={currentPosters} featured={featured} flag={true} onClick={addFeatured}/></div>
-                {results.length>10 && <Paginate previousLabel={<i className="fa fa-chevron-left"></i>}
-                  nextLabel={<i className="fa fa-chevron-right"></i>}
-                  breakLabel={".."}
-                  pageCount={pageCount}
-                  marginPagesDisplayed={1}
-                  pageRangeDisplayed={2}
-                  onPageChange={handlePageClick}
-                  containerClassName={"pagination"}
-                  subContainerClassName={"pages pagination"}
-                  activeClassName={"active"}/>  }
+                  items={movies}
+                  loading={loading}
+                  onClick={removeFeatured} />
+                <AdminSearchbar onKeyUp={onEnter} onChange={onChange} value={value} />
+                <div className='resultsTitles' style={{display:display}}><p className="ResultTitle">Results for "{searchValue}"<span className="ResultsLength">{items.totalResults} Movies</span></p></div>
+                <div className='resultsDiv'><Results results={items.data} featured={featured} flag={true} onClick={addFeatured}/></div>
+                {items.totalResults>0 &&<Paginate pageCount={items.pageCount} handlePageClick={handlePageClick} currentPage={currentPage} /> }
         </Col>
         </> 
     )

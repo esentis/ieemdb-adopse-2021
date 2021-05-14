@@ -1,11 +1,8 @@
 namespace Esentis.Ieemdb.Persistence.Joins
 {
-  using System;
 
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Models;
-
-  using Kritikos.Configuration.Persistence.Abstractions;
 
   public class MovieGenre : EmdbKeylessEntity
   {

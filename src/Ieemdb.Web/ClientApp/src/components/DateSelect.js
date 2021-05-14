@@ -10,7 +10,6 @@ function DateSelect(props) {
             years.push({value:max,label:max})
     }
     
-
     return (
         <>
         <p></p>
@@ -21,7 +20,7 @@ function DateSelect(props) {
         <span className="spanClass">To</span>
         <div className="RatingDatesSelector">
         <Select styles={props.style} 
-         placeholder="Select Date" onChange={props.onChange2} options={props.options} isDisabled={props.isDisabled} value={props.value} />
+         placeholder="Select Date" onChange={props.onChange2} options={props.options}  value={props.value} />
         </div>
         </>
     )

@@ -1,15 +1,15 @@
-﻿namespace Esentis.Ieemdb.Persistence.Identity
+namespace Esentis.Ieemdb.Persistence.Identity
 {
   using System;
 
-  using Kritikos.Configuration.Persistence.Abstractions;
+  using Kritikos.Configuration.Persistence.Contracts.Behavioral;
 
   using Microsoft.AspNetCore.Identity;
 
   public class IeemdbRole : IdentityRole<Guid>, IEntity<Guid>, ITimestamped
     {
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

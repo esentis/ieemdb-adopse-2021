@@ -2,6 +2,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 {
   using System.Collections.Generic;
   using System.Linq;
+  using System.Threading;
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
@@ -9,7 +10,10 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Models.Dto;
+  using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
+  using Kritikos.Extensions.Linq;
+  using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Mvc;
@@ -26,63 +30,55 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// Returns all genres. You can pass parameters to handle page and result items.
-    /// Defaults to 20 items per page.
+    /// Returns all Genres.
     /// </summary>
-    /// <param name="itemsPerPage"></param>
-    /// <param name="page"></param>
-    /// <returns></returns>
-    [HttpGet("")]
-    public async Task<ActionResult<List<GenreDto>>> GetGenres(int itemsPerPage = 20, int page = 1)
+    /// <param name="criteria">Pagination criteria.</param>
+    /// <response code="200">Succesfully returns Genres.</response>
+    /// <response code="400">Page doesn't exist.</response>
+    /// <returns>List of <see cref="GenreDto"/>.</returns>
+    [HttpPost("all")]
+    public async Task<ActionResult<List<GenreDto>>> GetGenres(
+      PaginationCriteria criteria,
+      CancellationToken token = default)
     {
-      // We calculate how many items we shall skip to get next page (page offset).
-      var toSkip = itemsPerPage * (page - 1);
-
-      // We prepare the query without executing it.
       var genresQuery = Context.Genres
         .TagWith("Retrieving all genres")
         .OrderBy(x => x.Id);
 
-      // We calculate how many genres are in database.
-      var totalGenres = await genresQuery.CountAsync();
+      var totalGenres = await genresQuery.CountAsync(token);
 
-      // If page provided doesn't exist we return bad request.
-      if (page > ((totalGenres / itemsPerPage) + 1))
+      if (criteria.Page > ((totalGenres / criteria.ItemsPerPage) + 1))
       {
         return BadRequest("Page doesn't exist");
       }
 
-      // We create the paged query request.
-      var pagedGenres = await genresQuery
-        .Skip(toSkip)
-        .Take(itemsPerPage)
-        .ToListAsync();
+      var pagedGenres = await genresQuery.Slice(criteria.Page, criteria.ItemsPerPage)
+        .Project<Genre, GenreDto>(Mapper)
+        .ToListAsync(token);
 
-      // We create the result, which is paged.
       var result = new PagedResult<GenreDto>
       {
-        Results = pagedGenres.Select(x => Mapper.Map<Genre, GenreDto>(x)).ToList(),
-        Page = page,
-        TotalPages = (totalGenres / itemsPerPage) + 1,
+        Results = pagedGenres,
+        Page = criteria.Page,
+        TotalPages = (totalGenres / criteria.ItemsPerPage) + 1,
         TotalElements = totalGenres,
       };
 
-      // We return OK and the paged results;
       return Ok(result);
     }
 
     /// <summary>
-    /// Returns an genre provided an ID.
+    /// Returns a single Genre.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+    /// <param name="id">Genre's unique ID.</param>
+    /// <response code="200">Succesfully gets a Genre.</response>
+    /// <response code="404">Genre not found.</response>
+    /// <returns>Single <see cref="GenreDto"/>.</returns>
     [HttpGet("{id}")]
-    public ActionResult<GenreDto> GetGenre(long id)
+    public async Task<ActionResult<GenreDto>> GetGenre(long id, CancellationToken token = default)
     {
-      // Returns the first genre found with the spcefic ID. If not found, the result is null.
-      var genre = Context.Genres.Where(x => x.Id == id).SingleOrDefault();
+      var genre = await Context.Genres.Where(x => x.Id == id).SingleOrDefaultAsync(token);
 
-      // If we haven't found an genre we return a not found response.
 #pragma warning disable IDE0046 // Waiting for the new C# version
       if (genre == null)
 #pragma warning restore IDE0046 // Convert to conditional expression
@@ -93,54 +89,49 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       Logger.LogInformation(LogTemplates.RequestEntity, nameof(Genre), id);
 
-      // Everything went ok, we map the found genre to a dto and return it to client.
       return Ok(Mapper.Map<Genre, GenreDto>(genre));
     }
 
     /// <summary>
-    /// Adds an genre provided the necessary information.
+    /// Adds a Genre.
     /// </summary>
-    /// <param name="dto"></param>
-    /// <returns></returns>
+    /// <param name="dto">Genre information.</param>
+    /// <response code="201">Succesfully created.</response>
+    /// <returns>Created <see cref="GenreDto"/>.</returns>
     [HttpPost("")]
-    public async Task<ActionResult<GenreDto>> AddGenre([FromBody] AddGenreDto dto)
+    public async Task<ActionResult<GenreDto>> AddGenre(
+      [FromBody] AddGenreDto dto,
+      CancellationToken token = default)
     {
-      // We map the provided genre dto to an actual Genre model.
       var genre = Mapper.Map<AddGenreDto, Genre>(dto);
 
-      // We add the genre in the database.
       Context.Genres.Add(genre);
 
-      // And we save it
-      await Context.SaveChangesAsync();
+      await Context.SaveChangesAsync(token);
       Logger.LogInformation(LogTemplates.CreatedEntity, nameof(Genre), genre);
 
-      // We return the url where the entity was created.
       return CreatedAtAction(nameof(GetGenre), new { id = genre.Id }, Mapper.Map<Genre, GenreDto>(genre));
     }
 
     /// <summary>
-    /// We delete a user provided an ID.
+    /// Deletes a Genre.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+    /// <response code="204">Successfully deleted.</response>
+    /// <response code="404">Genre not found.</response>
+    /// <param name="id">Genre's unique ID.</param>
     [HttpDelete("")]
-    public async Task<ActionResult> DeleteGenre(int id)
+    public async Task<ActionResult> DeleteGenre(int id, CancellationToken token = default)
     {
-      // We search for the genre if it exists in our db.
-      var genre = Context.Genres.Where(x => x.Id == id).SingleOrDefault();
+      var genre =await Context.Genres.Where(x => x.Id == id).SingleOrDefaultAsync(token);
 
-      // If not, we return a not found response.
-      if (genre == null)
+      if (genre == null || genre.IsDeleted)
       {
         Logger.LogWarning(LogTemplates.NotFound, nameof(Genre), id);
         return NotFound("No genre found in the database");
       }
 
-      // We remove the genre if there is one.
-      Context.Genres.Remove(genre);
+      genre.IsDeleted = true;
 
-      // We save the changes in our db.
       await Context.SaveChangesAsync();
       Logger.LogInformation(LogTemplates.Deleted, nameof(Genre), id);
 
@@ -149,32 +140,29 @@ namespace Esentis.Ieemdb.Web.Controllers
     }
 
     /// <summary>
-    /// We update an Genre provided all the necessary information. Id is required.
+    /// Updates a Genre.
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="dto"></param>
-    /// <returns></returns>
+    /// <param name="id">Genre's unique ID.</param>
+    /// <param name="dto">Genre's information to be updated.</param>
+    /// <response code="200">Succesfully updated.</response>
+    /// <response code="404">Genre not found.</response>
+    /// <returns>Updated <see cref="GenreDto"/>.</returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult<GenreDto>> UpdateGenre(int id, AddGenreDto dto)
+    public async Task<ActionResult<GenreDto>> UpdateGenre(int id, AddGenreDto dto, CancellationToken token = default)
     {
-      // We search for the genre to update
-      var genre = Context.Genres.Where(x => x.Id == id).SingleOrDefault();
+      var genre = await Context.Genres.Where(x => x.Id == id).SingleOrDefaultAsync(token);
 
-      // If there is not genre found we return a not found response.
       if (genre == null)
       {
         Logger.LogWarning(LogTemplates.NotFound, nameof(Genre), id);
         return NotFound($"No {nameof(Genre)} with Id {id} found in database");
       }
 
-      // Otherwise, we expicitly update the found genre with newer values.
       genre.Name = dto.Name;
 
-      // And we just save the changes to commit on previous updates.
       await Context.SaveChangesAsync();
       Logger.LogInformation(LogTemplates.Updated, nameof(Genre), genre);
 
-      // We map the actual Genre entity to a dto and return the updated genre to the client.
       return Ok(Mapper.Map<Genre, GenreDto>(genre));
     }
   }

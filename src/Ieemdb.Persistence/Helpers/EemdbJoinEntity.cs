@@ -2,7 +2,7 @@ namespace Esentis.Ieemdb.Persistence.Helpers
 {
   using System;
 
-  using Kritikos.Configuration.Persistence.Abstractions;
+  using Kritikos.Configuration.Persistence.Contracts.Behavioral;
 
   public abstract class EmdbKeylessEntity : IAuditable<Guid>, ITimestamped
   {
@@ -18,10 +18,10 @@ namespace Esentis.Ieemdb.Persistence.Helpers
     #region Implementation of ITimestamped
 
     /// <inheritdoc />
-    public DateTimeOffset CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     /// <inheritdoc />
-    public DateTimeOffset UpdatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
     #endregion
   }

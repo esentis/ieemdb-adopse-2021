@@ -1,15 +1,12 @@
 namespace Esentis.Ieemdb.Persistence.Models
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence.Abstractions;
   using Esentis.Ieemdb.Persistence.Helpers;
 
-  public class Country : EemdbEntity<long>, ISearchable
+  using Kritikos.Configuration.Persistence.Contracts.Behavioral;
+
+  public class Country : EemdbEntity<long>, ISearchable, ISoftDeletable
   {
     private string cname = string.Empty;
 
@@ -23,6 +20,10 @@ namespace Esentis.Ieemdb.Persistence.Models
       }
     }
 
+    public bool IsDeleted { get; set; }
+
     public string NormalizedSearch { get; private set; }
+
+    public string Iso { get; set; }
   }
 }
