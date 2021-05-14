@@ -1,6 +1,5 @@
 namespace Esentis.Ieemdb.Web.Controllers
 {
-  using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Threading;
@@ -97,16 +96,8 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Select(x => x.Id)
         .ToListAsync(token);
 
-      var favoriteMovies = await Context.Movies.Include(x => x.MovieActors)
-        .ThenInclude(x => x.Actor)
-        .Include(x => x.MovieDirectors)
-        .ThenInclude(x => x.Director)
-        .Include(x => x.MovieWriters)
-        .ThenInclude(x => x.Writer)
-        .Include(x => x.MovieGenres)
-        .ThenInclude(x => x.Genre)
-        .Include(x => x.MovieCountries)
-        .ThenInclude(x => x.Country)
+      var favoriteMovies = await Context.Movies.Include(x => x.People)
+        .ThenInclude(x => x.Person)
         .Where(mv => favoritedMoviesIds.Contains(mv.Id))
         .Project<Movie, MovieDto>(Mapper, "complete")
         .ToListAsync(token);
@@ -145,6 +136,29 @@ namespace Esentis.Ieemdb.Web.Controllers
       await Context.SaveChangesAsync();
 
       return NoContent();
+    }
+
+    /// <summary>
+    /// Checks if a movie is favorited.
+    /// </summary>
+    /// <param name="movieId">Movie's unique ID. </param>
+    /// <response code="200">Returns True or False.</response>
+    /// <response code="400">Something went wrong. </response>
+    /// <returns>True or False.</returns>
+    [HttpPost("check")]
+    public async Task<ActionResult<FavoriteDto>> GetWatchlist(long movieId, CancellationToken token = default)
+    {
+      var userId = RetrieveUserId().ToString();
+      var user = await userManager.FindByIdAsync(userId);
+
+      if (user == null)
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var inList = await Context.Favorites.AnyAsync(x => x.Movie.Id == movieId && x.User.Id == user.Id, token);
+
+      return Ok(inList);
     }
   }
 }

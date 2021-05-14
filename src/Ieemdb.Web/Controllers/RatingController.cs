@@ -2,10 +2,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 {
   using System;
   using System.Collections.Generic;
-  using System.ComponentModel.DataAnnotations;
   using System.Linq;
-  using System.Net;
-  using System.Security.Claims;
   using System.Threading;
   using System.Threading.Tasks;
 

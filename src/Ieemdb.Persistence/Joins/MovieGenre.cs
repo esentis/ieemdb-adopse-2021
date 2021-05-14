@@ -1,6 +1,5 @@
 namespace Esentis.Ieemdb.Persistence.Joins
 {
-  using System;
 
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Models;

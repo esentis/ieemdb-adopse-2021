@@ -1,16 +1,10 @@
 namespace Esentis.Ieemdb.Persistence.Models
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Web.Models.Enums;
 
   using Kritikos.Configuration.Persistence.Contracts.Behavioral;
-
-  using Microsoft.Extensions.Hosting;
 
   public class ServiceBatchingProgress : IEntity<long>, ICreateTimestamped
   {

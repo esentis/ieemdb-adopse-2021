@@ -30,7 +30,7 @@ function MovieView() {
        
     return (
         <Col className='column-right-MovieView'>
-        {!loading? <><div className='MovieViewPoster'><MovieViewPoster key={items.id} id={items.id} title={items.title} poster={items.posterUrl} releaseDate={items.releaseDate} genres={items.genres} rating={items.rating}/></div>
+        {!loading? <><div className='MovieViewPoster'><MovieViewPoster key={items.id} id={items.id} title={items.title} poster={items.posterUrl} releaseDate={items.releaseDate} genres={items.genres} rating={items.averageRating}/></div>
             <div className='splitScreen'>
                 <div className='MovieViewSynopsis'><MovieViewSynopsis key={items.id} id={items.id} overview={items.plot} actors={items.actors} writers={items.writers} directors={items.directors} countryOrigin={items.countries} duration={items.duration}/></div>
                 <div className='MovieViewTrailer'><MovieViewTrailer id={items.id} trailer={items.trailerUrl}/></div>

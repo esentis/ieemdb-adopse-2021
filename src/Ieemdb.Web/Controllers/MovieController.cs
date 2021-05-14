@@ -2,16 +2,9 @@ namespace Esentis.Ieemdb.Web.Controllers
 {
   using System;
   using System.Collections.Generic;
-  using System.ComponentModel.DataAnnotations;
   using System.Linq;
   using System.Threading;
   using System.Threading.Tasks;
-
-  using AutoMapper.QueryableExtensions;
-
-  using Bogus;
-
-  using EllipticCurve.Utils;
 
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;
@@ -20,14 +13,13 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
   using Esentis.Ieemdb.Web.Models.Dto;
+  using Esentis.Ieemdb.Web.Models.Enums;
   using Esentis.Ieemdb.Web.Models.SearchCriteria;
 
   using Kritikos.Extensions.Linq;
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
-  using Microsoft.AspNetCore.Authorization;
-  using Microsoft.AspNetCore.Cors;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
@@ -50,24 +42,20 @@ namespace Esentis.Ieemdb.Web.Controllers
     public async Task<ActionResult<MovieDto>> GetMovie(long id, CancellationToken token = default)
     {
       var movie = await Context.Movies
-        .Include(x => x.MovieActors)
-        .ThenInclude(x => x.Actor)
-        .Include(x => x.MovieDirectors)
-        .ThenInclude(x => x.Director)
-        .Include(x => x.MovieWriters)
-        .ThenInclude(x => x.Writer)
+        .Include(x => x.People)
+        .ThenInclude(x => x.Person)
         .Include(x => x.MovieGenres)
         .ThenInclude(x => x.Genre)
         .Include(x => x.MovieCountries)
         .ThenInclude(x => x.Country)
-        .SingleOrDefaultAsync(m => m.Id == id,CancellationToken.None);
+        .SingleOrDefaultAsync(m => m.Id == id, CancellationToken.None);
 
       if (movie == null)
       {
         return NotFound("Movie not found");
       }
 
-      return Ok(Mapper.Map<Movie,MovieDto>(movie,"complete"));
+      return Ok(Mapper.Map<Movie, MovieDto>(movie, "complete"));
     }
 
     /// <summary>
@@ -102,16 +90,16 @@ namespace Esentis.Ieemdb.Web.Controllers
           x => x.ReleaseDate <= criteria.ToYear)
         .WhereIf(
           criteria.Actor != null,
-          x => Context.MovieActors.Any(a =>
-            a.Actor.NormalizedFullName.Contains(criteria.Actor!.NormalizeSearch()) && x.Id == a.Movie.Id))
+          x => Context.MoviePeople.Any(a =>
+            a.Person.NormalizedFullName.Contains(criteria.Actor!.NormalizeSearch()) && x.Id == a.Movie.Id))
         .WhereIf(
           criteria.Director != null,
-          x => Context.MovieDirectors.Any(a =>
-            a.Director.NormalizedFullName.Contains(criteria.Director!.NormalizeSearch()) && x.Id == a.Movie.Id))
+          x => Context.MoviePeople.Any(a =>
+            a.Person.NormalizedFullName.Contains(criteria.Director!.NormalizeSearch()) && x.Id == a.Movie.Id))
         .WhereIf(
           criteria.Writer != null,
-          x => Context.MovieWriters.Any(a =>
-            a.Writer.NormalizedFullName.Contains(criteria.Writer!.NormalizeSearch()) && x.Id == a.Movie.Id))
+          x => Context.MoviePeople.Any(a =>
+            a.Person.NormalizedFullName.Contains(criteria.Writer!.NormalizeSearch()) && x.Id == a.Movie.Id))
         .WhereIf(
           criteria.MinRating != null,
           x => Context.Ratings.Any(r => r.Rate >= criteria.MinRating && r.Movie.Id == x.Id))
@@ -138,10 +126,10 @@ namespace Esentis.Ieemdb.Web.Controllers
       var matchingMovies = await query.CountAsync(token);
 
       var slice = await query.Slice(criteria.Page, criteria.ItemsPerPage)
-        .Project<Movie, MovieDto>(Mapper, "complete")
+        .Project<Movie, MovieMinimalDto>(Mapper)
         .ToListAsync(token);
 
-      PagedResult<MovieDto> results = new()
+      PagedResult<MovieMinimalDto> results = new()
       {
         Page = criteria.Page,
         Results = slice,
@@ -175,11 +163,17 @@ namespace Esentis.Ieemdb.Web.Controllers
       var screenshotUrls = dto.ScreenshotUrls.Distinct().ToList();
       var countryIds = dto.CountryIds.Distinct().OrderBy(x => x).ToList();
 
-      var actors = await Context.Actors.Where(x => actorIds.Contains(x.Id)).ToListAsync();
-      var genres = await Context.Genres.Where(x => genreIds.Contains(x.Id)).ToListAsync();
-      var directors = await Context.Directors.Where(x => directorIds.Contains(x.Id)).ToListAsync();
-      var writers = await Context.Writers.Where(x => writerIds.Contains(x.Id)).ToListAsync();
       var countries = await Context.Countries.Where(x => countryIds.Contains(x.Id)).ToListAsync();
+      var genres = await Context.Genres.Where(x => genreIds.Contains(x.Id)).ToListAsync();
+      var actors = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Acting)
+        .Where(x => actorIds.Contains(x.Id))
+        .ToListAsync();
+      var directors = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Directing)
+        .Where(x => directorIds.Contains(x.Id))
+        .ToListAsync();
+      var writers = await Context.People.Where(p => p.KnownFor == DepartmentEnums.Writing)
+        .Where(x => writerIds.Contains(x.Id))
+        .ToListAsync();
 
       var missingDirectors = directorIds.Except(directors.Select(a => a.Id)).ToList();
       var missingActors = actorIds.Except(actors.Select(a => a.Id)).ToList();
@@ -195,19 +189,19 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       if (missingActors.Count != 0)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Actor), missingActors);
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), missingActors);
         return NotFound($"Could not find actors with ids {string.Join(", ", missingActors)}");
       }
 
       if (missingDirectors.Count != 0)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Director), missingDirectors);
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), missingDirectors);
         return NotFound($"Could not find directors with ids {string.Join(", ", missingDirectors)}");
       }
 
       if (missingWriters.Count != 0)
       {
-        Logger.LogWarning(LogTemplates.NotFound, nameof(Writer), missingWriters);
+        Logger.LogWarning(LogTemplates.NotFound, nameof(Person), missingWriters);
         return NotFound($"Could not find writers with ids {string.Join(", ", missingWriters)}");
       }
 
@@ -223,24 +217,23 @@ namespace Esentis.Ieemdb.Web.Controllers
         Featured = false,
         Duration = TimeSpan.FromMinutes(dto.DurationInMinutes),
         Plot = dto.Plot,
-        TrailerUrl = dto.TrailerUrl,
         ReleaseDate = dto.ReleaseDate,
         Title = dto.Title,
       };
 
-      var movieActors = actors.Select(x => new MovieActor { Actor = x, Movie = movie }).ToList();
-      var movieDirectors = directors.Select(x => new MovieDirector { Director = x, Movie = movie }).ToList();
-      var movieWriters = writers.Select(x => new MovieWriter { Writer = x, Movie = movie }).ToList();
+      var movieActors = actors.Select(x => new MoviePerson { Person = x, Movie = movie }).ToList();
+      var movieDirectors = directors.Select(x => new MoviePerson { Person = x, Movie = movie }).ToList();
+      var movieWriters = writers.Select(x => new MoviePerson { Person = x, Movie = movie }).ToList();
       var movieGenres = genres.Select(x => new MovieGenre { Genre = x, Movie = movie }).ToList();
       var movieCountries = countries.Select(x => new MovieCountry { Country = x, Movie = movie }).ToList();
-      var screenshots = screenshotUrls.Select(x => new Screenshot { Movie = movie, Url = x }).ToList();
+      var screenshots = screenshotUrls.Select(x => new Image { Movie = movie, Url = x.ToString() }).ToList();
 
-      Context.MovieActors.AddRange(movieActors);
-      Context.MovieDirectors.AddRange(movieDirectors);
-      Context.MovieWriters.AddRange(movieWriters);
+      Context.MoviePeople.AddRange(movieActors);
+      Context.MoviePeople.AddRange(movieDirectors);
+      Context.MoviePeople.AddRange(movieWriters);
       Context.MovieGenres.AddRange(movieGenres);
       Context.MovieCountries.AddRange(movieCountries);
-      Context.Screenshots.AddRange(screenshots);
+      Context.Images.AddRange(screenshots);
       Context.Movies.Add(movie);
 
       await Context.SaveChangesAsync();
@@ -268,7 +261,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       Mapper.Map(movieDto, movie);
       await Context.SaveChangesAsync();
 
-      var dto = Mapper.Map<Movie, MovieDto>(movie);
+      var dto = Mapper.Map<Movie, MovieMinimalDto>(movie);
 
       return Ok(dto);
     }
@@ -295,7 +288,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       await Context.SaveChangesAsync(cancellationToken);
 
-      return Ok(Mapper.Map<Movie, MovieDto>(movie));
+      return Ok(Mapper.Map<Movie, MovieMinimalDto>(movie));
     }
 
     /// <summary>
@@ -334,18 +327,9 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Select(x => x.Movie.Id)
         .ToListAsync(cancellationToken);
 
-      var topMovies = await Context.Movies.Include(x => x.MovieActors)
-        .ThenInclude(x => x.Actor)
-        .Include(x => x.MovieDirectors)
-        .ThenInclude(x => x.Director)
-        .Include(x => x.MovieWriters)
-        .ThenInclude(x => x.Writer)
-        .Include(x => x.MovieGenres)
-        .ThenInclude(x => x.Genre)
-        .Include(x => x.MovieCountries)
-        .ThenInclude(x => x.Country)
-        .Where(x => topRatedMovieIds.Contains(x.Id))
-        .Project<Movie, MovieDto>(Mapper, "complete")
+      var topMovies = await Context.Movies.Include(x => x.People)
+        .ThenInclude(x => x.Person)
+        .Project<Movie, MovieMinimalDto>(Mapper)
         .ToListAsync(cancellationToken);
 
       return Ok(topMovies);
@@ -365,26 +349,18 @@ namespace Esentis.Ieemdb.Web.Controllers
       var monthAgo = DateTimeOffset.Now.AddDays(-30);
       var now = DateTimeOffset.Now;
 
-      var newMoviesQuery = Context.Movies.Include(x => x.MovieActors)
-        .ThenInclude(x => x.Actor)
-        .Include(x => x.MovieDirectors)
-        .ThenInclude(x => x.Director)
-        .Include(x => x.MovieWriters)
-        .ThenInclude(x => x.Writer)
-        .Include(x => x.MovieGenres)
-        .ThenInclude(x => x.Genre)
-        .Include(x => x.MovieCountries)
-        .ThenInclude(x => x.Country)
+      var newMoviesQuery = Context.Movies.Include(x => x.People)
+        .ThenInclude(x => x.Person)
         .Where(x => (x.ReleaseDate <= now) && (x.ReleaseDate >= monthAgo))
         .OrderBy(x => x.ReleaseDate);
 
       var moviesCount = await newMoviesQuery.CountAsync(token);
 
       var slice = await newMoviesQuery.Slice(criteria.Page, criteria.ItemsPerPage)
-        .Project<Movie, MovieDto>(Mapper, "complete")
+        .Project<Movie, MovieMinimalDto>(Mapper)
         .ToListAsync(token);
 
-      PagedResult<MovieDto> results = new()
+      PagedResult<MovieMinimalDto> results = new()
       {
         Page = criteria.Page,
         Results = slice,
@@ -408,26 +384,18 @@ namespace Esentis.Ieemdb.Web.Controllers
       var weekAgo = DateTimeOffset.Now.AddDays(-7);
       var now = DateTimeOffset.Now;
 
-      var latestMoviesQuery = Context.Movies.Include(x => x.MovieActors)
-        .ThenInclude(x => x.Actor)
-        .Include(x => x.MovieDirectors)
-        .ThenInclude(x => x.Director)
-        .Include(x => x.MovieWriters)
-        .ThenInclude(x => x.Writer)
-        .Include(x => x.MovieGenres)
-        .ThenInclude(x => x.Genre)
-        .Include(x => x.MovieCountries)
-        .ThenInclude(x => x.Country)
+      var latestMoviesQuery = Context.Movies.Include(x => x.People)
+        .ThenInclude(x => x.Person)
         .Where(x => (x.CreatedAt <= now) && (x.CreatedAt >= weekAgo))
         .OrderBy(x => x.CreatedAt);
 
       var moviesCount = await latestMoviesQuery.CountAsync(token);
 
       var slice = await latestMoviesQuery.Slice(criteria.Page, criteria.ItemsPerPage)
-        .Project<Movie, MovieDto>(Mapper, "complete")
+        .Project<Movie, MovieMinimalDto>(Mapper)
         .ToListAsync(token);
 
-      PagedResult<MovieDto> results = new()
+      PagedResult<MovieMinimalDto> results = new()
       {
         Page = criteria.Page,
         Results = slice,
@@ -458,6 +426,54 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       await Context.SaveChangesAsync(token);
       return NoContent();
+    }
+
+    /// <summary>
+    /// Returns the images associated with the movie.
+    /// </summary>
+    /// <param name="id">Movie's unique ID.</param>
+    /// <response code="204">Succesfully deleted.</response>
+    /// <response code="404">Images not found.</response>
+    /// <returns>Returns a list of <see cref="ImageDto"/></returns>
+    [HttpGet("{id}/images")]
+    public async Task<ActionResult<List<ImageDto>>> GetImages(long id, CancellationToken token = default)
+    {
+      var images = await Context.Images.Include(i => i.Movie)
+        .Where(i => i.Movie.Id == id)
+        .Project<Image, ImageDto>(Mapper)
+        .ToListAsync(token);
+
+      if (images == null)
+      {
+        return NotFound("Images not found");
+      }
+
+      await Context.SaveChangesAsync(token);
+      return Ok(images);
+    }
+
+    /// <summary>
+    /// Returns the videos associated with the movie.
+    /// </summary>
+    /// <param name="id">Movie's unique ID.</param>
+    /// <response code="204">Returns a list of videos.</response>
+    /// <response code="404">Videos not found.</response>
+    /// <returns>Returns a list of <see cref="VideoDto"/></returns>
+    [HttpGet("{id}/videos")]
+    public async Task<ActionResult<List<VideoDto>>> GetVideos(long id, CancellationToken token = default)
+    {
+      var videos = await Context.Videos.Include(i => i.Movie)
+        .Where(i => i.Movie.Id == id)
+        .Project<Video, VideoDto>(Mapper)
+        .ToListAsync(token);
+
+      if (videos == null)
+      {
+        return NotFound("Movie not found");
+      }
+
+      await Context.SaveChangesAsync(token);
+      return Ok(videos);
     }
   }
 }

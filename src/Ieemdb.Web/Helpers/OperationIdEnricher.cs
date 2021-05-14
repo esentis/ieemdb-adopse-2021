@@ -1,10 +1,6 @@
 namespace Esentis.Ieemdb.Web.Helpers
 {
-  using System;
-  using System.Collections.Generic;
   using System.Diagnostics;
-  using System.Linq;
-  using System.Threading.Tasks;
 
   using Serilog.Core;
   using Serilog.Events;
