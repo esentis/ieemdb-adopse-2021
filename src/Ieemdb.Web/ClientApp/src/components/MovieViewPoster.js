@@ -83,9 +83,17 @@ function MovieViewPoster(props) {
     }
     function popupReview(){
         setopre(current => !current);
+        findRatings();
     }
     function backButton(){
         history.goBack();
+    }
+    async function findRatings() {
+        await axios({
+          method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`, params: {
+            "id": props.id
+          }
+        }).then(res => console.log(res.data))
     }
     
     function CheckIfLogin() {
@@ -131,22 +139,8 @@ function MovieViewPoster(props) {
                             </div>
                         </div>
                         <hr className="line"/>
-                        <div id="review">
-                            <div id="review1">
-                                <p className="revWriter">Fanis Georgiou</p>
-                                <div className="revStars2">
-                                    <p className="rating">1/5</p>
-                                    <ReactStars {...{value: 5, size: 30, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                                </div>
-                            </div>
-                            <div id="review2">
-                                <p className="revComment">I've liked Brie Larson in other films, but she showed ZERO range in this. When your main character in a superhero movie is unwatchable, you already have a problem. In addition, Captain Marvel has no weaknesses, which kills the tension immediately. There is no point at which you feel she is in any danger of losing, or any danger at all for that matter.
-                                                        It's an OK origin story, but it makes no sense as to WHY she's supposedly so powerful. The cat was good.</p>
-                            </div>
-                            </div>
-                            <CheckIfLogin/>
+                        
+                        <CheckIfLogin/>
                     </div>
                 </div>
             </Modal>
