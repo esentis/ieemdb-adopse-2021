@@ -79,17 +79,17 @@ function MovieViewPoster(props){
     );
     const rating = props.rating;
     if (onLoad == true) {
-        setStoreFavorite(props.checkWatchList);
+        setStoreFavorite(props.checkFavorite);
         if (localStorage.getItem('token') == null) {
-            setaddFavoriteButtonColor({background: 'rgb(59, 94, 189)'});
+            setaddFavoriteButtonColor({background: 'null'});
         }
         else {
           console.log(storeFavorite);
-          if (storeFavorite == true || props.checkWatchList == true) {
-            setaddFavoriteButtonColor({background: 'red'});
+          if (storeFavorite == true || props.checkFavorite == true) {
+            setaddFavoriteButtonColor({background: 'white'});
           }
           else if (storeFavorite == false){
-            setaddFavoriteButtonColor({background: 'rgb(59, 94, 189)'});
+            setaddFavoriteButtonColor({background: 'null'});
           }
         }
         setOnLoad(false);
@@ -106,6 +106,7 @@ function MovieViewPoster(props){
               }
             }).then()
             setStoreFavorite(false);
+            setaddFavoriteButtonColor({background: 'null'});
           }
           else if (storeFavorite == false) {
             await axios({
@@ -114,6 +115,7 @@ function MovieViewPoster(props){
               }
             }).then()
             setStoreFavorite(true);
+            setaddFavoriteButtonColor({background: 'white'});
           }
         }
     }
