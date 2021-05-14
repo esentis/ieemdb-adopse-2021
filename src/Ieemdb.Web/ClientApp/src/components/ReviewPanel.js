@@ -3,7 +3,7 @@ import '../Styles/MovieViewPoster.css';
 import ReactStars from "react-rating-stars-component";
 import axios from 'axios';
 
-function ReviewPanel({movieId}) {
+function ReviewPanel(props) {
   const [starrev, setstarrev] = useState('0');
   const [ratingText, setRatingText] = useState('');
   
@@ -13,19 +13,7 @@ function ReviewPanel({movieId}) {
     console.log(ratingText);
   }
 
-  async function AddUserRating() {
-    if (starrev == "0") {
-      window.alert("You need to add star rating");
-    }
-    else {
-      console.log(movieId);
-      await axios({
-        method:'post', url:`https://${window.location.host}/api/rating?movieId=${movieId}&rate=${starrev}&review=${ratingText}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
-      }).then(res => console.log(res))
-      setstarrev("0");
-      setRatingText("");
-    }
-  }
+  
   return (
     <div id="add_review">
       <div className="col1Rev">
@@ -44,7 +32,7 @@ function ReviewPanel({movieId}) {
           }} />
           <p className="rating">{starrev}/5</p>
         </div>
-        <input className="reviewSubmit" type="submit" value="Submit" onClick={AddUserRating}></input>
+        <input className="reviewSubmit" type="submit" value="Submit" onClick={()=>props.onClick(starrev,ratingText)}></input>
       </div>
     </div>
   );

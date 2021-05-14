@@ -71,6 +71,7 @@ function MovieViewPoster(props) {
     const [item, setItem] = useState([]);
     const [onLoad, setOnLoad] = useState(true);
     const [reviewCheck,setReviewCheck]=useState(false);
+    const [userReview,setUserReview]=useState();
     
     const history=useHistory();
     function HandleGenres(id,name){
@@ -96,19 +97,34 @@ function MovieViewPoster(props) {
     async function FindRatings() {
       await axios({
         method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`
-      }).then(res => setItem(res.data))
+      }).then(function(res){setItem(res.data)})
 
     }
+
+    async function AddUserRating(rate,review) {
+        if (rate == "0") {
+          window.alert("You need to add star rating");
+        }
+        else {
+          await axios({
+            method:'post', url:`https://${window.location.host}/api/rating?movieId=${props.id}&rate=${rate}&review=${review}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
+          }).then(function(res){
+              const newItem=[...item,res.data];
+                setItem(newItem);
+                setReviewCheck(true);
+          })
+      }}
+
 
     async function checkIfReviewed(){
         await axios({
           method:'post', url:`https://${window.location.host}/api/rating/check?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
-        }).then(function(res){ if(res.status === 200){
+        }).then(function(res){ 
           setReviewCheck(true);
-        }
+          setUserReview(res.data);
+          console.log(res.data);
         }
         )
-  
       }
       if (onLoad == true) {
         checkIfReviewed();
@@ -123,7 +139,7 @@ function MovieViewPoster(props) {
       else{
           if(reviewCheck){
             return <button onClick={deleteComment}>Remove your rating</button>
-          }else{return <ReviewPanel movieId={props.id}/>}
+          }else{return <ReviewPanel movieId={props.id} onClick={AddUserRating}/>}
         
       }
     }
@@ -132,16 +148,9 @@ function MovieViewPoster(props) {
         await axios({
             method:'delete', url:`https://${window.location.host}/api/rating/delete?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
           }).then(res => console.log(res))
-        const newItem=item.filter((i)=>item.username!==i.username);
+        const newItem=item.filter((i)=>userReview.username!==i.username);
         setItem(newItem);
-
-        // async function removeFeatured(arg){
-        //     const newFeatured=featured.filter((movie)=>arg!==movie.id)
-        //     setFeatured(newFeatured);
-        //     await axios.post(`https://localhost:5001/api/movie/unfeature?id=${arg}`)
-            
-        // }
-        
+        setReviewCheck(false);
     }
 
     console.log("Favorite:",props.checkFavorite);
