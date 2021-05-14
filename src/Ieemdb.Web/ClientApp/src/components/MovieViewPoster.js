@@ -9,15 +9,15 @@ import Moment from "react-moment";
 import ReviewPanel from './ReviewPanel';
 import axios from 'axios';
 import UserReviews from './UserReviews';
-
+import {Link} from 'react-router-dom';
 function RatingStars(rating){
-    return (<div id="divRate">
-                    <p className="rating">{rating.stars}/10</p>
-                    <ReactStars {...{value: rating.stars, size: 40, count: 10, color: "black", activeColor: "yellow", isHalf: true, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-        </div>
-    );
+  return (<div id="divRate">
+    <p className="rating">{rating.stars}/10</p>
+    <ReactStars {...{value: rating.stars, size: 40, count: 10, color: "black", activeColor: "yellow", isHalf: true, edit: false,
+      emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
+      filledIcon: <i className="fa fa-star" />}} />
+    </div>
+  );
 }
 function MovieViewPoster(props) {
     const [opre, setopre] = useState(false);
@@ -25,7 +25,6 @@ function MovieViewPoster(props) {
     const [onLoad, setOnLoad] = useState(true);
     const [reviewCheck,setReviewCheck]=useState(false);
     const [userReview,setUserReview]=useState();
-    
     const history=useHistory();
     function HandleGenres(id,name){
         history.push('/Genre/GenreValue='+name+'/Id='+id);
@@ -51,24 +50,21 @@ function MovieViewPoster(props) {
       await axios({
         method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`
       }).then(function(res){setItem(res.data)})
-
     }
-
     async function AddUserRating(rate,review) {
-        if (rate == "0") {
-          window.alert("You need to add star rating");
-        }
-        else {
-          await axios({
-            method:'post', url:`https://${window.location.host}/api/rating?movieId=${props.id}&rate=${rate}&review=${review}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
-          }).then(function(res){
-              const newItem=[...item,res.data];
-                setItem(newItem);
-                setReviewCheck(true);
-          })
-      }}
-
-
+      if (rate == "0") {
+        window.alert("You need to add star rating");
+      }
+      else {
+        await axios({
+          method:'post', url:`https://${window.location.host}/api/rating?movieId=${props.id}&rate=${rate}&review=${review}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
+        }).then(function(res){
+          const newItem=[...item,res.data];
+          setItem(newItem);
+          setReviewCheck(true);
+        })
+      }
+    }
     async function checkIfReviewed(){
         await axios({
           method:'post', url:`https://${window.location.host}/api/rating/check?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
@@ -76,36 +72,44 @@ function MovieViewPoster(props) {
           setReviewCheck(true);
           setUserReview(res.data);
           console.log(res.data);
-        }
-        )
+        })
       }
       if (onLoad == true) {
         checkIfReviewed();
         setOnLoad(false);
       }
-
     function CheckIfLogin() {
-      console.log(localStorage.getItem('token'));
       if (localStorage.getItem('token') == null) {
-        return <p>You need to Login in order to review</p>
+        return (
+          <div id="add_review">
+            <div className="col1Rev">
+              <p className="addRevTitle">Add your review</p>
+              <p className="revComment">You need to <Link className='toLogin' to='/Login'>Login</Link> in order to review</p>
+            </div>
+          </div>
+        )
       }
       else{
-          if(reviewCheck){
-            return <button onClick={deleteComment}>Remove your rating</button>
-          }else{return <ReviewPanel movieId={props.id} onClick={AddUserRating}/>}
-        
+        if(reviewCheck){
+          return (
+            <div id="removePanel">
+              <button className="removeRatingButton" onClick={deleteComment}>Remove your rating</button>
+            </div>
+          ) 
+        }
+        else{
+          return <ReviewPanel movieId={props.id} onClick={AddUserRating}/>
+        }
       }
     }
-
     async function deleteComment(){
-        await axios({
-            method:'delete', url:`https://${window.location.host}/api/rating/delete?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
-          }).then(res => console.log(res))
-        const newItem=item.filter((i)=>userReview.username!==i.username);
-        setItem(newItem);
-        setReviewCheck(false);
+      await axios({
+        method:'delete', url:`https://${window.location.host}/api/rating/delete?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
+      }).then(res => console.log(res))
+      const newItem=item.filter((i)=>userReview.username!==i.username);
+      setItem(newItem);
+      setReviewCheck(false);
     }
-
     console.log("Favorite:",props.checkFavorite);
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
