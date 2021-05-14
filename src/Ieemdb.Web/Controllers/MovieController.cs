@@ -452,7 +452,6 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("Images not found");
       }
 
-      await Context.SaveChangesAsync(token);
       return Ok(images);
     }
 
@@ -476,8 +475,30 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("Movie not found");
       }
 
-      await Context.SaveChangesAsync(token);
       return Ok(videos);
+    }
+
+    /// <summary>
+    /// Returns all ratings associated with the movie.
+    /// </summary>
+    /// <param name="id">Movie's unique ID.</param>
+    /// <response code="204">Returns a list of ratings.</response>
+    /// <response code="404">Ratings not found.</response>
+    /// <returns>Returns a list of <see cref="RatingDto"/></returns>
+    [HttpGet("{id}/ratings")]
+    public async Task<ActionResult<List<RatingDto>>> GetRatings(long id, CancellationToken token = default)
+    {
+      var ratings = await Context.Ratings.Include(i => i.Movie)
+        .Where(i => i.Movie.Id == id)
+        .Project<Rating, RatingDto>(Mapper)
+        .ToListAsync(token);
+
+      if (ratings == null)
+      {
+        return NotFound("Movie not found");
+      }
+
+      return Ok(ratings);
     }
   }
 }
