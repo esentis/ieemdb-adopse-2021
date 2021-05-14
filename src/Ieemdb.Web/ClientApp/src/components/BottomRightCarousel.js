@@ -14,7 +14,13 @@ const responsive = {
 };
 function BottomRightCarousel() {
     const [data, setData] = useState([]);
-    showNewReleases(); // me to poy fortwnei tha deixnei ta new releases
+    const [flag, setFlag] = useState(false);
+
+    if (flag == false) {
+      showNewReleases();
+      setFlag(true);
+    }
+    
     function showNewReleases() {
       loadNewReleases();
     }
@@ -26,21 +32,22 @@ function BottomRightCarousel() {
     function showTopRated() {
       loadTopRated();
     }
+
     async function loadTopRated() {
       await axios({
         method: 'get', url: `https://${window.location.host}/api/movie/top`
-      }).then(res => setData(res.data.results))
+      }).then(res => setData(res.data))
     }
     async function loadNewReleases() {
       await axios({
-        method: 'post', url: `https://${window.location.host}/api/movie/new`, data: {
+        method: 'post', url: `https://${window.location.host}/api/movie/new`, params: {
           "page": 1 , "itemsPerPage": 20
         }
       }).then(res => setData(res.data.results))
     }
     async function loadRecentlyAdded() {
       await axios({
-        method: 'post', url: `https://${window.location.host}/api/movie/latest`, data: {
+        method: 'post', url: `https://${window.location.host}/api/movie/latest`, params: {
           "page": 1, "itemsPerPage": 20
         }
       }).then(res => setData(res.data.results))
