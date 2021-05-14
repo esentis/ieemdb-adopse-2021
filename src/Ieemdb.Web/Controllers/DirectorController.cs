@@ -141,6 +141,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     public async Task<ActionResult<PersonDto>> AddDirector([FromBody] AddPersonDto dto)
     {
       var director = Mapper.Map<AddPersonDto, Person>(dto);
+      director.KnownFor = DepartmentEnums.Directing;
 
       Context.People.Add(director);
 

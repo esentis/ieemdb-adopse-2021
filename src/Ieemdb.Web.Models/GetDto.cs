@@ -6,7 +6,7 @@ namespace Esentis.Ieemdb.Web.Models
 
   using Esentis.Ieemdb.Web.Models.Enums;
 
-  public record AddPersonDto(string FullName, DateTime BirthDate, DateTime DeathDate, string Bio,DepartmentEnums knownFor, string Image);
+  public record AddPersonDto(string FullName, DateTime BirthDate, DateTime DeathDate, string Bio, string Image);
 
   public record AddGenreDto(string Name);
 
