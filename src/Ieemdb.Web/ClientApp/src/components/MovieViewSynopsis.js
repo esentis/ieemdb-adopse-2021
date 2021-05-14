@@ -43,12 +43,13 @@ function MovieViewSynopsis(props) {
     
     if (onLoad == true) {
         setStoreWatchList(props.checkWatchList);
-
+        
         if (localStorage.getItem('token') == null) {
           setWatchListButtonText("Log in to use Watchlists");
         }
         else {
-          if (storeWatchlist == true) {
+          console.log(storeWatchlist);
+          if (storeWatchlist == true || props.checkWatchList == true) {
             setWatchListButtonText("Remove From Watchlist");
           }
           else if (storeWatchlist == false){
