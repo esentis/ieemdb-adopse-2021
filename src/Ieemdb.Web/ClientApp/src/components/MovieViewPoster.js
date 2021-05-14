@@ -8,6 +8,7 @@ import Genre from './Genre';
 import Moment from "react-moment";
 import ReviewPanel from './ReviewPanel';
 import axios from 'axios';
+import UserReviews from './UserReviews';
 
 function RatingStars(rating){
     if (rating.stars < 1){
@@ -67,6 +68,7 @@ function RatingStars(rating){
 }
 function MovieViewPoster(props) {
     const [opre, setopre] = useState(false);
+    const [item, setItem] = useState("");
     const history=useHistory();
     function HandleGenres(id,name){
         history.push('/Genre/GenreValue='+name+'/Id='+id);
@@ -83,17 +85,21 @@ function MovieViewPoster(props) {
     }
     function popupReview(){
         setopre(current => !current);
-        findRatings();
+        FindRatings();
     }
     function backButton(){
         history.goBack();
     }
-    async function findRatings() {
-        await axios({
-          method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`, params: {
-            "id": props.id
-          }
-        }).then(res => console.log(res.data))
+    async function FindRatings() {
+      await axios({
+        method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`, params: {
+          "id": props.id
+        }
+      }).then(res => setItem(res.data.map(i => <UserReviews
+        userName={i.userName}
+        reviewText={i.review}
+        ratingStars={i.rate}
+      />)))
     }
     
     function CheckIfLogin() {
@@ -139,7 +145,7 @@ function MovieViewPoster(props) {
                             </div>
                         </div>
                         <hr className="line"/>
-                        
+                        <FindRatings/>
                         <CheckIfLogin/>
                     </div>
                 </div>
