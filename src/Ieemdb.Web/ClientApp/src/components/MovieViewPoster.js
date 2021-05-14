@@ -69,7 +69,7 @@ function MovieViewPoster(props){
     const [storeFavorite, setStoreFavorite] = useState("");
     const [onLoad, setOnLoad] = useState(true);
     const history=useHistory();
-    const [addFavoriteButtonColor, setaddFavoriteButtonColor] = useState({background: 'rgb(59, 94, 189)'});
+    const [addFavoriteButtonColor, setaddFavoriteButtonColor] = useState({background: 'rgba(52, 52, 52, 0)'});
     function HandleGenres(id,name){
         history.push('/Genre/GenreValue='+name+'/Id='+id);
     }
@@ -81,7 +81,7 @@ function MovieViewPoster(props){
     if (onLoad == true) {
         setStoreFavorite(props.checkFavorite);
         if (localStorage.getItem('token') == null) {
-            setaddFavoriteButtonColor({background: 'null'});
+            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'});
         }
         else {
           console.log(storeFavorite);
@@ -89,7 +89,7 @@ function MovieViewPoster(props){
             setaddFavoriteButtonColor({background: 'white'});
           }
           else if (storeFavorite == false){
-            setaddFavoriteButtonColor({background: 'null'});
+            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'});
           }
         }
         setOnLoad(false);
@@ -106,7 +106,7 @@ function MovieViewPoster(props){
               }
             }).then()
             setStoreFavorite(false);
-            setaddFavoriteButtonColor({background: 'null'});
+            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'});
           }
           else if (storeFavorite == false) {
             await axios({
