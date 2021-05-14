@@ -68,7 +68,9 @@ function RatingStars(rating){
 }
 function MovieViewPoster(props) {
     const [opre, setopre] = useState(false);
-    const [item, setItem] = useState({ userName :"teopfasdfasdfasdfasdfadsfasdfasdfasdfasdfasdfas" ,reviewText :"fadsfadsfafadsfasdfasdfasdfasdfasdfasdfasds" ,ratingStars:4});
+    const [item, setItem] = useState([]);
+    const [onLoad, setOnLoad] = useState(true);
+    const [reviewCheck,setReviewCheck]=useState(false);
     
     const history=useHistory();
     function HandleGenres(id,name){
@@ -94,18 +96,52 @@ function MovieViewPoster(props) {
     async function FindRatings() {
       await axios({
         method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`
-      }).then(res => setItem({ userName: res.data.username, reviewText: res.data.review, ratingStars:res.data.rate  }))
+      }).then(res => setItem(res.data))
 
     }
+
+    async function checkIfReviewed(){
+        await axios({
+          method:'post', url:`https://${window.location.host}/api/rating/check?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
+        }).then(function(res){ if(res.status === 200){
+          setReviewCheck(true);
+        }
+        }
+        )
+  
+      }
+      if (onLoad == true) {
+        checkIfReviewed();
+        setOnLoad(false);
+      }
 
     function CheckIfLogin() {
       console.log(localStorage.getItem('token'));
       if (localStorage.getItem('token') == null) {
         return <p>You need to Login in order to review</p>
       }
-      else {
-        return <ReviewPanel movieId={props.id}/>
+      else{
+          if(reviewCheck){
+            return <button onClick={deleteComment}>Remove your rating</button>
+          }else{return <ReviewPanel movieId={props.id}/>}
+        
       }
+    }
+
+    async function deleteComment(){
+        await axios({
+            method:'delete', url:`https://${window.location.host}/api/rating/delete?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
+          }).then(res => console.log(res))
+        const newItem=item.filter((i)=>item.username!==i.username);
+        setItem(newItem);
+
+        // async function removeFeatured(arg){
+        //     const newFeatured=featured.filter((movie)=>arg!==movie.id)
+        //     setFeatured(newFeatured);
+        //     await axios.post(`https://localhost:5001/api/movie/unfeature?id=${arg}`)
+            
+        // }
+        
     }
 
     console.log("Favorite:",props.checkFavorite);
@@ -141,7 +177,7 @@ function MovieViewPoster(props) {
                             </div>
                         </div>
                         <hr className="line" />
-                        <UserReviews userName={"teo"} reviewText={"fdsafadsfasd"} ratingStars={"4"} />)
+                        {item.map(i=> <UserReviews userName={i.username}reviewText={i.review} ratingStars={i.rate} /> )}
                         <CheckIfLogin/>
                     </div>
                 </div>

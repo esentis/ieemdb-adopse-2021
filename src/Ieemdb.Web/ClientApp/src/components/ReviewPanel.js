@@ -3,24 +3,24 @@ import '../Styles/MovieViewPoster.css';
 import ReactStars from "react-rating-stars-component";
 import axios from 'axios';
 
-function ReviewPanel(movieId) {
+function ReviewPanel({movieId}) {
   const [starrev, setstarrev] = useState('0');
   const [ratingText, setRatingText] = useState('');
+  
 
   function handleChange(event) {
-    setRatingText({ value: event.target.value });
+    setRatingText(event.target.value);
     console.log(ratingText);
   }
 
   async function AddUserRating() {
     if (starrev == "0") {
-      window.alert("You need to add star rating and text rating");
+      window.alert("You need to add star rating");
     }
     else {
+      console.log(movieId);
       await axios({
-        method: 'post', url: `https://${window.location.host}/api/rating`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
-          "movieId": movieId, "rate": starrev, "review": ratingText
-        }
+        method:'post', url:`https://${window.location.host}/api/rating?movieId=${movieId}&rate=${starrev}&review=${ratingText}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
       }).then(res => console.log(res))
       setstarrev("0");
       setRatingText("");
