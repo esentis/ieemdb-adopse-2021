@@ -6,6 +6,9 @@ import Modal from 'react-awesome-modal';
 import ReactStars from "react-rating-stars-component";
 import Genre from './Genre';
 import Moment from "react-moment";
+import ReviewPanel from './ReviewPanel';
+import axios from 'axios';
+
 function RatingStars(rating){
     if (rating.stars < 1){
         return (<div id="divRate">
@@ -62,9 +65,8 @@ function RatingStars(rating){
         );
     }
 }
-function MovieViewPoster(props){
+function MovieViewPoster(props) {
     const [opre, setopre] = useState(false);
-    const [starrev, setstarrev] = useState('0');
     const history=useHistory();
     function HandleGenres(id,name){
         history.push('/Genre/GenreValue='+name+'/Id='+id);
@@ -85,6 +87,17 @@ function MovieViewPoster(props){
     function backButton(){
         history.goBack();
     }
+    
+    function CheckIfLogin() {
+      console.log(localStorage.getItem('token'));
+      if (localStorage.getItem('token') == null) {
+        return <p>You need to Login in order to review</p>
+      }
+      else {
+        return <ReviewPanel movieId={props.id}/>
+      }
+    }
+
     console.log("Favorite:",props.checkFavorite);
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
@@ -132,23 +145,8 @@ function MovieViewPoster(props){
                                 <p className="revComment">I've liked Brie Larson in other films, but she showed ZERO range in this. When your main character in a superhero movie is unwatchable, you already have a problem. In addition, Captain Marvel has no weaknesses, which kills the tension immediately. There is no point at which you feel she is in any danger of losing, or any danger at all for that matter.
                                                         It's an OK origin story, but it makes no sense as to WHY she's supposedly so powerful. The cat was good.</p>
                             </div>
-                        </div>
-                        <div id="add_review">
-                            <div className="col1Rev">
-                                <p className="addRevTitle">Add your review</p>
-                                <textarea className="reviewInput" type="text" id="fname" name="review" placeholder="Write your review here" multiple/>
                             </div>
-                            <div className="col2Rev">
-                                <p className="emptyRow"></p>
-                                <div className="revStars3">
-                                    <ReactStars {...{size: 30, count: 5, color: "black", activeColor: "yellow", value: 0, a11y: true, isHalf: false, 
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />, onChange: newValue => {setstarrev(`${newValue}`)}}} />
-                                    <p className="rating">{starrev}/5</p>
-                                </div>
-                                <input className="reviewSubmit" type="submit" value="Submit"></input>
-                            </div>
-                        </div>
+                            <CheckIfLogin/>
                     </div>
                 </div>
             </Modal>
