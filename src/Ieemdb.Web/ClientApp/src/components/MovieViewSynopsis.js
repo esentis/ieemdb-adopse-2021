@@ -8,7 +8,7 @@ import MovieCard from './MovieCard';
 import movies from './Movie_Dataset';
 import Moment from "react-moment";
 import axios from 'axios';
-import LoadingSpinner from './LoadingSpinner';
+import { useHistory } from 'react-router-dom';
 const responsive = {
   0: { items: 2 },
   1024: { items: 5 },
@@ -27,6 +27,7 @@ function MovieViewSynopsis(props) {
     const [watchListButtonText, setWatchListButtonText] = useState("");
     const [onLoad, setOnLoad] = useState(true);
     const [storeWatchlist, setStoreWatchList] = useState("");
+    const history = useHistory();
     
     const directors = props.directors.map((directors) =>
       <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors.fullName} </span>
@@ -59,9 +60,10 @@ function MovieViewSynopsis(props) {
         setOnLoad(false);
     }
     
-    async function onWatchlistButtonClick(){
+    async function onWatchlistButtonClick() {
+        
         if (localStorage.getItem('token') == null) {
-          //redirect sto login
+          history.push('/Login/');
         }
         else {
           if (storeWatchlist == true) {
@@ -69,7 +71,7 @@ function MovieViewSynopsis(props) {
               method: 'delete', url: `https://${window.location.host}/api/watchlist`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
                 "movieId": props.id
               }
-            }).then(res => console.log(res))
+            }).then()
             setWatchListButtonText("Add To WatchList");
             setStoreWatchList(false);
           }
@@ -78,7 +80,7 @@ function MovieViewSynopsis(props) {
               method: 'post', url: `https://${window.location.host}/api/watchlist`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
                 "movieId": props.id
               }
-            }).then(res => console.log(res))
+            }).then()
             setWatchListButtonText("Remove From Watchlist");
             setStoreWatchList(true);
           }
