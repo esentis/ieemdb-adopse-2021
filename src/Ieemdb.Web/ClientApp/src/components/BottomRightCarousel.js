@@ -28,9 +28,7 @@ function BottomRightCarousel() {
     }
     async function loadTopRated() {
       await axios({
-        method: 'get', url: `https://${window.location.host}/api/movie/top`, data: {
-          "page": 1
-        }
+        method: 'get', url: `https://${window.location.host}/api/movie/top`
       }).then(res => setData(res.data.results))
     }
     async function loadNewReleases() {
@@ -50,19 +48,11 @@ function BottomRightCarousel() {
     const items = data.map(i => <MovieCard
       id={i.id}
       Title={i.title}
-      Poster={i.posterUrl}
-      Overview={i.overview}
-      ReleaseDate={i.release_date}
-      Genres={i.genres}
-      Actors={i.actors}
-      Writers={i.writers}
-      Directors={i.directors}
-      Rating={i.rating}
-      Duration={i.duration}
-      CountryOrigin={i.countryOrigin}
-      height={"200vh"}
-      width={"140vw"} />
-    );
+      Poster={i.posterUrl ? i.posterUrl : "https://media.comicbook.com/files/img/default-movie.png"}
+      height={"250vh"}
+      width={'auto'}
+      posterClass='poster'
+      flag={false} />)
     const [activeIndex, setActiveIndex] = useState(0);
     const slidePrev = () => setActiveIndex(activeIndex - 1);
     const slideNext = () => setActiveIndex(activeIndex + 1);
