@@ -77,7 +77,7 @@ function RegisterForm() {
     <>
     <div className="backForm">
       <label className="formTitle">Create a new account</label>
-      <form className="divForm" onSubmit={handleSubmitRegister} onChange={onFormChange} autocomplete="off">
+      <form className="divForm" onSubmit={handleSubmitRegister} onChange={onFormChange} autoComplete="off">
         <label className="formText">Username</label>
         <input className="formInput" type="text" name="username" placeholder="Username" value={userName} onChange={e => setUserName(e.target.value)}/>
         <label className="formText">Email</label>

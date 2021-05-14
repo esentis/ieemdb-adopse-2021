@@ -64,7 +64,7 @@ function LoginForm() {
   return (
     <div className="backForm">
       <label className="formTitle">Login to your account</label>
-      <form className="divForm" onSubmit={handleSubmitLogin} onChange={onFormChange} autocomplete="off">
+      <form className="divForm" onSubmit={handleSubmitLogin} onChange={onFormChange} autoComplete="off">
         <label className="formText">Username</label>
         <input className="formInput" type="text" name="username" placeholder="Your username here" value={userNameLogin} onChange={e => setUserNameLogin(e.target.value)}/>
         <label className="formText">Password</label>
