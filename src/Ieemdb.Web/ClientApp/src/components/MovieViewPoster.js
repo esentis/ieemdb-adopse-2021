@@ -6,6 +6,7 @@ import Modal from 'react-awesome-modal';
 import ReactStars from "react-rating-stars-component";
 import Genre from './Genre';
 import Moment from "react-moment";
+import axios from 'axios';
 function RatingStars(rating){
     if (rating.stars < 1){
         return (<div id="divRate">
@@ -65,19 +66,56 @@ function RatingStars(rating){
 function MovieViewPoster(props){
     const [opre, setopre] = useState(false);
     const [starrev, setstarrev] = useState('0');
+    const [storeFavorite, setStoreFavorite] = useState("");
+    const [onLoad, setOnLoad] = useState(true);
     const history=useHistory();
+    const [addFavoriteButtonColor, setaddFavoriteButtonColor] = useState({background: 'rgb(59, 94, 189)'});
     function HandleGenres(id,name){
         history.push('/Genre/GenreValue='+name+'/Id='+id);
     }
-    /*const id=props.id;*/
     const releaseDate = <Moment format="YYYY">{props.releaseDate}</Moment>
     const genres = props.genres.map((genre) =>
         <Genre name={genre.name} id={genre.id} onClick={HandleGenres}/>
     );
     const rating = props.rating;
-    function onFavButtonClick(){
-        //Otan kanei klik sto ADD FAVORITE button
-        console.log("Click on ADD FAVORITE button");
+    if (onLoad == true) {
+        setStoreFavorite(props.checkWatchList);
+        if (localStorage.getItem('token') == null) {
+            setaddFavoriteButtonColor({background: 'rgb(59, 94, 189)'});
+        }
+        else {
+          console.log(storeFavorite);
+          if (storeFavorite == true || props.checkWatchList == true) {
+            setaddFavoriteButtonColor({background: 'red'});
+          }
+          else if (storeFavorite == false){
+            setaddFavoriteButtonColor({background: 'rgb(59, 94, 189)'});
+          }
+        }
+        setOnLoad(false);
+    }
+    async function onFavButtonClick(){
+        if (localStorage.getItem('token') == null) {
+          history.push('/Login/');
+        }
+        else {
+          if (storeFavorite == true) {
+            await axios({
+              method: 'delete', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
+                "movieId": props.id
+              }
+            }).then()
+            setStoreFavorite(false);
+          }
+          else if (storeFavorite == false) {
+            await axios({
+              method: 'post', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
+                "movieId": props.id
+              }
+            }).then()
+            setStoreFavorite(true);
+          }
+        }
     }
     function popupReview(){
         setopre(current => !current);
@@ -85,7 +123,6 @@ function MovieViewPoster(props){
     function backButton(){
         history.goBack();
     }
-    console.log("Favorite:",props.checkFavorite);
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
@@ -97,7 +134,7 @@ function MovieViewPoster(props){
                     <p className="movieTitle">{props.title} ({releaseDate})</p>
                 </div>
                 <div id="divFavorReview">
-                    <button className="buttonLove" onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
+                    <button className="buttonLove" style={addFavoriteButtonColor} onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
                     <button className="buttonReview" onClick={popupReview}><i className="fa fa-star"></i>  REVIEWS</button>
                 </div>
             </Row>
