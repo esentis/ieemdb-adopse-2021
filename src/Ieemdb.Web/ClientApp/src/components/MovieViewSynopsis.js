@@ -24,6 +24,9 @@ function MovieViewSynopsis(props) {
     const durationHours = props.duration.hours;
     const durationMinutes = props.duration.minutes;
     const [loading, setLoading] = useState(true);
+    const [watchListButtonText, setWatchListButtonText] = useState("");
+    const [onLoad, setOnLoad] = useState(true);
+    const [storeWatchlist, setStoreWatchList] = useState("");
     
     const directors = props.directors.map((directors) =>
       <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors.fullName} </span>
@@ -37,9 +40,48 @@ function MovieViewSynopsis(props) {
     const countryOrigin = props.countryOrigin.map((countryOrigin) =>
       <span>{countryOrigin.name} </span>
     );
-    function onWatchlistButtonClick(){
-        //Otan kanei click sto ADD TO WATCHLIST button
-        console.log("Click on ADD TO WATCHLIST button");
+    
+    if (onLoad == true) {
+        setStoreWatchList(props.checkWatchList);
+
+        if (localStorage.getItem('token') == null) {
+          setWatchListButtonText("Log in to use Watchlists");
+        }
+        else {
+          if (storeWatchlist == true) {
+            setWatchListButtonText("Remove From Watchlist");
+          }
+          else if (storeWatchlist == false){
+            setWatchListButtonText("Add To WatchList");
+          }
+        }
+        setOnLoad(false);
+    }
+    
+    async function onWatchlistButtonClick(){
+        if (localStorage.getItem('token') == null) {
+          //redirect sto login
+        }
+        else {
+          if (storeWatchlist == true) {
+            await axios({
+              method: 'delete', url: `https://${window.location.host}/api/watchlist`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
+                "movieId": props.id
+              }
+            }).then(res => console.log(res))
+            setWatchListButtonText("Add To WatchList");
+            setStoreWatchList(false);
+          }
+          else if (storeWatchlist == false) {
+            await axios({
+              method: 'post', url: `https://${window.location.host}/api/watchlist`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
+                "movieId": props.id
+              }
+            }).then(res => console.log(res))
+            setWatchListButtonText("Remove From Watchlist");
+            setStoreWatchList(true);
+          }
+        }
     }
     function popupToggle() {
       setopre(current => !current);
@@ -104,11 +146,10 @@ function MovieViewSynopsis(props) {
     const slidePrev = () => setActiveIndex(activeIndex - 1);
     const slideNext = () => setActiveIndex(activeIndex + 1);
     const syncActiveIndex = ({ item }) => setActiveIndex(item);
-    console.log("WatchList:",props.checkWatchList);
     return(
       <Col>
         <Row >
-          <button className="buttonAddToWatchList" onClick={onWatchlistButtonClick}>ADD TO WATCHLIST</button>
+          <button className="buttonAddToWatchList" onClick={onWatchlistButtonClick}>{watchListButtonText}</button>
         </Row>
         <Row className="rowTab">
           <p className="smallTitles">SYNOPSIS</p>
