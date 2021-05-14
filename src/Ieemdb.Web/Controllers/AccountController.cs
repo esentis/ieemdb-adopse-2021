@@ -87,9 +87,9 @@ namespace Esentis.Ieemdb.Web.Controllers
       }
 
       var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-      var url = HttpUtility.HtmlEncode(
-          $"{Request.Scheme}://{Request.Host}{Request.PathBase}/api/account/confirm?email={userRegister.Email}&token={token}")
-        .Replace("&amp;", "&");
+      var url =
+        $"{Request.Scheme}://{Request.Host}{Request.PathBase}/api/account/confirm?email="
+        + HttpUtility.UrlEncode($"{userRegister.Email}") + "&token=" + HttpUtility.UrlEncode($"{token}");
       var body = await renderer.RenderViewToStringAsync(
         "/Views/Emails/ConfirmAccountEmail.cshtml",
         new ConfirmAccountViewModel { ConfirmUrl = url, });
@@ -118,7 +118,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       return !result.Succeeded
         ? Conflict(result.Errors)
-        : Ok();
+        : this.Redirect($"{Request.Scheme}://{Request.Host}{Request.PathBase}");
     }
 
     /// <summary>
