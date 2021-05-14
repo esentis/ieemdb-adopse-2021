@@ -330,7 +330,8 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Select(x => x.Movie.Id)
         .ToListAsync(cancellationToken);
 
-      var topMovies = await Context.Movies.Include(x => x.People)
+      var topMovies = await Context.Movies.Where(x => topRatedMovieIds.Contains(x.Id))
+        .Include(x => x.People)
         .ThenInclude(x => x.Person)
         .Project<Movie, MovieMinimalDto>(Mapper)
         .ToListAsync(cancellationToken);
