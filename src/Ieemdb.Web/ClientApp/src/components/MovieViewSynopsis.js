@@ -25,6 +25,7 @@ function MovieViewSynopsis(props) {
     const durationHours = props.duration.hours;
     const durationMinutes = props.duration.minutes;
     const [loading, setLoading] = useState(true);
+    
     const directors = props.directors.map((directors) =>
       <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors.fullName} </span>
     );
@@ -46,7 +47,7 @@ function MovieViewSynopsis(props) {
     }
     function onActorClick(actors) {
       setName(actors.fullName);
-      const releaseDate = <Moment format="DD/MM/YYYY">{actors.birthDate}</Moment>
+      const releaseDate = <Moment format="DD/MM/YYYY">{actors.birthDay}</Moment>
       setBirthday(releaseDate);
       setBio(actors.bio);
       getActorCarousel(actors);
@@ -54,7 +55,7 @@ function MovieViewSynopsis(props) {
     }
     function onDirectorClick(directors) {
       setName(directors.fullName);
-      const releaseDate = <Moment format="DD/MM/YYYY">{directors.birthDate}</Moment>
+      const releaseDate = <Moment format="DD/MM/YYYY">{directors.birthDay}</Moment>
       setBirthday(releaseDate);
       setBio(directors.bio);
       getDirectorCarousel(directors);
@@ -62,7 +63,7 @@ function MovieViewSynopsis(props) {
     }
     function onWriterClick(writers) {
       setName(writers.fullName);
-      const releaseDate = <Moment format="DD/MM/YYYY">{writers.birthDate}</Moment>
+      const releaseDate = <Moment format="DD/MM/YYYY">{writers.birthDay}</Moment>
       setBirthday(releaseDate);
       setBio(writers.bio);
       getWriterCarousel(writers);
@@ -104,6 +105,7 @@ function MovieViewSynopsis(props) {
     const slidePrev = () => setActiveIndex(activeIndex - 1);
     const slideNext = () => setActiveIndex(activeIndex + 1);
     const syncActiveIndex = ({ item }) => setActiveIndex(item);
+    console.log("WatchList:",props.checkWatchList);
     return(
       <Col>
         <Row >
@@ -112,6 +114,10 @@ function MovieViewSynopsis(props) {
         <Row className="rowTab">
           <p className="smallTitles">SYNOPSIS</p>
           <p className="text">{overview}</p>
+          {durationMinutes > 0
+                    ? <p className="text" style={{cursor:'auto'}}>Duration: {durationHours} hours and {durationMinutes} minutes</p>
+                    : <p className="text" style={{cursor:'auto'}}>Duration: {durationHours} hours</p>
+                }
         </Row>
         <Row className="rowTab2">
           <Col>
@@ -143,7 +149,7 @@ function MovieViewSynopsis(props) {
               </div>
             </div>
             <div id="popUpBody">
-              <p className="popUpBio">{bio}</p>
+              <p className="popUpBio">{bio===""?"We don't have a biography for "+name:bio}</p>
               <div className="div_style">
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
                 <button className="button_arrow" onClick={slidePrev}><i id="arrow" className="fa fa-arrow-left"></i></button>

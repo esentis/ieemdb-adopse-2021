@@ -4,13 +4,11 @@ namespace Esentis.Ieemdb.Web.Models
   using System.ComponentModel;
   using System.ComponentModel.DataAnnotations;
 
-  public record AddActorDto(string FullName, DateTime BirthDate, string Bio);
+  using Esentis.Ieemdb.Web.Models.Enums;
 
-  public record AddDirectorDto(string FullName, DateTimeOffset BirthDate, string Bio);
+  public record AddPersonDto(string FullName, DateTime BirthDate, DateTime DeathDate, string Bio, string Image);
 
   public record AddGenreDto(string Name);
-
-  public record AddWriterDto(string FullName, DateTimeOffset BirthDate, string Bio);
 
   public record UserRegisterDto(
     [Required] string UserName,

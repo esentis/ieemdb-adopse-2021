@@ -10,6 +10,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
+  using Esentis.Ieemdb.Web.Models.Dto;
 
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
@@ -55,18 +56,10 @@ namespace Esentis.Ieemdb.Web.Controllers
         .Select(x => x.Id)
         .ToListAsync(token);
 
-      var moviesWatchlist = await Context.Movies.Include(x => x.MovieActors)
-        .ThenInclude(x => x.Actor)
-        .Include(x => x.MovieDirectors)
-        .ThenInclude(x => x.Director)
-        .Include(x => x.MovieWriters)
-        .ThenInclude(x => x.Writer)
-        .Include(x => x.MovieGenres)
-        .ThenInclude(x => x.Genre)
-        .Include(x => x.MovieCountries)
-        .ThenInclude(x => x.Country)
+      var moviesWatchlist = await Context.Movies.Include(x => x.People)
+        .ThenInclude(x => x.Person)
         .Where(mv => watchlistsId.Contains(mv.Id))
-        .Project<Movie,MovieDto>(Mapper)
+        .Project<Movie,MovieMinimalDto>(Mapper)
         .ToListAsync(token);
 
       return Ok(moviesWatchlist);
@@ -149,6 +142,29 @@ namespace Esentis.Ieemdb.Web.Controllers
       await Context.SaveChangesAsync(token);
 
       return NoContent();
+    }
+
+    /// <summary>
+    /// Checks if a movie is in watchlist.
+    /// </summary>
+    /// <param name="movieId">Movie's unique ID. </param>
+    /// <response code="200">Returns True or False.</response>
+    /// <response code="400">Something went wrong. </response>
+    /// <returns>True or False.</returns>
+    [HttpPost("check")]
+    public async Task<ActionResult<WatchlistDto>> GetWatchlist(long movieId, CancellationToken token = default)
+    {
+      var userId = RetrieveUserId().ToString();
+      var user = await userManager.FindByIdAsync(userId);
+
+      if (user == null)
+      {
+        return BadRequest("Something went wrong.");
+      }
+
+      var inList = await Context.Watchlists.AnyAsync(x => x.Movie.Id == movieId && x.User.Id == user.Id,token);
+
+      return Ok(inList);
     }
   }
 }

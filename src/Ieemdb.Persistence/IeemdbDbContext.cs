@@ -2,16 +2,12 @@
 namespace Esentis.Ieemdb.Persistence
 {
   using System;
-  using System.Linq;
 
-  using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
   using Esentis.Ieemdb.Persistence.Joins;
   using Esentis.Ieemdb.Persistence.Models;
 
   using Kritikos.Configuration.Peristence.IdentityServer;
-  using Kritikos.Configuration.Persistence.Contracts.Behavioral;
-  using Kritikos.Configuration.Persistence.Extensions;
 
   using Microsoft.EntityFrameworkCore;
 
@@ -24,12 +20,6 @@ namespace Esentis.Ieemdb.Persistence
     {
     }
 
-    public DbSet<Actor> Actors { get; set; }
-
-    public DbSet<Director> Directors { get; set; }
-
-    public DbSet<Writer> Writers { get; set; }
-
     public DbSet<Genre> Genres { get; set; }
 
     public DbSet<Movie> Movies { get; set; }
@@ -40,13 +30,7 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Rating> Ratings { get; set; }
 
-    public DbSet<MovieActor> MovieActors { get; set; }
-
-    public DbSet<MovieDirector> MovieDirectors { get; set; }
-
-    public DbSet<Screenshot> Screenshots { get; set; }
-
-    public DbSet<MovieWriter> MovieWriters { get; set; }
+    public DbSet<Image> Images { get; set; }
 
     public DbSet<MovieGenre> MovieGenres { get; set; }
 
@@ -56,9 +40,11 @@ namespace Esentis.Ieemdb.Persistence
 
     public DbSet<Favorite> Favorites { get; set; }
 
-    //public DbSet<Actor> People { get; set; }
+    public DbSet<Person> People { get; set; }
 
-    //public IQueryable<Actor> Directors = People.Where(x=>true)
+    public DbSet<MoviePerson> MoviePeople { get; set; }
+
+    public DbSet<Video> Videos { get; set; }
 
     public DbSet<ServiceBatchingProgress> ServiceBatchingProgresses { get; set; }
 
@@ -66,15 +52,16 @@ namespace Esentis.Ieemdb.Persistence
     {
       base.OnModelCreating(builder);
 
-      builder.Entity<Actor>()
+      builder.Entity<Person>()
         .HasQueryFilter(x => !x.IsDeleted)
         .HasIndex(e => e.NormalizedSearch)
         .IsTsVectorExpressionIndex("english");
 
-      builder.Entity<Director>()
-        .HasQueryFilter(x => !x.IsDeleted)
-        .HasIndex(e => e.NormalizedSearch)
-        .IsTsVectorExpressionIndex("english");
+      builder.Entity<Video>()
+        .HasQueryFilter(x => !x.IsDeleted);
+
+      builder.Entity<Image>()
+        .HasQueryFilter(x => !x.IsDeleted);
 
       builder.Entity<Movie>()
         .HasQueryFilter(x => !x.IsDeleted)
@@ -85,24 +72,20 @@ namespace Esentis.Ieemdb.Persistence
         .HasIndex(e => e.NormalizedSearch)
         .IsTsVectorExpressionIndex("english");
 
-      builder.Entity<Writer>()
-        .HasQueryFilter(x => !x.IsDeleted)
-        .HasIndex(e => e.NormalizedSearch)
-        .IsTsVectorExpressionIndex("english");
 
-      builder.Entity<MovieActor>(e =>
+      builder.Entity<MoviePerson>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany(x => x.MovieActors)
+          .WithMany(x => x.People)
           .HasForeignKey("MovieId")
           .OnDelete(DeleteBehavior.Restrict)
           .IsRequired();
-        e.HasOne(mv => mv.Actor)
+        e.HasOne(mv => mv.Person)
           .WithMany()
-          .HasForeignKey("ActorId")
+          .HasForeignKey("PersonId")
           .OnDelete(DeleteBehavior.Restrict)
           .IsRequired();
-        e.HasKey("MovieId", "ActorId");
+        e.HasKey("MovieId", "PersonId");
       });
 
       builder.Entity<Genre>(e =>
@@ -113,32 +96,6 @@ namespace Esentis.Ieemdb.Persistence
       builder.Entity<Country>(e =>
       {
         e.HasQueryFilter(x => !x.IsDeleted);
-      });
-
-      builder.Entity<MovieDirector>(e =>
-      {
-        e.HasOne(mv => mv.Movie)
-          .WithMany(x => x.MovieDirectors)
-          .HasForeignKey("MovieId")
-          .OnDelete(DeleteBehavior.Restrict);
-        e.HasOne(mv => mv.Director)
-          .WithMany()
-          .HasForeignKey("DirectorId")
-          .OnDelete(DeleteBehavior.Restrict);
-        e.HasKey("MovieId", "DirectorId");
-      });
-
-      builder.Entity<MovieWriter>(e =>
-      {
-        e.HasOne(mv => mv.Movie)
-          .WithMany(x => x.MovieWriters)
-          .HasForeignKey("MovieId")
-          .OnDelete(DeleteBehavior.Restrict);
-        e.HasOne(mv => mv.Writer)
-          .WithMany()
-          .HasForeignKey("WriterId")
-          .OnDelete(DeleteBehavior.Restrict);
-        e.HasKey("MovieId", "WriterId");
       });
 
       builder.Entity<MovieGenre>(e =>
@@ -174,10 +131,17 @@ namespace Esentis.Ieemdb.Persistence
           .OnDelete(DeleteBehavior.Restrict);
       });
 
-      builder.Entity<Screenshot>(e =>
+      builder.Entity<Image>(e =>
       {
         e.HasOne(mv => mv.Movie)
-          .WithMany(x => x.Screenshots)
+          .WithMany(x => x.Images)
+          .OnDelete(DeleteBehavior.Restrict);
+      });
+
+      builder.Entity<Video>(e =>
+      {
+        e.HasOne(mv => mv.Movie)
+          .WithMany(x => x.Videos)
           .OnDelete(DeleteBehavior.Restrict);
       });
     }
