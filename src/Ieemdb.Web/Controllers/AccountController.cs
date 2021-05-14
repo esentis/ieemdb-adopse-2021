@@ -9,7 +9,6 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Threading;
   using System.Threading.Tasks;
   using System.Web;
-  using System.Xml;
 
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;

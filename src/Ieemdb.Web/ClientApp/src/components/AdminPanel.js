@@ -67,8 +67,7 @@ function AdminPanel() {
             .then(function (res){
             setItems({data:res.data.results,
                   pageCount:Math.ceil(res.data.totalElements/postersPerPage),
-                  totalResults:res.data.totalElements })
-                    console.log(res.data.totalPages)});
+                  totalResults:res.data.totalElements })});
 } 
 
        async function onEnter(e){

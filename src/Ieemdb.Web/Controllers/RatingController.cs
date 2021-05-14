@@ -2,10 +2,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 {
   using System;
   using System.Collections.Generic;
-  using System.ComponentModel.DataAnnotations;
   using System.Linq;
-  using System.Net;
-  using System.Security.Claims;
   using System.Threading;
   using System.Threading.Tasks;
 
@@ -89,13 +86,13 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <summary>
     /// Remove a rating.
     /// </summary>
-    /// <param name="ratingId">Movie's unique ID.</param>
+    /// <param name="movieId">Movie's unique ID.</param>
     /// <response code="204">Movie successfuly rated.</response>
     /// <response code="400">Something went wrong.</response>
     /// <response code="404">No rating found.</response>
     /// <returns>No Content.</returns>
     [HttpDelete("delete")]
-    public async Task<ActionResult> RemoveRating(long ratingId, CancellationToken token = default)
+    public async Task<ActionResult> RemoveRating(long movieId, CancellationToken token = default)
     {
       var userId = RetrieveUserId().ToString();
       var user = await userManager.FindByIdAsync(userId);
@@ -107,7 +104,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       var rating =
         await Context.Ratings
           .Include(x => x.Movie.Ratings)
-          .SingleOrDefaultAsync(x => x.Id == ratingId && x.User.Id == user.Id, token);
+          .SingleOrDefaultAsync(x => x.Movie.Id == movieId && x.User.Id == user.Id, token);
       if (rating == null)
       {
         return NotFound("No rating found.");

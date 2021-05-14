@@ -4,14 +4,15 @@ namespace Esentis.Ieemdb.Persistence.Models
 
   using Esentis.Ieemdb.Persistence.Abstractions;
   using Esentis.Ieemdb.Persistence.Helpers;
+  using Esentis.Ieemdb.Web.Models.Enums;
 
-  using Kritikos.Configuration.Persistence.Contracts.Behavioral;
-
-  public class Writer : EemdbEntity<long>, ISearchable, ISoftDeletable
+  public class Person : EemdbEntity<long>, ISearchable
   {
     private string fullName = string.Empty;
 
     private string bio = string.Empty;
+
+    public bool IsDeleted { get; set; }
 
     public string FullName
     {
@@ -23,11 +24,9 @@ namespace Esentis.Ieemdb.Persistence.Models
       }
     }
 
-    public bool IsDeleted { get; set; }
-
     public string NormalizedFullName { get; private set; } = string.Empty;
 
-    public DateTimeOffset BirthDate { get; set; }
+    public long Id { get; set; }
 
     public string Bio
     {
@@ -41,7 +40,13 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public string NormalizedSearch { get; private set; } = string.Empty;
 
-    public bool Featured { get; set; }
+    public string? Image { get; set; }
+
+    public DateTime? BirthDay { get; set; }
+
+    public DateTime? DeathDay { get; set; }
+
+    public DepartmentEnums KnownFor { get; set; }
 
     public long TmdbId { get; set; }
   }

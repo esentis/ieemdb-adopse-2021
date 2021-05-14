@@ -1,8 +1,11 @@
 namespace Esentis.Ieemdb.Web.Models.Dto
 {
+  using System;
+
   public class ImageDto
   {
-    public string Url { get; set; }
+    public long Id { get; set; }
 
+    public Uri Url { get; set; }
   }
 }

@@ -1,23 +1,22 @@
 namespace Esentis.Ieemdb.Web.Helpers
 {
   using System;
-  using System.Collections.Generic;
   using System.Linq;
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
-  using Esentis.Ieemdb.Persistence.Joins;
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Providers;
 
   using Microsoft.AspNetCore.Identity;
   using Microsoft.EntityFrameworkCore;
-  using Microsoft.EntityFrameworkCore.Storage;
   using Microsoft.Extensions.Configuration;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
+
+  using Refit;
 
   internal static class DataSeeder
   {
@@ -47,6 +46,8 @@ namespace Esentis.Ieemdb.Web.Helpers
 
       await SeedGenres(dbContext, api, logger);
 
+      await SeedCountries(dbContext, api, logger);
+
       await dbContext.SaveChangesAsync();
     }
 
@@ -65,6 +66,26 @@ namespace Esentis.Ieemdb.Web.Helpers
         {
           ConcurrencyStamp = "ed11f5d6-7eaf-4418-9f98-bcab656e16e0", Name = RoleNames.Member,
         });
+      }
+    }
+
+    private static async Task SeedCountries(IeemdbDbContext ctx, ITheMovieDb api, ILogger logger)
+    {
+      if (await ctx.Countries.AnyAsync())
+      {
+        return;
+      }
+
+      try
+      {
+        var countries = await api.GetCountries();
+        var countryEntities = countries.Select(x => new Country { Iso = x.iso_3166_1, Name = x.english_name })
+          .ToList();
+        ctx.Countries.AddRange(countryEntities);
+      }
+      catch (ApiException e)
+      {
+        logger.LogCritical(e, "Unhandled exception caught: {Message}", e.Message);
       }
     }
 

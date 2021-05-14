@@ -1,6 +1,5 @@
 namespace Esentis.Ieemdb.Persistence.Models
 {
-  using System;
 
   using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Identity;
@@ -11,7 +10,7 @@ namespace Esentis.Ieemdb.Persistence.Models
 
     public double Rate { get; set; }
 
-    public string Review { get; set; }
+    public string? Review { get; set; }
 
     public Movie Movie { get; set; }
   }

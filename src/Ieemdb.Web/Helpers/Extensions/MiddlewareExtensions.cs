@@ -1,9 +1,6 @@
 namespace Esentis.Ieemdb.Web.Helpers.Extensions
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Web.ConfigurationOptions;
   using Esentis.Ieemdb.Web.Middleware;

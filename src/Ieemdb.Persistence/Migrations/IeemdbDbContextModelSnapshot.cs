@@ -159,36 +159,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MovieActor", b =>
-                {
-                    b.Property<long>("MovieId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ActorId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Character")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("MovieId", "ActorId");
-
-                    b.HasIndex("ActorId");
-
-                    b.ToTable("MovieActors");
-                });
-
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MovieCountry", b =>
                 {
                     b.Property<long>("MovieId")
@@ -214,33 +184,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.HasIndex("CountryId");
 
                     b.ToTable("MovieCountries");
-                });
-
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MovieDirector", b =>
-                {
-                    b.Property<long>("MovieId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("DirectorId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("MovieId", "DirectorId");
-
-                    b.HasIndex("DirectorId");
-
-                    b.ToTable("MovieDirectors");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MovieGenre", b =>
@@ -270,12 +213,12 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.ToTable("MovieGenres");
                 });
 
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MovieWriter", b =>
+            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MoviePerson", b =>
                 {
                     b.Property<long>("MovieId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("WriterId")
+                    b.Property<long>("PersonId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
@@ -290,66 +233,11 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<Guid>("UpdatedBy")
                         .HasColumnType("uuid");
 
-                    b.HasKey("MovieId", "WriterId");
+                    b.HasKey("MovieId", "PersonId");
 
-                    b.HasIndex("WriterId");
+                    b.HasIndex("PersonId");
 
-                    b.ToTable("MovieWriters");
-                });
-
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Actor", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("BirthDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("Featured")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("NormalizedFullName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedSearch")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("TmdbId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
-
-                    b.ToTable("Actors");
+                    b.ToTable("MoviePeople");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Country", b =>
@@ -368,6 +256,10 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Iso")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -385,61 +277,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Countries");
-                });
-
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Director", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTimeOffset>("BirthDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("Featured")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("NormalizedFullName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedSearch")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("TmdbId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
-
-                    b.ToTable("Directors");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Favorite", b =>
@@ -510,6 +347,42 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long>("MovieId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Movie", b =>
                 {
                     b.Property<long>("Id")
@@ -551,7 +424,7 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("ReleaseDate")
+                    b.Property<DateTimeOffset?>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Title")
@@ -560,10 +433,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
 
                     b.Property<long>("TmdbId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("TrailerUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -580,6 +449,67 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("Movies");
+                });
+
+            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Person", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Bio")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("BirthDay")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DeathDay")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("KnownFor")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NormalizedFullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedSearch")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("TmdbId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedSearch")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
+
+                    b.ToTable("People");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Rating", b =>
@@ -602,7 +532,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<string>("Review")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -621,27 +550,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Ratings");
-                });
-
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Screenshot", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<long>("MovieId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("Screenshots");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.ServiceBatchingProgress", b =>
@@ -666,6 +574,53 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ServiceBatchingProgresses");
+                });
+
+            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Video", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("MovieId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Site")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TmdbId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("Videos");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Watchlist", b =>
@@ -700,61 +655,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Watchlists");
-                });
-
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Writer", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTimeOffset>("BirthDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("Featured")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("NormalizedFullName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedSearch")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("TmdbId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid>("UpdatedBy")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedSearch")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
-
-                    b.ToTable("Writers");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiResource", b =>
@@ -1696,25 +1596,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MovieActor", b =>
-                {
-                    b.HasOne("Esentis.Ieemdb.Persistence.Models.Actor", "Actor")
-                        .WithMany()
-                        .HasForeignKey("ActorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Esentis.Ieemdb.Persistence.Models.Movie", "Movie")
-                        .WithMany("MovieActors")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Actor");
-
-                    b.Navigation("Movie");
-                });
-
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MovieCountry", b =>
                 {
                     b.HasOne("Esentis.Ieemdb.Persistence.Models.Country", "Country")
@@ -1730,25 +1611,6 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Country");
-
-                    b.Navigation("Movie");
-                });
-
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MovieDirector", b =>
-                {
-                    b.HasOne("Esentis.Ieemdb.Persistence.Models.Director", "Director")
-                        .WithMany()
-                        .HasForeignKey("DirectorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Esentis.Ieemdb.Persistence.Models.Movie", "Movie")
-                        .WithMany("MovieDirectors")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Director");
 
                     b.Navigation("Movie");
                 });
@@ -1772,23 +1634,23 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MovieWriter", b =>
+            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Joins.MoviePerson", b =>
                 {
                     b.HasOne("Esentis.Ieemdb.Persistence.Models.Movie", "Movie")
-                        .WithMany("MovieWriters")
+                        .WithMany("People")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Esentis.Ieemdb.Persistence.Models.Writer", "Writer")
+                    b.HasOne("Esentis.Ieemdb.Persistence.Models.Person", "Person")
                         .WithMany()
-                        .HasForeignKey("WriterId")
+                        .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Movie");
 
-                    b.Navigation("Writer");
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Favorite", b =>
@@ -1804,6 +1666,17 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Image", b =>
+                {
+                    b.HasOne("Esentis.Ieemdb.Persistence.Models.Movie", "Movie")
+                        .WithMany("Images")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Rating", b =>
@@ -1823,10 +1696,10 @@ namespace Esentis.Ieemdb.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Screenshot", b =>
+            modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Video", b =>
                 {
                     b.HasOne("Esentis.Ieemdb.Persistence.Models.Movie", "Movie")
-                        .WithMany("Screenshots")
+                        .WithMany("Videos")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -2089,19 +1962,17 @@ namespace Esentis.Ieemdb.Persistence.Migrations
 
             modelBuilder.Entity("Esentis.Ieemdb.Persistence.Models.Movie", b =>
                 {
-                    b.Navigation("MovieActors");
+                    b.Navigation("Images");
 
                     b.Navigation("MovieCountries");
 
-                    b.Navigation("MovieDirectors");
-
                     b.Navigation("MovieGenres");
 
-                    b.Navigation("MovieWriters");
+                    b.Navigation("People");
 
                     b.Navigation("Ratings");
 
-                    b.Navigation("Screenshots");
+                    b.Navigation("Videos");
                 });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.ApiResource", b =>

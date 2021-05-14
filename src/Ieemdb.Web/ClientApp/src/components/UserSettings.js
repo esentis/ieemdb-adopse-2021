@@ -125,7 +125,7 @@ function UserSettings() {
         <div className='center-Form'>
         <div className="backForm-userSettings">
         <label className="formTitle">Edit your profile</label>
-        <form className="divForm" onChange={onFormChange} autocomplete="off" >
+        <form className="divForm" onChange={onFormChange} autoComplete="off" >
         <label className="formText">Username</label>
         <input className="formInput" type="text" placeholder="Your username here" value={data.username} name="username" onChange={e=>setData({...data,username:e.target.value})} />
         <button className="userSettingsButton" disabled={disableUsername} onClick={changeUsername}>Save Username</button>

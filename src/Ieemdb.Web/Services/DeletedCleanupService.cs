@@ -1,12 +1,12 @@
 namespace Esentis.Ieemdb.Web.Services
 {
   using System;
-  using System.Collections.Generic;
   using System.Linq;
   using System.Threading;
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
+  using Esentis.Ieemdb.Web.Models.Enums;
   using Esentis.Ieemdb.Web.Options;
 
   using Microsoft.EntityFrameworkCore;
@@ -31,7 +31,8 @@ namespace Esentis.Ieemdb.Web.Services
       this.logger = logger;
       this.factory = factory;
       serviceDurations = durations.Value;
-      timer = new Timer(Trigger, null, TimeSpan.Zero, TimeSpan.FromMinutes(this.serviceDurations.DeleteServiceInMinutes));
+      timer = new Timer(Trigger, null, TimeSpan.Zero,
+        TimeSpan.FromMinutes(this.serviceDurations.DeleteServiceInMinutes));
     }
 
     public override void Dispose()
@@ -74,6 +75,8 @@ namespace Esentis.Ieemdb.Web.Services
           await DeleteWriter(context, timeToDelete, stoppingToken);
           await DeleteDirectors(context, timeToDelete, stoppingToken);
           await DeleteGenres(context, timeToDelete, stoppingToken);
+          await DeleteVideos(context, timeToDelete, stoppingToken);
+          await DeleteImages(context, timeToDelete, stoppingToken);
 
           await context.SaveChangesAsync(stoppingToken);
         }
@@ -98,25 +101,35 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteMovies(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedMovies =
-        await ctx.Movies.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.Movies.IgnoreQueryFilters()
+          .Where(x => x.IsDeleted)
+          .Where(x => x.UpdatedAt < timeToDelete)
+          .ToListAsync(token);
 
       if (deletedMovies.Count != 0)
       {
+        var movieActors = await ctx.MoviePeople
+          .Where(x => deletedMovies.Contains(x.Movie) && x.Person.KnownFor == DepartmentEnums.Acting)
+          .ToListAsync(token);
+        var movieDirectors = await ctx.MoviePeople
+          .Where(x => deletedMovies.Contains(x.Movie) && x.Person.KnownFor == DepartmentEnums.Directing)
+          .ToListAsync(token);
+        var movieWriters = await ctx.MoviePeople
+          .Where(x => deletedMovies.Contains(x.Movie) && x.Person.KnownFor == DepartmentEnums.Writing)
+          .ToListAsync(token);
+
         var movieRatings = await ctx.Ratings.Where(x => deletedMovies.Contains(x.Movie)).ToListAsync(token);
-        var movieActors = await ctx.MovieActors.Where(x => deletedMovies.Contains(x.Movie)).ToListAsync(token);
-        var movieDirectors = await ctx.MovieDirectors.Where(x => deletedMovies.Contains(x.Movie)).ToListAsync(token);
-        var movieWriters = await ctx.MovieWriters.Where(x => deletedMovies.Contains(x.Movie)).ToListAsync(token);
         var movieGenres = await ctx.MovieGenres.Where(x => deletedMovies.Contains(x.Movie)).ToListAsync(token);
         var movieCountries = await ctx.MovieCountries.Where(x => deletedMovies.Contains(x.Movie)).ToListAsync(token);
-        var movieScreenshots = await ctx.Screenshots.Where(x => deletedMovies.Contains(x.Movie)).ToListAsync(token);
+        var movieScreenshots = await ctx.Images.Where(x => deletedMovies.Contains(x.Movie)).ToListAsync(token);
 
         ctx.MovieCountries.RemoveRange(movieCountries);
         ctx.Ratings.RemoveRange(movieRatings);
-        ctx.MovieActors.RemoveRange(movieActors);
-        ctx.MovieDirectors.RemoveRange(movieDirectors);
-        ctx.MovieWriters.RemoveRange(movieWriters);
+        ctx.MoviePeople.RemoveRange(movieActors);
+        ctx.MoviePeople.RemoveRange(movieDirectors);
+        ctx.MoviePeople.RemoveRange(movieWriters);
         ctx.MovieGenres.RemoveRange(movieGenres);
-        ctx.Screenshots.RemoveRange(movieScreenshots);
+        ctx.Images.RemoveRange(movieScreenshots);
 
         logger.LogInformation("Removed  {Count} movies", deletedMovies.Count);
         ctx.Movies.RemoveRange(deletedMovies);
@@ -126,14 +139,20 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteActors(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedActors =
-        await ctx.Actors.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.People.IgnoreQueryFilters()
+          .Where(p => p.KnownFor == DepartmentEnums.Acting)
+          .Where(x => x.IsDeleted)
+          .Where(x => x.UpdatedAt < timeToDelete)
+          .ToListAsync(token);
 
       if (deletedActors.Count != 0)
       {
-        var movieActors = await ctx.MovieActors.Where(x => deletedActors.Contains(x.Actor)).ToListAsync(token);
+        var movieActors = await ctx.MoviePeople.Where(p => p.Person.KnownFor == DepartmentEnums.Acting)
+          .Where(x => deletedActors.Contains(x.Person))
+          .ToListAsync(token);
 
-        ctx.MovieActors.RemoveRange(movieActors);
-        ctx.Actors.RemoveRange(deletedActors);
+        ctx.MoviePeople.RemoveRange(movieActors);
+        ctx.People.RemoveRange(deletedActors);
         logger.LogInformation("Removed  {Count} actors", deletedActors.Count);
       }
     }
@@ -141,7 +160,10 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteCountries(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedCountries =
-        await ctx.Countries.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.Countries.IgnoreQueryFilters()
+          .Where(x => x.IsDeleted)
+          .Where(x => x.UpdatedAt < timeToDelete)
+          .ToListAsync(token);
 
       if (deletedCountries.Count != 0)
       {
@@ -159,14 +181,18 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteDirectors(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedDirectors =
-        await ctx.Directors.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.People.IgnoreQueryFilters()
+          .Where(p => p.KnownFor == DepartmentEnums.Directing)
+          .Where(x => x.IsDeleted)
+          .Where(x => x.UpdatedAt < timeToDelete)
+          .ToListAsync(token);
 
       if (deletedDirectors.Count != 0)
       {
         var movieDirectors =
-          await ctx.MovieDirectors.Where(x => deletedDirectors.Contains(x.Director)).ToListAsync(token);
-        ctx.MovieDirectors.RemoveRange(movieDirectors);
-        ctx.Directors.RemoveRange(deletedDirectors);
+          await ctx.MoviePeople.Where(x => deletedDirectors.Contains(x.Person)).ToListAsync(token);
+        ctx.MoviePeople.RemoveRange(movieDirectors);
+        ctx.People.RemoveRange(deletedDirectors);
         logger.LogInformation("Removed  {Count} directors", deletedDirectors.Count);
       }
     }
@@ -174,14 +200,18 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteWriter(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedWriters =
-        await ctx.Writers.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.People.IgnoreQueryFilters()
+          .Where(p => p.KnownFor == DepartmentEnums.Writing)
+          .Where(x => x.IsDeleted)
+          .Where(x => x.UpdatedAt < timeToDelete)
+          .ToListAsync(token);
 
       if (deletedWriters.Count != 0)
       {
         var movieWriters =
-          await ctx.MovieWriters.Where(x => deletedWriters.Contains(x.Writer)).ToListAsync(token);
-        ctx.MovieWriters.RemoveRange(movieWriters);
-        ctx.Writers.RemoveRange(deletedWriters);
+          await ctx.MoviePeople.Where(x => deletedWriters.Contains(x.Person)).ToListAsync(token);
+        ctx.MoviePeople.RemoveRange(movieWriters);
+        ctx.People.RemoveRange(deletedWriters);
         logger.LogInformation("Removed  {Count} writers", deletedWriters.Count);
       }
     }
@@ -189,7 +219,10 @@ namespace Esentis.Ieemdb.Web.Services
     private async Task DeleteGenres(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
     {
       var deletedGenres =
-        await ctx.Genres.IgnoreQueryFilters().Where(x => x.IsDeleted).Where(x => x.UpdatedAt < timeToDelete).ToListAsync(token);
+        await ctx.Genres.IgnoreQueryFilters()
+          .Where(x => x.IsDeleted)
+          .Where(x => x.UpdatedAt < timeToDelete)
+          .ToListAsync(token);
 
       if (deletedGenres.Count != 0)
       {
@@ -201,5 +234,34 @@ namespace Esentis.Ieemdb.Web.Services
       }
     }
 
+    private async Task DeleteVideos(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
+    {
+      var deleteVideos =
+        await ctx.Videos.IgnoreQueryFilters()
+          .Where(x => x.IsDeleted)
+          .Where(x => x.UpdatedAt < timeToDelete)
+          .ToListAsync(token);
+
+      if (deleteVideos.Count != 0)
+      {
+        ctx.Videos.RemoveRange(deleteVideos);
+        logger.LogInformation("Removed  {Count} genres", deleteVideos.Count);
+      }
+    }
+
+    private async Task DeleteImages(IeemdbDbContext ctx, DateTimeOffset timeToDelete, CancellationToken token)
+    {
+      var deleteImages =
+        await ctx.Images.IgnoreQueryFilters()
+          .Where(x => x.IsDeleted)
+          .Where(x => x.UpdatedAt < timeToDelete)
+          .ToListAsync(token);
+
+      if (deleteImages.Count != 0)
+      {
+        ctx.Images.RemoveRange(deleteImages);
+        logger.LogInformation("Removed  {Count} genres", deleteImages.Count);
+      }
+    }
   }
 }

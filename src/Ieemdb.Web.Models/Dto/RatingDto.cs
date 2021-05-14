@@ -1,10 +1,6 @@
 namespace Esentis.Ieemdb.Web.Models.Dto
 {
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
 
   public class RatingDto
   {
@@ -19,5 +15,7 @@ namespace Esentis.Ieemdb.Web.Models.Dto
     public long MovieId { get; set; }
 
     public string Review { get; set; }
+
+    public string Username { get; set; }
   }
 }
