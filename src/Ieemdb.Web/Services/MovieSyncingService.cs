@@ -118,10 +118,17 @@ namespace Esentis.Ieemdb.Web.Services
 
           foreach (var m in movies.results.Where(x => existingMovies.All(y => y.TmdbId != x.id)))
           {
-            var detailedMovie = await tmdbApi.GetMovieDetails(m.id);
-            var movieCast = await tmdbApi.GetMovieCredits(m.id);
-            moviesForSave.Add(detailedMovie);
-            castToBeSaved.Add(movieCast);
+            try
+            {
+              var detailedMovie = await tmdbApi.GetMovieDetails(m.id);
+              var movieCast = await tmdbApi.GetMovieCredits(m.id);
+              moviesForSave.Add(detailedMovie);
+              castToBeSaved.Add(movieCast);
+            }
+            catch (ApiException e)
+            {
+              logger.LogError(e, "Error pasting data with Error: {Message} ", e.Message);
+            }
           }
 
           var castIds = castToBeSaved.SelectMany(x => x.cast).Select(x => x.id).ToArray();
@@ -171,7 +178,7 @@ namespace Esentis.Ieemdb.Web.Services
             catch (ApiException e)
             {
               logger.LogError(e, "Error pasting data for actor {Id} ", cast.id);
-              throw;
+             
             }
           }
 
@@ -179,7 +186,7 @@ namespace Esentis.Ieemdb.Web.Services
           {
             var movieForSave = new Movie
             {
-              Duration = TimeSpan.FromMinutes(detailedMovie.runtime),
+              Duration = detailedMovie.runtime == null ? TimeSpan.FromMinutes(0) : TimeSpan.FromMinutes(Convert.ToDouble(detailedMovie.runtime)),
               Plot = detailedMovie.overview,
               TmdbId = detailedMovie.id,
               ReleaseDate = DateTimeOffset.TryParse(detailedMovie.release_date, out var releaseDate) ? releaseDate : null,
