@@ -3,8 +3,13 @@ import {Row,Col,Container} from 'react-bootstrap';
 import '../Styles/MovieViewTrailer.css';
 
 function MovieViewTrailer(props){
-    const url = props.trailer.split('/').pop();
+   var Site="";
+   var key="";
 
+   if(props.trailerKey!==undefined){
+       Site=props.trailerKey.site;
+       key=props.trailerKey.key;
+   }
     return(
         <Container>
             <Row>
@@ -15,7 +20,8 @@ function MovieViewTrailer(props){
             <Row>
                 <Col>
                 <div className="divTrailer">
-                    <iframe className="frameTrailer" src={`https://www.youtube.com/embed/${url}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                {Site==="Vimeo"? <iframe className="frameTrailer" src={`https://player.vimeo.com/video/${key}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>:
+                    <iframe className="frameTrailer" src={`https://www.youtube.com/embed/${key}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>}
                 </div>
                 </Col>
             </Row>
