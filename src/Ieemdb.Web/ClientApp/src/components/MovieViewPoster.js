@@ -11,60 +11,13 @@ import axios from 'axios';
 import UserReviews from './UserReviews';
 
 function RatingStars(rating){
-    if (rating.stars < 1){
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 0, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
+    return (<div id="divRate">
+                    <p className="rating">{rating.stars}/10</p>
+                    <ReactStars {...{value: rating.stars, size: 40, count: 10, color: "black", activeColor: "yellow", isHalf: true, edit: false,
                                             emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
                                             filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
-    else if (rating.stars < 2){
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 1, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
-    else if (rating.stars < 3){
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 2, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
-    else if (rating.stars < 4){
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 3, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
-    else if (rating.stars < 5){
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 4, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
-    else{
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 5, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
+        </div>
+    );
 }
 function MovieViewPoster(props) {
     const [opre, setopre] = useState(false);
