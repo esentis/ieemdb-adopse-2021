@@ -68,7 +68,8 @@ function RatingStars(rating){
 }
 function MovieViewPoster(props) {
     const [opre, setopre] = useState(false);
-    const [item, setItem] = useState("");
+    const [item, setItem] = useState({ userName :"teopfasdfasdfasdfasdfadsfasdfasdfasdfasdfasdfas" ,reviewText :"fadsfadsfafadsfasdfasdfasdfasdfasdfasdfasds" ,ratingStars:4});
+    
     const history=useHistory();
     function HandleGenres(id,name){
         history.push('/Genre/GenreValue='+name+'/Id='+id);
@@ -92,16 +93,11 @@ function MovieViewPoster(props) {
     }
     async function FindRatings() {
       await axios({
-        method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`, params: {
-          "id": props.id
-        }
-      }).then(res => setItem(res.data.map(i => <UserReviews
-        userName={i.userName}
-        reviewText={i.review}
-        ratingStars={i.rate}
-      />)))
+        method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`
+      }).then(res => setItem({ userName: res.data.username, reviewText: res.data.review, ratingStars:res.data.rate  }))
+
     }
-    
+
     function CheckIfLogin() {
       console.log(localStorage.getItem('token'));
       if (localStorage.getItem('token') == null) {
@@ -144,8 +140,8 @@ function MovieViewPoster(props) {
                                 <RatingStars stars={rating}/>
                             </div>
                         </div>
-                        <hr className="line"/>
-                        <FindRatings/>
+                        <hr className="line" />
+                        <UserReviews userName={"teo"} reviewText={"fdsafadsfasd"} ratingStars={"4"} />)
                         <CheckIfLogin/>
                     </div>
                 </div>
