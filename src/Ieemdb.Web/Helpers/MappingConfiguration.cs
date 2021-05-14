@@ -56,6 +56,7 @@ namespace Esentis.Ieemdb.Web.Helpers
         MovieId = rating.Movie.Id,
         CreatedAt = rating.CreatedAt,
         MovieName = rating.Movie.Title,
+        Username = rating.User.UserName,
         Rate = rating.Rate,
         Review = rating.Review,
       })

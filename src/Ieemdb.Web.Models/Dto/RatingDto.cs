@@ -15,5 +15,7 @@ namespace Esentis.Ieemdb.Web.Models.Dto
     public long MovieId { get; set; }
 
     public string Review { get; set; }
+
+    public string Username { get; set; }
   }
 }

@@ -131,17 +131,19 @@ namespace Esentis.Ieemdb.Web.Services
             }
           }
 
-          var castIds = castToBeSaved.SelectMany(x => x.cast).Select(x => x.id).ToArray();
+          var castIds = castToBeSaved.SelectMany(x => x.cast).Select(x => x.id).Distinct().ToArray();
+
+
           var existingPeople =
             await context.People.Where(ac => castIds.Contains(ac.TmdbId)).ToListAsync(stoppingToken);
 
-          foreach (var cast in castToBeSaved.Where(x =>
-              existingPeople.All(y => x.cast.Any(all => all.id != y.TmdbId)))
-            .SelectMany(x => x.cast))
+          var missingCastIds = castIds.Where(c => existingPeople.All(pp => pp.TmdbId != c)).ToArray();
+
+          foreach (var castId in missingCastIds)
           {
             try
             {
-              var personForSave = await tmdbApi.GetPerson(cast.id);
+              var personForSave = await tmdbApi.GetPerson(castId);
               peopleToBeSaved.Add(new Person
               {
                 Bio = personForSave.biography.Length > 700
@@ -177,8 +179,7 @@ namespace Esentis.Ieemdb.Web.Services
             }
             catch (ApiException e)
             {
-              logger.LogError(e, "Error pasting data for actor {Id} ", cast.id);
-             
+              logger.LogError(e, "Error pasting data for person {Id} ", castId);
             }
           }
 

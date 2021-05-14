@@ -472,7 +472,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       if (videos == null)
       {
-        return NotFound("Movie not found");
+        return NotFound("Videos not found");
       }
 
       return Ok(videos);
@@ -488,14 +488,14 @@ namespace Esentis.Ieemdb.Web.Controllers
     [HttpGet("{id}/ratings")]
     public async Task<ActionResult<List<RatingDto>>> GetRatings(long id, CancellationToken token = default)
     {
-      var ratings = await Context.Ratings.Include(i => i.Movie)
+      var ratings = await Context.Ratings.Include(i=>i.User).Include(i => i.Movie)
         .Where(i => i.Movie.Id == id)
         .Project<Rating, RatingDto>(Mapper)
         .ToListAsync(token);
 
       if (ratings == null)
       {
-        return NotFound("Movie not found");
+        return NotFound("Ratings not found");
       }
 
       return Ok(ratings);
