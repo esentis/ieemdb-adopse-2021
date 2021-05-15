@@ -227,7 +227,8 @@ namespace Esentis.Ieemdb.Web.Controllers
         return NotFound("User not found or wrong password");
       }
 
-      var device = await Context.Devices.FirstOrDefaultAsync(e => e.Name == userLogin.DeviceName, token);
+      var device =
+        await Context.Devices.FirstOrDefaultAsync(e => e.Name == userLogin.DeviceName && e.User == user, token);
       if (device == null)
       {
         device = new Device { User = user, Name = userLogin.DeviceName };
@@ -272,7 +273,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       var durationToCheck = DateTimeOffset.Now.AddDays(-jwtOptions.RefreshTokenDurationInDays);
       var device = await Context.Devices
-        .Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId && x.Name == dto.Device)
+        .Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId)
         .Where(x => x.UpdatedAt > durationToCheck)
         .SingleOrDefaultAsync(token);
       if (device
