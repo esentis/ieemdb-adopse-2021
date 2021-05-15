@@ -10,9 +10,9 @@ import Moment from "react-moment";
 import axios from 'axios';
 import LoadingSpinner from './LoadingSpinner';
 const responsive = {
-  0: { items: 2 },
-  1024: { items: 5 },
-  1199: { items: 6 },
+  0: { items: 1 },
+  1024: { items: 2 },
+  1199: { items: 3 },
 };
 function MovieViewSynopsis(props) {
     const [data, setData] = useState([]);
@@ -20,11 +20,11 @@ function MovieViewSynopsis(props) {
     const [name, setName] = useState("");
     const [birthday, setBirthday] = useState("");
     const [bio, setBio] = useState("");
+    const [image, setImage] = useState("");
     const overview=props.overview;
     const durationHours = props.duration.hours;
     const durationMinutes = props.duration.minutes;
     const [loading, setLoading] = useState(true);
-    
     const directors = props.directors.map((directors) =>
       <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors.fullName} </span>
     );
@@ -49,6 +49,7 @@ function MovieViewSynopsis(props) {
       const releaseDate = <Moment format="DD/MM/YYYY">{actors.birthDay}</Moment>
       setBirthday(releaseDate);
       setBio(actors.bio);
+      setImage(actors.image);
       getActorCarousel(actors);
       popupToggle();
     }
@@ -57,6 +58,7 @@ function MovieViewSynopsis(props) {
       const releaseDate = <Moment format="DD/MM/YYYY">{directors.birthDay}</Moment>
       setBirthday(releaseDate);
       setBio(directors.bio);
+      setImage(directors.image);
       getDirectorCarousel(directors);
       popupToggle();
     }
@@ -65,6 +67,7 @@ function MovieViewSynopsis(props) {
       const releaseDate = <Moment format="DD/MM/YYYY">{writers.birthDay}</Moment>
       setBirthday(releaseDate);
       setBio(writers.bio);
+      setImage(writers.image);
       getWriterCarousel(writers);
       popupToggle();
     }
@@ -105,6 +108,10 @@ function MovieViewSynopsis(props) {
     const slideNext = () => setActiveIndex(activeIndex + 1);
     const syncActiveIndex = ({ item }) => setActiveIndex(item);
     console.log("WatchList:",props.checkWatchList);
+    var itemsLength=false;
+    if(items.length>3){
+        itemsLength=true;
+    }
     return(
       <Col>
         <Row >
@@ -142,33 +149,36 @@ function MovieViewSynopsis(props) {
           <div id="popADSView">
             <div id="popUpHeader">
               <button className="buttonClose" onClick={popupToggle}><i id="return" className="fa fa-close"></i></button>
+              
               <p className="popUpName">{name}</p>
               <div className="birthDate">
                 <p className="popUpDate">{birthday}</p>
               </div>
             </div>
             <div id="popUpBody">
-              <p className="popUpBio">{bio===""?"We don't have a biography for "+name:bio}</p>
-              <div className="div_style">
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-                <button className="button_arrow" onClick={slidePrev}><i id="arrow" className="fa fa-arrow-left"></i></button>
-                <div className="carousel_style">
-                  <AliceCarousel
-                    activeIndex={activeIndex}
-                    infinite
-                    autoPlayStrategy="none"
-                    animationType="fadeout"
-                    mouseTracking
-                    items={items}
-                    responsive={responsive}
-                    disableDotsControls
-                    disableButtonsControls
-                    onSlideChanged={syncActiveIndex}
-                  />
-                  
-                </div>
-                <button className="button_arrow" onClick={slideNext}><i id="arrow" className="fa fa-arrow-right"></i></button>
-              </div>   
+              <img className='imagePoster' src={image} alt={name}/>
+              <div className="columnPopUp">
+                <p className="popUpBio">{bio===""?"We don't have a biography for "+name:bio}</p>
+                <div className="div_style">
+                  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+                  {itemsLength && <button className="button_arrow" onClick={slidePrev}><i id="arrow" className="fa fa-arrow-left"></i></button>}
+                  <div className="carousel_style">
+                    <AliceCarousel
+                      activeIndex={activeIndex}
+                      infinite
+                      autoPlayStrategy="none"
+                      animationType="fadeout"
+                      mouseTracking
+                      items={items}
+                      responsive={responsive}
+                      disableDotsControls
+                      disableButtonsControls
+                      onSlideChanged={syncActiveIndex}
+                    />
+                  </div>
+                  {itemsLength&& <button className="button_arrow" onClick={slideNext}><i id="arrow" className="fa fa-arrow-right"></i></button>}
+                </div> 
+              </div>  
             </div>
           </div>
         </Modal>
