@@ -81,7 +81,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns updated service.</response>
     /// <response code="404">Batch service not found.</response>
     /// <returns>Update <see cref="ServiceBatchingProgress"/>.</returns>
-    [HttpPut("")]
+    [HttpPut("updateSyncService")]
     public async Task<ActionResult<ServiceBatchingProgress>> EditSyncService(int page, BackgroundServiceName service, CancellationToken token = default)
     {
       var status = await Context.ServiceBatchingProgresses.Where(x => x.Name == service)
