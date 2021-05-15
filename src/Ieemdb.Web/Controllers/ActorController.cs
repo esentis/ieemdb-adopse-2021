@@ -18,10 +18,12 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
+  [Authorize]
   [Route("api/actor")]
   [ApiController]
   public class ActorController : BaseController<ActorController>
@@ -38,6 +40,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns list of Actors.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>List of <see cref="PersonDto"/>.</returns>
+    [AllowAnonymous]
     [HttpPost("all")]
     public async Task<ActionResult<List<PersonDto>>> GetActors(PaginationCriteria criteria,
       CancellationToken token = default)
@@ -78,6 +81,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns found Actors.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>List of <see cref="PersonDto"/>.</returns>
+    [AllowAnonymous]
     [HttpPost("search")]
     public async Task<ActionResult<List<PersonDto>>> Search(
       PersonSearchCriteria criteria,
@@ -117,6 +121,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Success returns single Actor.</response>
     /// <response code="404">Actor was not found.</response>
     /// <returns>Single <see cref="PersonDto"/>.</returns>
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<PersonDto>> GetActor(long id, CancellationToken token = default)
     {
@@ -140,6 +145,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="dto">Actor information.</param>
     /// <response code="201">Actor successfully added.</response>
     /// <returns>Created <see cref="PersonDto"/>.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("")]
     public async Task<ActionResult<PersonDto>> AddActor([FromBody] AddPersonDto dto, CancellationToken token = default)
     {
@@ -161,6 +167,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="204">Deleted successfully.</response>
     /// <response code="404">Actor not found.</response>
     /// <returns>No content.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpDelete("")]
     public async Task<ActionResult> DeleteActor(int id, CancellationToken token = default)
     {
@@ -189,6 +196,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns updated Actor.</response>
     /// <response code="404">No actor found.</response>
     /// <returns>Updated <see cref="PersonDto"/>.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPut("{id}")]
     public async Task<ActionResult<PersonDto>> UpdateActor(int id, AddPersonDto dto, CancellationToken token = default)
     {

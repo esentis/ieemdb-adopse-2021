@@ -18,6 +18,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
@@ -140,6 +141,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="dto">Writer information.</param>
     /// <response code="201">Successfully added.</response>
     /// <returns>Created <see cref="PersonDto"/>.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("")]
     public async Task<ActionResult<PersonDto>> AddWriter([FromBody] AddPersonDto dto, CancellationToken token = default)
     {
@@ -160,6 +162,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Writer's unique ID.</param>
     /// <response code="204">Successfully deleted.</response>
     /// <response code="404">Writer not found.</response>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpDelete("")]
     public async Task<ActionResult> DeleteWriter(int id, CancellationToken token = default)
     {
@@ -186,6 +189,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Writer's unique ID.</param>
     /// <param name="dto">Writer's information.</param>
     /// <returns>Updated <see cref="PersonDto"/>.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPut("{id}")]
     public async Task<ActionResult<PersonDto>> UpdateWriter(int id, AddPersonDto dto, CancellationToken token = default)
     {
