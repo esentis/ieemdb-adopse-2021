@@ -25,19 +25,57 @@ function MovieViewPoster(props) {
     const [onLoad, setOnLoad] = useState(true);
     const [reviewCheck,setReviewCheck]=useState(false);
     const [userReview,setUserReview]=useState();
+    const [storeFavorite, setStoreFavorite] = useState("");
     const history=useHistory();
+    const [addFavoriteButtonColor, setaddFavoriteButtonColor] = useState({background: 'rgba(52, 52, 52, 0)'});
     function HandleGenres(id,name){
         history.push('/Genre/GenreValue='+name+'/Id='+id);
     }
-    /*const id=props.id;*/
     const releaseDate = <Moment format="YYYY">{props.releaseDate}</Moment>
     const genres = props.genres.map((genre) =>
         <Genre name={genre.name} id={genre.id} onClick={HandleGenres}/>
     );
     const rating = props.rating;
-    function onFavButtonClick(){
-        //Otan kanei klik sto ADD FAVORITE button
-        console.log("Click on ADD FAVORITE button");
+    if (onLoad == true) {
+        setStoreFavorite(props.checkFavorite);
+        if (localStorage.getItem('token') == null) {
+            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'});
+        }
+        else {
+          console.log(storeFavorite);
+          if (storeFavorite == true || props.checkFavorite == true) {
+            setaddFavoriteButtonColor({background: 'white'});
+          }
+          else if (storeFavorite == false){
+            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'});
+          }
+        }
+        setOnLoad(false);
+    }
+    async function onFavButtonClick(){
+        if (localStorage.getItem('token') == null) {
+          history.push('/Login/');
+        }
+        else {
+          if (storeFavorite == true) {
+            await axios({
+              method: 'delete', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
+                "movieId": props.id
+              }
+            }).then()
+            setStoreFavorite(false);
+            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'});
+          }
+          else if (storeFavorite == false) {
+            await axios({
+              method: 'post', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
+                "movieId": props.id
+              }
+            }).then()
+            setStoreFavorite(true);
+            setaddFavoriteButtonColor({background: 'white'});
+          }
+        }
     }
     function popupReview(){
         setopre(current => !current);
@@ -125,7 +163,7 @@ function MovieViewPoster(props) {
                     <p className="movieTitle">{props.title} ({releaseDate})</p>
                 </div>
                 <div id="divFavorReview">
-                    <button className="buttonLove" onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
+                    <button className="buttonLove" style={addFavoriteButtonColor} onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
                     <button className="buttonReview" onClick={popupReview}><i className="fa fa-star"></i>  REVIEWS</button>
                 </div>
             </Row>

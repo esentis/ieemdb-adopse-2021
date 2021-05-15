@@ -5,8 +5,6 @@ import movies from './Movie_Dataset';
 import {useUpdatePage} from './GlobalContext';
 import {Col} from 'react-bootstrap';
 import axios from 'axios';
-
-
 function Favorites() {
     const setPage=useUpdatePage();
     const [data,setData]=useState([]);
@@ -20,7 +18,6 @@ function Favorites() {
                 setLoading(false);
             })}
         fetchData();},[setPage]);
-
     const title='Favorites';
     const items=data.map(i => <MovieCard 
         id={i.id}
@@ -32,12 +29,11 @@ function Favorites() {
         flag={false} />)
     return (
         <Col className="column-right">
-        <TopRight title={title}
-                  items={items}
-                  loading={loading} 
-                  />
-                  </Col>
+            <TopRight title={title}
+                items={items}
+                loading={loading} 
+            />
+        </Col>
     )
 }
-
 export default Favorites;
