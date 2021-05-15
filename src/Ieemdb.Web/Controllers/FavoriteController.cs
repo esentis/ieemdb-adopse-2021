@@ -99,7 +99,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       var favoriteMovies = await Context.Movies.Include(x => x.People)
         .ThenInclude(x => x.Person)
         .Where(mv => favoritedMoviesIds.Contains(mv.Id))
-        .Project<Movie, MovieDto>(Mapper, "complete")
+        .Project<Movie, MovieMinimalDto>(Mapper)
         .ToListAsync(token);
 
       return Ok(favoriteMovies);
