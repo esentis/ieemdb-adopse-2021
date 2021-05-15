@@ -13,7 +13,7 @@ function UserReviews(props) {
         <div className="revStars2">
           <p className="rating">{props.ratingStars}/10</p>
           <ReactStars {...{
-            value: props.ratingStars, size: 30, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
+            value: props.ratingStars, size: 30, count: 10, color: "black", activeColor: "yellow", isHalf: false, edit: false,
             emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
             filledIcon: <i className="fa fa-star" />
           }} />

@@ -26,11 +26,11 @@ function ReviewPanel(props) {
         <p className="emptyRow"></p>
         <div className="revStars3">
           <ReactStars {...{
-            size: 30, count: 5, color: "black", activeColor: "yellow", value: 0, a11y: true, isHalf: false,
+            size: 30, count: 10, color: "black", activeColor: "yellow", value: 0, a11y: true, isHalf: false,
             emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
             filledIcon: <i className="fa fa-star" />, onChange: newValue => { setstarrev(`${newValue}`) }
           }} />
-          <p className="rating">{starrev}/5</p>
+          <p className="rating">{starrev}/10</p>
         </div>
         <input className="reviewSubmit" type="submit" value="Submit" onClick={()=>props.onClick(starrev,ratingText)}></input>
       </div>

@@ -61,14 +61,6 @@
   align-items: baseline;
   align-content: flex-start;
 }
-#popUpBody{
-  background-color: rgba(41, 44, 52);
-  height: fit-content;
-  overflow-y: auto;
-  overflow-x: hidden;
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
 .popUpName {
   font-family: Arial;
   font-size: 2rem;
@@ -94,18 +86,57 @@
   font-family: Arial;
   font-size: 1rem;
   color: rgba(41, 44, 52);
-  margin: 0px;
   text-align: left;
   background-color: #e7e7e7;
   padding: 0.5rem 1rem;
-  margin-bottom: 20px;
+  width: fit-content;
 }
 .birthDate{
   order: 2;
   flex-grow: 1;
 }
+#popUpBody{
+  background-color: rgba(41, 44, 52);
+  height: fit-content;
+  width: fit-content;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.imagePoster{
+  width: 20%;
+  border: 0.1rem solid black;
+  background-color: black;
+  flex-grow: 1;
+}
+.columnPopUp{
+  flex-grow: 1;
+  width: 80%;
+}
 @media (max-width:1199px){
   #popUpBody{
     height: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+  .columnPopUp{
+    width: 100%;
+  }
+  .imagePoster{
+    width: 30%;
+    margin: 10px;
+  }
+  .popUpBio{
+    font-family: Arial;
+    font-size: 1rem;
+    color: rgba(41, 44, 52);
+    text-align: left;
+    background-color: #e7e7e7;
+    padding: 0.5rem 1rem;
+    width: fit-content;
   }
 }
