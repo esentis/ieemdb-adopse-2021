@@ -8,6 +8,7 @@ namespace Esentis.Ieemdb.Web.Models.Enums
     None = 0,
     DeleteCleanup = 1,
     RefreshToken = DeleteCleanup << 1,
-    MovieSync = RefreshToken << 1,
+    PopularMovieSync = RefreshToken << 1,
+    TopRatedMovieSync = PopularMovieSync << 1,
   }
 }
