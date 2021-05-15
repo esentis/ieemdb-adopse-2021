@@ -3,6 +3,8 @@ import axios from 'axios';
 import '../Styles/Forms.css';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import ClientJS from 'clientjs';
+
 /*import auth from './auth';*/
 import { useHistory } from 'react-router-dom';
 import jwt_decode from "jwt-decode";
@@ -11,6 +13,7 @@ function LoginForm() {
   const [userNameLogin, setUserNameLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
   const [disableButton,setDisableButton]=useState(true);
+  var client = new ClientJS();
   /*const [deviceName, setDeviceName] = useState("");*/
   const history = useHistory();
   const [open,setOpen]=useState(false);
@@ -24,16 +27,17 @@ function LoginForm() {
     const handleSubmitLogin = async (evt) => {
     evt.preventDefault();
     const url = 'https://' + window.location.host + '/api/account/login';
+    console.log(client.getBrowser())
     axios.post(url, {
       userName: userNameLogin,
       password: passwordLogin,
-      deviceName: 'fdsfadsfas' //na perasw deviceName
+      deviceName: client.getBrowser().name //na perasw deviceName
     }).then(function (res) {
-      //console.log(res.data.accessToken);
       //console.log(res.status);
       if (res.status === 200) {
         localStorage.setItem('token', res.data.accessToken);
         localStorage.setItem('username',userNameLogin);
+        localStorage.setItem('refreshToken',res.data.refreshToken);
         isLoggedIn(true);
         history.push("/");
         var decoded = jwt_decode(res.data.accessToken);

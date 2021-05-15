@@ -109,8 +109,6 @@ function UserSettings() {
         }else{setDisablePassword(true)}
 
         
-       
-
         if(userName===localStorage.getItem('username')||userName.length<5){
             setDisableUsername(true);
         }else{
