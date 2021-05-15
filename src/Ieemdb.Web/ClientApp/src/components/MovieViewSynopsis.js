@@ -5,10 +5,9 @@ import Modal from 'react-awesome-modal';
 import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 import MovieCard from './MovieCard';
-import movies from './Movie_Dataset';
 import Moment from "react-moment";
 import axios from 'axios';
-import LoadingSpinner from './LoadingSpinner';
+import { useHistory } from 'react-router-dom';
 const responsive = {
   0: { items: 1 },
   1024: { items: 2 },
@@ -26,6 +25,11 @@ function MovieViewSynopsis(props) {
     const durationHours = props.duration.hours;
     const durationMinutes = props.duration.minutes;
     const [loading, setLoading] = useState(true);
+    const [watchListButtonText, setWatchListButtonText] = useState("");
+    const [onLoad, setOnLoad] = useState(true);
+    const [storeWatchlist, setStoreWatchList] = useState("");
+    const history = useHistory();
+    const [addWatchlistButtonColor, setaddWatchlistButtonColor] = useState({background: 'rgb(59, 94, 189)'});
     const directors = props.directors.map((directors) =>
       <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors.fullName} </span>
     );
@@ -38,9 +42,55 @@ function MovieViewSynopsis(props) {
     const countryOrigin = props.countryOrigin.map((countryOrigin) =>
       <span>{countryOrigin.name} </span>
     );
-    function onWatchlistButtonClick(){
-        //Otan kanei click sto ADD TO WATCHLIST button
-        console.log("Click on ADD TO WATCHLIST button");
+    
+    if (onLoad == true) {
+        setStoreWatchList(props.checkWatchList);
+        
+        if (localStorage.getItem('token') == null) {
+          setWatchListButtonText("Log in to use Watchlists");
+            setaddWatchlistButtonColor({background: 'rgb(59, 94, 189)'});
+        }
+        else {
+          console.log(storeWatchlist);
+          if (storeWatchlist == true || props.checkWatchList == true) {
+            setWatchListButtonText("Remove From Watchlist");
+            setaddWatchlistButtonColor({background: 'red'});
+          }
+          else if (storeWatchlist == false){
+            setWatchListButtonText("Add To WatchList");
+            setaddWatchlistButtonColor({background: 'rgb(59, 94, 189)'});
+          }
+        }
+        setOnLoad(false);
+    }
+    
+    async function onWatchlistButtonClick() {
+        
+        if (localStorage.getItem('token') == null) {
+          history.push('/Login/');
+        }
+        else {
+          if (storeWatchlist == true) {
+            await axios({
+              method: 'delete', url: `https://${window.location.host}/api/watchlist`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
+                "movieId": props.id
+              }
+            }).then()
+            setWatchListButtonText("Add To WatchList");
+            setStoreWatchList(false);
+            setaddWatchlistButtonColor({background: 'rgb(59, 94, 189)'});
+          }
+          else if (storeWatchlist == false) {
+            await axios({
+              method: 'post', url: `https://${window.location.host}/api/watchlist`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
+                "movieId": props.id
+              }
+            }).then()
+            setWatchListButtonText("Remove From Watchlist");
+            setStoreWatchList(true);
+            setaddWatchlistButtonColor({background: 'red'});
+          }
+        }
     }
     function popupToggle() {
       setopre(current => !current);
@@ -116,7 +166,7 @@ function MovieViewSynopsis(props) {
     return(
       <Col>
         <Row >
-          <button className="buttonAddToWatchList" onClick={onWatchlistButtonClick}>ADD TO WATCHLIST</button>
+          <button className="buttonAddToWatchList" style={addWatchlistButtonColor} onClick={onWatchlistButtonClick}>{watchListButtonText}</button>
         </Row>
         <Row className="rowTab">
           <p className="smallTitles">SYNOPSIS</p>
