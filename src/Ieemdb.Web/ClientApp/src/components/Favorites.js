@@ -18,7 +18,8 @@ function Favorites() {
             .then(function(res){
                 setData(res.data);
                 setLoading(false);
-            })}
+            }).catch(err=>console.log(err.response.status))
+        }
         fetchData();},[setPage]);
 
     const title='Favorites';
