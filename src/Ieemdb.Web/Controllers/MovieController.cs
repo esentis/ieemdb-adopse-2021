@@ -20,10 +20,12 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
+  [Authorize]
   [Route("api/movie")]
   public class MovieController : BaseController<MovieController>
   {
@@ -38,6 +40,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Movie's unique ID. </param>
     /// <response code="404">Movie not found.</response>
     /// <returns>Single <see cref="MovieDto"/>.</returns>
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<MovieDto>> GetMovie(long id, CancellationToken token = default)
     {
@@ -65,6 +68,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns search results.</response>
     /// <response code="400">Invalid data.</response>
     /// <returns>Search results.</returns>
+    [AllowAnonymous]
     [HttpPost("search")]
     public async Task<ActionResult<ICollection<MovieDto>>> SearchForMovie(
       [FromBody] MovieSearchCriteria criteria,
@@ -151,6 +155,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="400">Fields missing.</response>
     /// <response code="404">Missing actors. Missing directors. Missing countries. Missing writers. Missing genres.</response>
     /// <returns>Created <see cref="MovieDto"/>.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("")]
     public async Task<ActionResult> AddMovie([FromBody] AddMovieDto dto)
     {
@@ -252,6 +257,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Movie added to features.</response>
     /// <response code="404">Movie not found.</response>
     /// <returns>Updated <see cref="MovieDto"/>.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPut("{id}")]
     public async Task<ActionResult<MovieDto>> UpdateMovie(long id, [FromBody] UpdateMovieDto movieDto)
     {
@@ -275,6 +281,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Unique ID of the movie to add to featured.</param>
     /// <response code="200">Movie added to features.</response>
     /// <response code="404">Movie not found.</response>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("feature")]
     public async Task<ActionResult<MovieDto>> AddFeaturedMovie(
       long id,
@@ -301,6 +308,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="204">Succesfully added to list.</response>
     /// <response code="404">Movie not found.</response>
     /// <returns>No Content.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("unfeature")]
     public async Task<ActionResult> RemoveFeaturedMovie(long id, CancellationToken cancellationToken = default)
     {
@@ -322,6 +330,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <response code="200">Succesfully returns movies.</response>
     /// <returns>List of top 100 movies.</returns>
+    [AllowAnonymous]
     [HttpGet("top")]
     public async Task<ActionResult<List<MovieDto>>> GetTop(CancellationToken cancellationToken = default)
     {
@@ -345,6 +354,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="criteria">Page results criteria.</param>
     /// <response code="200">Succesfully returns movies.</response>
     /// <returns>List of movies.</returns>
+    [AllowAnonymous]
     [HttpPost("new")]
     public async Task<ActionResult<ICollection<MovieDto>>> GetNewReleases(
       PaginationCriteria criteria,
@@ -380,6 +390,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="criteria">Page results criteria.</param>
     /// <response code="200">Succesfully returns movies.</response>
     /// <returns>List of movies.</returns>
+    [AllowAnonymous]
     [HttpPost("latest")]
     public async Task<ActionResult<ICollection<MovieDto>>> GetLatestAdded(
       PaginationCriteria criteria,
@@ -416,6 +427,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Movie's unique ID.</param>
     /// <response code="204">Succesfully deleted.</response>
     /// <response code="404">Movie not found.</response>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteMovie(long id, CancellationToken token = default)
     {
@@ -439,6 +451,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="204">Succesfully deleted.</response>
     /// <response code="404">Images not found.</response>
     /// <returns>Returns a list of <see cref="ImageDto"/></returns>
+    [AllowAnonymous]
     [HttpGet("{id}/images")]
     public async Task<ActionResult<List<ImageDto>>> GetImages(long id, CancellationToken token = default)
     {
@@ -462,6 +475,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="204">Returns a list of videos.</response>
     /// <response code="404">Videos not found.</response>
     /// <returns>Returns a list of <see cref="VideoDto"/></returns>
+    [AllowAnonymous]
     [HttpGet("{id}/videos")]
     public async Task<ActionResult<List<VideoDto>>> GetVideos(long id, CancellationToken token = default)
     {
@@ -485,6 +499,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="204">Returns a list of ratings.</response>
     /// <response code="404">Ratings not found.</response>
     /// <returns>Returns a list of <see cref="RatingDto"/></returns>
+    [AllowAnonymous]
     [HttpGet("{id}/ratings")]
     public async Task<ActionResult<List<RatingDto>>> GetRatings(long id, CancellationToken token = default)
     {

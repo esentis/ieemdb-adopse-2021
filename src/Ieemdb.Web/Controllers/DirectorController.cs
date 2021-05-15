@@ -18,10 +18,12 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
+  [Authorize]
   [Route("api/director")]
   [ApiController]
   public class DirectorController : BaseController<DirectorController>
@@ -38,6 +40,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns the directors.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>A list of <see cref="PersonDto"/>.</returns>
+    [AllowAnonymous]
     [HttpPost("all")]
     public async Task<ActionResult<List<PersonDto>>> GetDirectors(
       PaginationCriteria criteria,
@@ -76,6 +79,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns found Actors.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>List of <see cref="PersonDto"/>.</returns>
+    [AllowAnonymous]
     [HttpPost("search")]
     public async Task<ActionResult<List<PersonDto>>> Search(
       PersonSearchCriteria criteria,
@@ -115,6 +119,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Returns single director.</response>
     /// <response code="404">Director not found.</response>
     /// <returns>A single <see cref="PersonDto"/>.</returns>
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<PersonDto>> GetDirector(long id, CancellationToken token = default)
     {
@@ -137,6 +142,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="dto">Director information.</param>
     /// <response code="201">Successfully added director.</response>
     /// <returns>Created <see cref="PersonDto"/>.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("")]
     public async Task<ActionResult<PersonDto>> AddDirector([FromBody] AddPersonDto dto)
     {
@@ -158,6 +164,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="201">Successfully deleted.</response>
     /// <response code="404">Director not found.</response>
     /// <returns>No content.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpDelete("")]
     public async Task<ActionResult> DeleteDirector(int id, CancellationToken token = default)
     {
@@ -185,6 +192,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Director successfully updated.</response>
     /// <response code="404">Director not found.</response>
     /// <returns>Updated <see cref="PersonDto"/>.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPut("{id}")]
     public async Task<ActionResult<PersonDto>> UpdateDirector(int id, AddPersonDto dto, CancellationToken token = default)
     {

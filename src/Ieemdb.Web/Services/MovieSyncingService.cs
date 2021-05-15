@@ -82,28 +82,64 @@ namespace Esentis.Ieemdb.Web.Services
         {
           using var scope = factory.CreateScope();
           var context = scope.ServiceProvider.GetRequiredService<IeemdbDbContext>();
-          var progress = await context.ServiceBatchingProgresses.Where(x => x.Name == BackgroundServiceName.MovieSync)
+          var popularMoviesProgress = await context.ServiceBatchingProgresses
+            .Where(x => x.Name == BackgroundServiceName.PopularMovieSync)
             .OrderByDescending(x => x.CreatedAt)
             .FirstOrDefaultAsync(stoppingToken);
-          if (progress == null || progress.LastProccessedPage >= progress.TotalPages - 1)
+
+          if (popularMoviesProgress == null
+              || popularMoviesProgress.LastProccessedPage >= popularMoviesProgress.TotalPages - 1)
           {
-            progress = new ServiceBatchingProgress { Name = BackgroundServiceName.MovieSync, LastProccessedPage = 1, };
-            context.ServiceBatchingProgresses.Add(progress);
+            popularMoviesProgress = new ServiceBatchingProgress
+            {
+              Name = BackgroundServiceName.PopularMovieSync, LastProccessedPage = 1,
+            };
+            context.ServiceBatchingProgresses.Add(popularMoviesProgress);
           }
           else
           {
-            progress.LastProccessedPage++;
+            popularMoviesProgress.LastProccessedPage++;
           }
 
-          var movies = await tmdbApi.GetPopular(progress.LastProccessedPage);
-          progress.TotalPages = progress.LastProccessedPage == 1
-            ? movies.total_pages
-            : progress.TotalPages;
+          var topRatedMoviesProgress = await context.ServiceBatchingProgresses
+            .Where(x => x.Name == BackgroundServiceName.TopRatedMovieSync)
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefaultAsync(stoppingToken);
 
-          var movieTMDBids = movies.results.Select(x => x.id).ToArray();
+          if (topRatedMoviesProgress == null
+              || topRatedMoviesProgress.LastProccessedPage >= topRatedMoviesProgress.TotalPages - 1)
+          {
+            topRatedMoviesProgress = new ServiceBatchingProgress
+            {
+              Name = BackgroundServiceName.TopRatedMovieSync, LastProccessedPage = 1,
+            };
+            context.ServiceBatchingProgresses.Add(topRatedMoviesProgress);
+          }
+          else
+          {
+            topRatedMoviesProgress.LastProccessedPage++;
+          }
+
+          var popularMovies = await tmdbApi.GetPopular(popularMoviesProgress.LastProccessedPage);
+          var topRatedMovies = await tmdbApi.GetTopRated(topRatedMoviesProgress.LastProccessedPage);
+
+          topRatedMoviesProgress.TotalPages = topRatedMoviesProgress.LastProccessedPage == 1
+            ? topRatedMovies.total_pages
+            : topRatedMoviesProgress.TotalPages;
+          popularMoviesProgress.TotalPages = popularMoviesProgress.LastProccessedPage == 1
+            ? popularMovies.total_pages
+            : popularMoviesProgress.TotalPages;
+
+          var popularMovieIds = popularMovies.results.Select(x => x.id).ToArray();
+          var topRatedMovieIds = topRatedMovies.results.Select(x => x.id).ToArray();
+
+          var allMovieIds = new long[popularMovieIds.Length + topRatedMovieIds.Length];
+
+          popularMovieIds.CopyTo(allMovieIds, 0);
+          topRatedMovieIds.CopyTo(allMovieIds, popularMovieIds.Length);
 
           var existingMovies =
-            await context.Movies.Where(mv => movieTMDBids.Contains(mv.TmdbId)).ToListAsync(stoppingToken);
+            await context.Movies.Where(mv => allMovieIds.Contains(mv.TmdbId)).ToListAsync(stoppingToken);
 
           var allCountries = await context.Countries.ToListAsync(stoppingToken);
 
@@ -115,8 +151,12 @@ namespace Esentis.Ieemdb.Web.Services
 
           var genres = await context.Genres.ToListAsync(stoppingToken);
           List<MovieGenre> movieGenres = new();
+          List<Video> videos = new();
+          List<Image> images = new();
+          List<MovieCountry> movieCountriesForSave = new();
+          List<MoviePerson> moviePeople = new();
 
-          foreach (var m in movies.results.Where(x => existingMovies.All(y => y.TmdbId != x.id)))
+          foreach (var m in popularMovies.results.Where(x => existingMovies.All(y => y.TmdbId != x.id)))
           {
             try
             {
@@ -132,7 +172,6 @@ namespace Esentis.Ieemdb.Web.Services
           }
 
           var castIds = castToBeSaved.SelectMany(x => x.cast).Select(x => x.id).Distinct().ToArray();
-
 
           var existingPeople =
             await context.People.Where(ac => castIds.Contains(ac.TmdbId)).ToListAsync(stoppingToken);
@@ -187,10 +226,14 @@ namespace Esentis.Ieemdb.Web.Services
           {
             var movieForSave = new Movie
             {
-              Duration = detailedMovie.runtime == null ? TimeSpan.FromMinutes(0) : TimeSpan.FromMinutes(Convert.ToDouble(detailedMovie.runtime)),
+              Duration = detailedMovie.runtime == null
+                ? TimeSpan.FromMinutes(0)
+                : TimeSpan.FromMinutes(Convert.ToDouble(detailedMovie.runtime)),
               Plot = detailedMovie.overview,
               TmdbId = detailedMovie.id,
-              ReleaseDate = DateTimeOffset.TryParse(detailedMovie.release_date, out var releaseDate) ? releaseDate : null,
+              ReleaseDate = DateTimeOffset.TryParse(detailedMovie.release_date, out var releaseDate)
+                ? releaseDate
+                : null,
               Title = detailedMovie.title,
               PosterUrl = $"https://image.tmdb.org/t/p/w600_and_h900_bestv2{detailedMovie.poster_path}",
             };
@@ -199,7 +242,7 @@ namespace Esentis.Ieemdb.Web.Services
 
             var movieImages = await tmdbApi.GetMovieImages(detailedMovie.id);
 
-            var videos = movieVideos.results.Select(video => new Video
+            videos = movieVideos.results.Select(video => new Video
               {
                 Movie = movieForSave,
                 TmdbId = video.id,
@@ -225,36 +268,36 @@ namespace Esentis.Ieemdb.Web.Services
               })
               .ToList();
 
-            var images = movieImages.posters.Select(p => new Image
-            {
-              Movie = movieForSave,
-              Url = $"https://image.tmdb.org/t/p/w600_and_h900_bestv2{p.file_path}",
-            })
+            images = movieImages.posters.Select(p => new Image
+              {
+                Movie = movieForSave, Url = $"https://image.tmdb.org/t/p/w600_and_h900_bestv2{p.file_path}",
+              })
               .ToList();
 
             var movieCountriesIsos = detailedMovie.production_countries.Select(c => c.iso_3166_1).ToList();
 
-            var movieCountriesForSave = allCountries.Where(country => movieCountriesIsos.Contains(country.Iso))
+            movieCountriesForSave = allCountries.Where(country => movieCountriesIsos.Contains(country.Iso))
               .Select(x => new MovieCountry { Country = x, Movie = movieForSave })
               .ToList();
 
             movieGenres.AddRange(detailedMovie.genres.Select(x => genres.SingleOrDefault(y => y.TmdbId == x.id))
               .Where(x => x != null)
-              .Select(x => new MovieGenre { Genre = x, Movie = movieForSave, }));
+              .Select(x => new MovieGenre { Genre = x, Movie = movieForSave, })
+              .ToList());
 
-            var moviePeople = peopleToBeSaved.Where(x =>
+
+            moviePeople = peopleToBeSaved.Where(x =>
                 castToBeSaved.Any(movieCast =>
                   movieCast.id == movieForSave.TmdbId && movieCast.cast.Any(z => z.id == x.TmdbId)))
               .Select(x => new MoviePerson { Person = x, Movie = movieForSave, })
               .ToList();
-
-            context.Images.AddRange(images);
-            context.Videos.AddRange(videos);
-            context.MovieCountries.AddRange(movieCountriesForSave);
-            context.MoviePeople.AddRange(moviePeople);
           }
 
+          context.Images.AddRange(images);
+          context.MovieCountries.AddRange(movieCountriesForSave);
+          context.MoviePeople.AddRange(moviePeople);
           context.MovieGenres.AddRange(movieGenres);
+          context.Videos.AddRange(videos);
 
           await context.SaveChangesAsync(stoppingToken);
         }

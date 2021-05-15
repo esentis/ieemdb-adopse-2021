@@ -6,6 +6,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using System.Threading.Tasks;
 
   using Esentis.Ieemdb.Persistence;
+  using Esentis.Ieemdb.Persistence.Helpers;
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models;
@@ -16,10 +17,12 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Kritikos.PureMap;
   using Kritikos.PureMap.Contracts;
 
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Logging;
 
+  [Authorize]
   [Route("api/genre")]
   [ApiController]
   public class GenreController : BaseController<GenreController>
@@ -36,6 +39,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Succesfully returns Genres.</response>
     /// <response code="400">Page doesn't exist.</response>
     /// <returns>List of <see cref="GenreDto"/>.</returns>
+    [AllowAnonymous]
     [HttpPost("all")]
     public async Task<ActionResult<List<GenreDto>>> GetGenres(
       PaginationCriteria criteria,
@@ -74,6 +78,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Succesfully gets a Genre.</response>
     /// <response code="404">Genre not found.</response>
     /// <returns>Single <see cref="GenreDto"/>.</returns>
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<GenreDto>> GetGenre(long id, CancellationToken token = default)
     {
@@ -98,6 +103,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="dto">Genre information.</param>
     /// <response code="201">Succesfully created.</response>
     /// <returns>Created <see cref="GenreDto"/>.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("")]
     public async Task<ActionResult<GenreDto>> AddGenre(
       [FromBody] AddGenreDto dto,
@@ -119,6 +125,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="204">Successfully deleted.</response>
     /// <response code="404">Genre not found.</response>
     /// <param name="id">Genre's unique ID.</param>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpDelete("")]
     public async Task<ActionResult> DeleteGenre(int id, CancellationToken token = default)
     {
@@ -147,6 +154,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <response code="200">Succesfully updated.</response>
     /// <response code="404">Genre not found.</response>
     /// <returns>Updated <see cref="GenreDto"/>.</returns>
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPut("{id}")]
     public async Task<ActionResult<GenreDto>> UpdateGenre(int id, AddGenreDto dto, CancellationToken token = default)
     {

@@ -54,13 +54,47 @@ namespace Esentis.Ieemdb.Web.Controllers
       return NoContent();
     }
 
-    [HttpPost("startSeeding")]
+    [HttpPost("startSyncing")]
     public async Task<ActionResult<ServiceBatchingProgress>> InitSeeding(CancellationToken token = default)
     {
       movieSeedService.Trigger(null);
-      var status = await Context.ServiceBatchingProgresses.Where(x => x.Name == BackgroundServiceName.MovieSync)
+      var status = await Context.ServiceBatchingProgresses.Where(x => x.Name == BackgroundServiceName.PopularMovieSync)
         .OrderByDescending(x => x.CreatedAt)
         .SingleOrDefaultAsync(token);
+      return Ok(status);
+    }
+
+    [HttpGet("syncStatus")]
+    public async Task<ActionResult<ServiceBatchingProgress>> GetSyncStatus(CancellationToken token = default)
+    {
+      var status = await Context.ServiceBatchingProgresses
+        .OrderByDescending(x => x.CreatedAt)
+        .ToListAsync(token);
+      return Ok(status);
+    }
+
+    /// <summary>
+    /// Updates a sync service.
+    /// </summary>
+    /// <param name="page">Last proccessed page.</param>
+    /// <param name="service">Service enum.</param>
+    /// <response code="200">Returns updated service.</response>
+    /// <response code="404">Batch service not found.</response>
+    /// <returns>Update <see cref="ServiceBatchingProgress"/>.</returns>
+    [HttpPut("updateSyncService")]
+    public async Task<ActionResult<ServiceBatchingProgress>> EditSyncService(int page, BackgroundServiceName service, CancellationToken token = default)
+    {
+      var status = await Context.ServiceBatchingProgresses.Where(x => x.Name == service)
+        .OrderByDescending(x => x.CreatedAt)
+        .SingleOrDefaultAsync(token);
+
+      if (status == null)
+      {
+        return NotFound("Sync service not found.");
+      }
+
+      status.LastProccessedPage = page;
+      await Context.SaveChangesAsync();
       return Ok(status);
     }
 
