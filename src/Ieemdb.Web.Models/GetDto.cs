@@ -22,5 +22,5 @@ namespace Esentis.Ieemdb.Web.Models
 
   public record UserBindingDto(string AccessToken, DateTimeOffset ExpiresIn, Guid RefreshToken);
 
-  public record UserRefreshTokenDto(string ExpiredToken, Guid RefreshToken);
+  public record UserRefreshTokenDto(string ExpiredToken, string Device, Guid RefreshToken);
 }

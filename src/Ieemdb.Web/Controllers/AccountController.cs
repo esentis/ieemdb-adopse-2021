@@ -271,7 +271,8 @@ namespace Esentis.Ieemdb.Web.Controllers
       }
 
       var durationToCheck = DateTimeOffset.Now.AddDays(-jwtOptions.RefreshTokenDurationInDays);
-      var device = await Context.Devices.Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId)
+      var device = await Context.Devices
+        .Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId && x.Name == dto.Device)
         .Where(x => x.UpdatedAt > durationToCheck)
         .SingleOrDefaultAsync(token);
       if (device
