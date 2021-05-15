@@ -267,17 +267,17 @@ namespace Esentis.Ieemdb.Web.Controllers
 
       if (!valid)
       {
-        return NotFound();
+        return NotFound("Token is not valid.");
       }
 
       var durationToCheck = DateTimeOffset.Now.AddDays(-jwtOptions.RefreshTokenDurationInDays);
       var device = await Context.Devices.Where(x => x.RefreshToken == dto.RefreshToken && x.User.Id == userId)
-        .Where(x => x.UpdatedAt < durationToCheck)
+        .Where(x => x.UpdatedAt > durationToCheck)
         .SingleOrDefaultAsync(token);
       if (device
           == null)
       {
-        return NotFound();
+        return NotFound("Device not found.");
       }
 
       var user = await userManager.FindByIdAsync(userId.ToString());
@@ -289,7 +289,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       device.RefreshToken = Guid.NewGuid();
       await Context.SaveChangesAsync(token);
 
-      var result = new UserBindingDto(jwt, accessTokenExpiration, Guid.Parse(jwt));
+      var result = new UserBindingDto(jwt, accessTokenExpiration, device.RefreshToken);
 
       return Ok(result);
     }
