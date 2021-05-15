@@ -49,7 +49,7 @@ function MovieViewPoster(props) {
     async function FindRatings() {
       await axios({
         method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`
-      }).then(function(res){setItem(res.data)})
+      }).then(function(res){setItem(res.data);})
     }
     async function AddUserRating(rate,review) {
       if (rate == "0") {
@@ -62,6 +62,7 @@ function MovieViewPoster(props) {
           const newItem=[...item,res.data];
           setItem(newItem);
           setReviewCheck(true);
+          setUserReview(res.data);
         })
       }
     }
@@ -105,10 +106,12 @@ function MovieViewPoster(props) {
     async function deleteComment(){
       await axios({
         method:'delete', url:`https://${window.location.host}/api/rating/delete?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
-      }).then(res => console.log(res))
-      const newItem=item.filter((i)=>userReview.username!==i.username);
+      }).then(res => {console.log(res);
+        const newItem=item.filter((i)=>userReview.username!==i.username);
       setItem(newItem);
       setReviewCheck(false);
+      })
+      
     }
     console.log("Favorite:",props.checkFavorite);
     return(
