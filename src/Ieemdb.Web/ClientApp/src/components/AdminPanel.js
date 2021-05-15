@@ -39,14 +39,14 @@ function AdminPanel() {
        async function removeFeatured(arg){
             const newFeatured=featured.filter((movie)=>arg!==movie.id)
             setFeatured(newFeatured);
-            await axios.post(`https://localhost:5001/api/movie/unfeature?id=${arg}`)
+            await axios.post(`https://${window.location.host}/api/movie/unfeature?id=${arg}`)
             
         }
 
         async function addFeatured(id,posterUrl,title){
             const newFeatured=[...featured,{id,posterUrl,title}]
             setFeatured(newFeatured);
-            await axios.post(`https://localhost:5001/api/movie/feature?id=${id}`)
+            await axios.post(`https://${window.location.host}/api/movie/feature?id=${id}`)
         }
 
         const title=' Current Featured Movies';
