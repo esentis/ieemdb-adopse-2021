@@ -8,7 +8,8 @@ import MovieViewSynopsis from './MovieViewSynopsis';
 import LoadingSpinner from './LoadingSpinner';
 import {useUpdatePage} from './GlobalContext';
 import {useCheckLogin} from './GlobalContext';
-import axios from 'axios'
+import axios from 'axios';
+import getRefreshToken from './refreshToken';
 function MovieView() {
    
     const setPage=useUpdatePage();
@@ -33,15 +34,9 @@ function MovieView() {
         async function fetchData(){
                 const movieInfo=axios.get(`https://${window.location.host}/api/movie/${id}`);
                 const trailer=axios.get(`https://${window.location.host}/api/movie/${id}/videos`);
-                var checkFavoriteRequest="";
-                var checkWatchListRequest="";
-
-                if(CheckLoginState()){
-                    checkFavoriteRequest=axios({method:'post',url:`https://${window.location.host}/api/favorite/check?movieId=${id}`,headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}});
-                    checkWatchListRequest=await axios({method:'post',url:`https://${window.location.host}/api/watchlist/check?movieId=${id}`,headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}});
-                }
-            
-                await axios.all([movieInfo,trailer,checkFavoriteRequest,checkWatchListRequest]).then(axios.spread((...responses)=>{
+               
+                await axios.all([movieInfo,trailer,(CheckLoginState()?axios({method:'post',url:`https://${window.location.host}/api/favorite/check?movieId=${id}`,
+                headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}}):""),(CheckLoginState()? axios({method:'post',url:`https://${window.location.host}/api/watchlist/check?movieId=${id}`,headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}}):"")]).then(axios.spread((...responses)=>{
                    const MovieInfoResponse=responses[0];
                    const trailerResponse=responses[1];
                    const checkFavoriteResponse=responses[2];
@@ -57,7 +52,32 @@ function MovieView() {
                    setCheckWatchList(checkWatchListResponse.data);
                    setLoading(false);
                 }))
-          }
+            .catch(err=>{
+                    if(err.response.status===401){
+                        (async()=>{
+                            var token=await getRefreshToken();
+                            
+                axios.all([movieInfo,trailer,(CheckLoginState()?axios({method:'post',url:`https://${window.location.host}/api/favorite/check?movieId=${id}`,
+                headers:{'Authorization':'Bearer ' + token}}):""),(CheckLoginState()? axios({method:'post',url:`https://${window.location.host}/api/watchlist/check?movieId=${id}`,headers:{'Authorization':'Bearer ' +token}}):"")]).then(axios.spread((...responses)=>{
+                   const MovieInfoResponse=responses[0];
+                   const trailerResponse=responses[1];
+                   const checkFavoriteResponse=responses[2];
+                   const checkWatchListResponse=responses[3];
+                   const MovieTrailer=trailerResponse.data.filter((video)=>"Trailer"===video.type)[0];
+                   const directors=MovieInfoResponse.data.people.filter((movie)=>"Directing"===movie.knownFor);
+                   const actors=MovieInfoResponse.data.people.filter((movie)=>"Acting"===movie.knownFor);
+                   const writers=MovieInfoResponse.data.people.filter((movie)=>"Writing"===movie.knownFor);
+                   setItems(MovieInfoResponse.data);
+                   setPeople({Directors:directors,Actors:actors,Writers:writers});
+                   setTrailerUrl(MovieTrailer);
+                   setCheckFavorite(checkFavoriteResponse.data);
+                   setCheckWatchList(checkWatchListResponse.data);
+                   setLoading(false);
+                }))            
+                })(); 
+                    }
+                })
+            }
           fetchData();
       },[id]);
        

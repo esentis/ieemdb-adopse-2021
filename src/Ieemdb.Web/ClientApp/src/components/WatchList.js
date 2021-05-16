@@ -5,6 +5,8 @@ import movies from './Movie_Dataset';
 import {useUpdatePage} from './GlobalContext'
 import {Col} from 'react-bootstrap';
 import axios from 'axios';
+import getRefreshToken from './refreshToken';
+
 
 function WatchList() {
     const setPage=useUpdatePage();
@@ -17,7 +19,18 @@ function WatchList() {
             .then(function(res){
                 setData(res.data);
                 setLoading(false);
-            })}
+            }).catch(err=>{
+                if(err.response.status===401){
+                    (async()=>{
+                        var token=await getRefreshToken();
+                        axios({method:'get',url:`https://${window.location.host}/api/watchlist`,headers:{'Authorization':'Bearer ' + token}})
+                        .then(function(res){
+                        setData(res.data);
+                        setLoading(false);
+                })
+                      })();}
+            })
+        }
         fetchData();},[setPage]);
     
     const title='Watch List';
@@ -25,14 +38,15 @@ function WatchList() {
         id={i.id}
         Title={i.title} 
         Poster={i.posterUrl?i.posterUrl:"https://media.comicbook.com/files/img/default-movie.png"} 
-        height={"250vh"} 
+        height={"350vh"} 
         width={'auto'}
         posterClass='poster'
         flag={false} />)
     return (
         <Col className="column-right">
         <TopRight title={title}
-                  items={items} />
+                  items={items}
+                  loading={loading}  />
                   </Col>
 
     )

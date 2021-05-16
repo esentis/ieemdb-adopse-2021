@@ -10,7 +10,9 @@
 
 ---
 
-Please read [Contributing Guidelines](CONTRIBUTING.md) before working on this repo.
+## [API Documentation][docs]
+
+## [Database Schema ER][ER]
 
 ## Live Environment
 
@@ -26,20 +28,33 @@ Sponsored by [Alexandros Kritikos][akritikos] / [Kritikos IO][kritikos-io]
 
 ### Backend
 
-Γιώργος Λεωνίδης / esentis
+[Λεωνίδης Γιώργος / esentis][esentis]
 
-[Μαρκουλάκης Ευάγγελος / vagmark30](https://github.com/vagmark30)
+[Μαρκουλάκης Ευάγγελος / vagmark30][vagmark30]
 
 ### Frontend
 
-[Γρατσος Κωνσταντινος / KostisGrf](https://github.com/KostisGrf)
+[Γρατσος Κωνσταντινος / KostisGrf][KostisGrf]
 
-[Γαβριηλίδης Δημήτριος / GavriilJim](https://github.com/GavriilJim)
+[Γαβριηλίδης Δημήτριος / GavriilJim][GavriilJim]
 
-[Μαστρομανώλης Θεόδωρος  / GavriilJim](https://github.com/TeoMastro)
+[Μαστρομανώλης Θεόδωρος  / TeoMastro][TeoMastro]
 
 [ieemdb-dev]: https://ieemdb-dev.azurewebsites.net/
 [ieemdb-stage]: https://ieemdb-stage.azurewebsites.net/
 [ieemdb-prod]: https://ieemdb.azurewebsites.net/
 [akritikos]: https://github.com/akritikos
 [kritikos-io]: https://github.com/kritikos-io
+[esentis]:https://github.com/esentis
+[vagmark30]:https://github.com/vagmark30
+[KostisGrf]:https://github.com/KostisGrf
+[GavriilJim]:https://github.com/GavriilJim
+[TeoMastro]:https://github.com/TeoMastro
+[docs]:https://ieemdb.azurewebsites.net/docs/index.html
+[ER]:https://heuristic-raman-64f8f2.netlify.app/
+
+Please read [Contributing Guidelines](CONTRIBUTING.md) before working on this repo.
+
+<p align="center">
+  <img src="images/dont_steal.gif">
+</p>

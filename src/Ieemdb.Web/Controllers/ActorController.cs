@@ -144,6 +144,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="dto">Actor information.</param>
     /// <response code="201">Actor successfully added.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <returns>Created <see cref="PersonDto"/>.</returns>
     [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("")]
@@ -165,6 +166,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="id">Actor's unique ID.</param>
     /// <response code="204">Deleted successfully.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Actor not found.</response>
     /// <returns>No content.</returns>
     [Authorize(Roles = RoleNames.Administrator)]
@@ -194,6 +196,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Actor's unique ID.</param>
     /// <param name="dto">Actor's information.</param>
     /// <response code="200">Returns updated Actor.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">No actor found.</response>
     /// <returns>Updated <see cref="PersonDto"/>.</returns>
     [Authorize(Roles = RoleNames.Administrator)]

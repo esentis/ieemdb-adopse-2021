@@ -6,86 +6,215 @@ import Modal from 'react-awesome-modal';
 import ReactStars from "react-rating-stars-component";
 import Genre from './Genre';
 import Moment from "react-moment";
+import ReviewPanel from './ReviewPanel';
+import axios from 'axios';
+import UserReviews from './UserReviews';
+import {Link} from 'react-router-dom';
+import getRefreshToken from './refreshToken'
 function RatingStars(rating){
-    if (rating.stars < 1){
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 0, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
-    else if (rating.stars < 2){
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 1, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
-    else if (rating.stars < 3){
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 2, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
-    else if (rating.stars < 4){
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 3, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
-    else if (rating.stars < 5){
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 4, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
-    else{
-        return (<div id="divRate">
-                    <p className="rating">{rating.stars}/5</p>
-                    <ReactStars {...{value: 5, size: 40, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                </div>
-        );
-    }
+  return (<div id="divRate">
+    <p className="rating">{rating.stars}/10</p>
+    <ReactStars {...{value: rating.stars, size: 40, count: 10, color: "black", activeColor: "yellow", isHalf: true, edit: false,
+      emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
+      filledIcon: <i className="fa fa-star" />}} />
+    </div>
+  );
 }
-function MovieViewPoster(props){
+function MovieViewPoster(props) {
     const [opre, setopre] = useState(false);
-    const [starrev, setstarrev] = useState('0');
+    const [item, setItem] = useState([]);
+    const [onLoad, setOnLoad] = useState(true);
+    const [reviewCheck,setReviewCheck]=useState(false);
+    const [userReview,setUserReview]=useState();
+    const [storeFavorite, setStoreFavorite] = useState("");
     const history=useHistory();
+    const [addFavoriteButtonColor, setaddFavoriteButtonColor] = useState({background: 'rgba(52, 52, 52, 0)'});
     function HandleGenres(id,name){
         history.push('/Genre/GenreValue='+name+'/Id='+id);
     }
-    /*const id=props.id;*/
     const releaseDate = <Moment format="YYYY">{props.releaseDate}</Moment>
     const genres = props.genres.map((genre) =>
         <Genre name={genre.name} id={genre.id} onClick={HandleGenres}/>
     );
+
     const rating = props.rating;
-    function onFavButtonClick(){
-        //Otan kanei klik sto ADD FAVORITE button
-        console.log("Click on ADD FAVORITE button");
+    if (onLoad == true) {
+        setStoreFavorite(props.checkFavorite);
+        if (localStorage.getItem('token') == null) {
+            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'});
+        }
+        else {
+          if (storeFavorite == true || props.checkFavorite == true) {
+            setaddFavoriteButtonColor({background: 'white'});
+          }
+          else if (storeFavorite == false){
+            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'});
+          }
+        }
+        setOnLoad(false);
+    }
+
+    async function onFavButtonClick(){
+        if (localStorage.getItem('token') == null) {
+          history.push('/Login/');
+        }
+        else {
+          if (storeFavorite == true) {
+            await axios({
+              method: 'delete', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
+                "movieId": props.id
+              }
+            }).then(res=>{setStoreFavorite(false);
+            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'})}).catch(err=>{
+              
+              if(err.response.status===401){
+                (async()=>{
+                  var token=await getRefreshToken();
+                  axios({
+                    method: 'delete', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + token }, params: {
+                      "movieId": props.id
+                    }
+                  }).then(res=>{setStoreFavorite(false);
+                    setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'})})
+                })();
+              }
+            })
+          }
+          else if (storeFavorite == false) {
+            await axios({
+              method: 'post', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
+                "movieId": props.id
+              }
+            }).then(res=>{setStoreFavorite(true);
+              setaddFavoriteButtonColor({background: 'white'});}).catch(err=>{
+                if(err.response.status===401){
+                  (async()=>{
+                    var token=await getRefreshToken();
+                    axios({
+                      method: 'post', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + token }, params: {
+                        "movieId": props.id
+                      }
+                    }).then(res=>{setStoreFavorite(true);
+                    setaddFavoriteButtonColor({background: 'white'});})
+                  })()
+                }
+              })
+              
+          }
+        }
     }
     function popupReview(){
         setopre(current => !current);
+        FindRatings();
     }
     function backButton(){
         history.goBack();
     }
-    console.log("Favorite:",props.checkFavorite);
+    async function FindRatings() {
+      await axios({
+        method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`
+      }).then(function(res){setItem(res.data);})
+
+    }
+    async function AddUserRating(rate,review) {
+      if (rate == "0") {
+        window.alert("You need to add star rating");
+      }
+      else {
+        await axios({
+          method:'post', url:`https://${window.location.host}/api/rating?movieId=${props.id}&rate=${rate}&review=${review}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
+        }).then(function(res){
+          const newItem=[...item,res.data];
+          setItem(newItem);
+          setReviewCheck(true);
+          setUserReview(res.data);
+        }).catch(err=>{
+          if(err.response.status===401){
+            (async()=>{
+              var token=await getRefreshToken();
+              axios({
+                method:'post', url:`https://${window.location.host}/api/rating?movieId=${props.id}&rate=${rate}&review=${review}`, headers:{'Authorization':'Bearer '+token} 
+              }).then(function(res){
+                const newItem=[...item,res.data];
+                setItem(newItem);
+                setReviewCheck(true);
+                setUserReview(res.data);
+              })
+            })();
+          }
+        })}
+    }
+    async function checkIfReviewed(){
+        await axios({
+          method:'post', url:`https://${window.location.host}/api/rating/check?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
+        }).then(function(res){ 
+          setReviewCheck(true);
+          setUserReview(res.data);
+        }).catch(err=>{
+          if(err.response.status===401){
+            (async()=>{
+              var token=await getRefreshToken();
+              axios({
+                method:'post', url:`https://${window.location.host}/api/rating/check?movieId=${props.id}`, headers:{'Authorization':'Bearer '+token} 
+              }).then(function(res){ 
+                setReviewCheck(true);
+                setUserReview(res.data);
+              })
+            })();
+          }
+        })
+      }
+      if (onLoad == true) {
+        checkIfReviewed();
+        setOnLoad(false);
+      }
+    function CheckIfLogin() {
+      if (localStorage.getItem('token') == null) {
+        return (
+          <div id="add_review">
+            <div className="col1Rev">
+              <p className="addRevTitle">Add your review</p>
+              <p className="revComment">You need to <Link className='toLogin' to='/Login'>Login</Link> in order to review</p>
+            </div>
+          </div>
+        )
+      }
+      else{
+        if(reviewCheck){
+          return (
+            <div id="removePanel">
+              <button className="removeRatingButton" onClick={deleteComment}>Remove your rating</button>
+            </div>
+          ) 
+        }
+        else{
+          return <ReviewPanel movieId={props.id} onClick={AddUserRating}/>
+        }
+      }
+    }
+    async function deleteComment(){
+      await axios({
+        method:'delete', url:`https://${window.location.host}/api/rating/delete?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
+      }).then(res => {
+        const newItem=item.filter((i)=>userReview.username!==i.username);
+      setItem(newItem);
+      setReviewCheck(false);
+      }).catch(err=>{
+        if(err.response.status===401){
+          (async()=>{
+            var token=await getRefreshToken();
+            axios({
+              method:'delete', url:`https://${window.location.host}/api/rating/delete?movieId=${props.id}`, headers:{'Authorization':'Bearer '+token} 
+            }).then(res=>{
+              const newItem=item.filter((i)=>userReview.username!==i.username);
+              setItem(newItem);
+              setReviewCheck(false);
+            })
+          })();
+        }
+      })
+      
+    }
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
@@ -97,7 +226,7 @@ function MovieViewPoster(props){
                     <p className="movieTitle">{props.title} ({releaseDate})</p>
                 </div>
                 <div id="divFavorReview">
-                    <button className="buttonLove" onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
+                    <button className="buttonLove" style={addFavoriteButtonColor} onClick={onFavButtonClick}><i className="fa fa-heart"></i></button>
                     <button className="buttonReview" onClick={popupReview}><i className="fa fa-star"></i>  REVIEWS</button>
                 </div>
             </Row>
@@ -117,38 +246,9 @@ function MovieViewPoster(props){
                                 <RatingStars stars={rating}/>
                             </div>
                         </div>
-                        <hr className="line"/>
-                        <div id="review">
-                            <div id="review1">
-                                <p className="revWriter">Fanis Georgiou</p>
-                                <div className="revStars2">
-                                    <p className="rating">1/5</p>
-                                    <ReactStars {...{value: 5, size: 30, count: 5, color: "black", activeColor: "yellow", isHalf: false, edit: false,
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />}} />
-                                </div>
-                            </div>
-                            <div id="review2">
-                                <p className="revComment">I've liked Brie Larson in other films, but she showed ZERO range in this. When your main character in a superhero movie is unwatchable, you already have a problem. In addition, Captain Marvel has no weaknesses, which kills the tension immediately. There is no point at which you feel she is in any danger of losing, or any danger at all for that matter.
-                                                        It's an OK origin story, but it makes no sense as to WHY she's supposedly so powerful. The cat was good.</p>
-                            </div>
-                        </div>
-                        <div id="add_review">
-                            <div className="col1Rev">
-                                <p className="addRevTitle">Add your review</p>
-                                <textarea className="reviewInput" type="text" id="fname" name="review" placeholder="Write your review here" multiple/>
-                            </div>
-                            <div className="col2Rev">
-                                <p className="emptyRow"></p>
-                                <div className="revStars3">
-                                    <ReactStars {...{size: 30, count: 5, color: "black", activeColor: "yellow", value: 0, a11y: true, isHalf: false, 
-                                            emptyIcon: <i className="fa fa-star-o" />, halfIcon: <i className="fa fa-star-half" />,
-                                            filledIcon: <i className="fa fa-star" />, onChange: newValue => {setstarrev(`${newValue}`)}}} />
-                                    <p className="rating">{starrev}/5</p>
-                                </div>
-                                <input className="reviewSubmit" type="submit" value="Submit"></input>
-                            </div>
-                        </div>
+                        <hr className="line" />
+                        {item.map(i=> <UserReviews userName={i.username}reviewText={i.review} ratingStars={i.rate} /> )}
+                        <CheckIfLogin/>
                     </div>
                 </div>
             </Modal>

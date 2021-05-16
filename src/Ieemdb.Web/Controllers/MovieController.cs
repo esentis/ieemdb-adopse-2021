@@ -153,6 +153,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="dto">Movie information.</param>
     /// <response code="200">Successfully added.</response>
     /// <response code="400">Fields missing.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Missing actors. Missing directors. Missing countries. Missing writers. Missing genres.</response>
     /// <returns>Created <see cref="MovieDto"/>.</returns>
     [Authorize(Roles = RoleNames.Administrator)]
@@ -255,6 +256,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Unique ID of the movie to add to featured.</param>
     /// <param name="movieDto">Movie information to be updated.</param>
     /// <response code="200">Movie added to features.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Movie not found.</response>
     /// <returns>Updated <see cref="MovieDto"/>.</returns>
     [Authorize(Roles = RoleNames.Administrator)]
@@ -280,6 +282,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="id">Unique ID of the movie to add to featured.</param>
     /// <response code="200">Movie added to features.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Movie not found.</response>
     [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("feature")]
@@ -306,6 +309,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="id">Unique ID of the movie to remove.</param>
     /// <response code="204">Succesfully added to list.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Movie not found.</response>
     /// <returns>No Content.</returns>
     [Authorize(Roles = RoleNames.Administrator)]
@@ -426,6 +430,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="id">Movie's unique ID.</param>
     /// <response code="204">Succesfully deleted.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Movie not found.</response>
     [Authorize(Roles = RoleNames.Administrator)]
     [HttpDelete("{id}")]

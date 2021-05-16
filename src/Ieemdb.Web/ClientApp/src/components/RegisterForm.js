@@ -42,10 +42,9 @@ function RegisterForm() {
         window.alert("Check your email inbox for confirmation");
       }
     }).catch(err=>{
-      console.log(err.response.status);
       if(err.response.status===409){
         setOpen(true);
-        setErrorMessage("Username has already been taken");
+        setErrorMessage(err.response.data[0].description);
       }else{setOpen(true);
         setErrorMessage("Something went wrong.Try again!");}
     });

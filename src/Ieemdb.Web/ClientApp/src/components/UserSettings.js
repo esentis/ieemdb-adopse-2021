@@ -7,6 +7,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import axios from 'axios';
 import validator from 'validator';
 import PasswordChecklist from "react-password-checklist";
+import getRefreshToken from './refreshToken';
 
 
 function UserSettings() {
@@ -52,9 +53,22 @@ function UserSettings() {
                 setOpen(true);
                 setSeverity("error");
                 setErrorMessage("Username has already been taken");
-                }else{setOpen(true);
+                
+                }else{if(error.response.status===401){
+                    (async()=>{
+                        var token=await getRefreshToken();
+                        axios({method:'post',url:`https://${window.location.host}/api/account/changeUsername?username=${data.username}`,
+                        headers:{'Authorization':'Bearer ' + token}}).then(function(){
+                                            setOpen(true)
+                                            setSeverity("success")
+                                            setErrorMessage("Saved");
+                                            setDisableUsername(true);
+                                            localStorage.setItem('username',data.username);})
+                      })();
+                }else{
+                    setOpen(true);
                     setSeverity("error");
-                    setErrorMessage("Something went wrong.Try again");}}
+                    setErrorMessage("Something went wrong.Try again");}}}
                 );
         }
 
@@ -68,10 +82,23 @@ function UserSettings() {
                     setSeverity("success");
                     setErrorMessage("Saved");
                         }).catch(function(error){
+                            if(error.response.status===409){
                             setOpen(true);
                             setSeverity("error");
-                            setErrorMessage("Old Password do not match");})} 
-            
+                            setErrorMessage("Old Password do not match");
+                        }else{if(error.response.status===401){
+                            (async()=>{
+                                var token=await getRefreshToken();
+                                axios({method:'post',url:`https://${window.location.host}/api/account/changePassword`,
+                                data:{"oldPassword":data.oldPassword,"newPassword":data.newPassword},
+                                headers:{'Authorization':'Bearer ' + token}}).then(function(res){
+                                setOpen(true);
+                                setSeverity("success");
+                                setErrorMessage("Saved");    
+                            })
+                              })();
+                        }}
+                        })} 
                             if(data.oldPassword.length<2){
                                 setOpen(true);
                                 setSeverity("error");
@@ -79,7 +106,6 @@ function UserSettings() {
                             }else{updatePassword();}
                             }
                         
-
        function onFormChange(e){
            var userName=data.username;
            var NewPassword=data.newPassword;
@@ -109,8 +135,6 @@ function UserSettings() {
         }else{setDisablePassword(true)}
 
         
-       
-
         if(userName===localStorage.getItem('username')||userName.length<5){
             setDisableUsername(true);
         }else{
