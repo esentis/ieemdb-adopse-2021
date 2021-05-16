@@ -27,13 +27,11 @@ function LoginForm() {
     const handleSubmitLogin = async (evt) => {
     evt.preventDefault();
     const url = 'https://' + window.location.host + '/api/account/login';
-    console.log(client.getBrowser())
     axios.post(url, {
       userName: userNameLogin,
       password: passwordLogin,
       deviceName: client.getBrowser().name //na perasw deviceName
     }).then(function (res) {
-      //console.log(res.status);
       if (res.status === 200) {
         localStorage.setItem('token', res.data.accessToken);
         localStorage.setItem('username',userNameLogin);
