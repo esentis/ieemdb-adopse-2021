@@ -174,7 +174,7 @@ function MovieViewSynopsis(props) {
     const items = data.map(i => <MovieCard
       id={i.id}
       Title={i.title}
-      Poster={i.posterUrl ? i.posterUrl : "https://media.comicbook.com/files/img/default-movie.png"}
+      Poster={i.posterUrl==="https://image.tmdb.org/t/p/w600_and_h900_bestv2"?"https://media.comicbook.com/files/img/default-movie.png":i.posterUrl}
       height={"250vh"}
       width={'auto'}
       posterClass='poster'
