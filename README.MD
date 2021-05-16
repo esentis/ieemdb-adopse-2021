@@ -12,7 +12,7 @@
 
 ## [API Documentation][docs]
 
-## [Database Schema ER](./images/ER.html)
+## [Database Schema ER][ER]
 
 ## Live Environment
 
@@ -51,6 +51,7 @@ Sponsored by [Alexandros Kritikos][akritikos] / [Kritikos IO][kritikos-io]
 [GavriilJim]:https://github.com/GavriilJim
 [TeoMastro]:https://github.com/TeoMastro
 [docs]:https://ieemdb.azurewebsites.net/docs/index.html
+[ER]:https://heuristic-raman-64f8f2.netlify.app/
 
 Please read [Contributing Guidelines](CONTRIBUTING.md) before working on this repo.
 
