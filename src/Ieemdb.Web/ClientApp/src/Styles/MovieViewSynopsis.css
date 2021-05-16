@@ -89,7 +89,7 @@
   text-align: left;
   background-color: #e7e7e7;
   padding: 0.5rem 1rem;
-  width: fit-content;
+  width: 100%;
 }
 .birthDate{
   order: 2;
@@ -106,11 +106,12 @@
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: flex-start;
+  width: 100%;
 }
 .imagePoster{
-  width: 20%;
-  border: 0.1rem solid black;
-  background-color: black;
+  width: 250px;
+  height: 400px;
+  background-color: #e7e7e7;
   flex-grow: 1;
 }
 .columnPopUp{
@@ -127,7 +128,8 @@
     width: 100%;
   }
   .imagePoster{
-    width: 30%;
+    width: 250px;
+    height: 400px;
     margin: 10px;
   }
   .popUpBio{
@@ -137,6 +139,5 @@
     text-align: left;
     background-color: #e7e7e7;
     padding: 0.5rem 1rem;
-    width: fit-content;
   }
 }
