@@ -6,7 +6,7 @@ import '../Styles/AdvancedSearch.css'
 function RatingSelect(props) {
     
     const Ratings=[];
-    for(var i=1;i<=5;i++){
+    for(var i=1;i<=10;i++){
         Ratings.push({value:i,label:i});
     }
 

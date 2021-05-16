@@ -10,7 +10,6 @@ function ReviewPanel(props) {
 
   function handleChange(event) {
     setRatingText(event.target.value);
-    console.log(ratingText);
   }
 
   

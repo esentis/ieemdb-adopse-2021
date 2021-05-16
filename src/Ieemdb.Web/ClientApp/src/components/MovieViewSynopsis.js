@@ -7,6 +7,7 @@ import 'react-alice-carousel/lib/alice-carousel.css';
 import MovieCard from './MovieCard';
 import Moment from "react-moment";
 import axios from 'axios';
+import getRefreshToken from './refreshToken'
 import { useHistory } from 'react-router-dom';
 const responsive = {
   0: { items: 1 },
@@ -30,6 +31,7 @@ function MovieViewSynopsis(props) {
     const [storeWatchlist, setStoreWatchList] = useState("");
     const history = useHistory();
     const [addWatchlistButtonColor, setaddWatchlistButtonColor] = useState({background: 'rgb(59, 94, 189)'});
+    
     const directors = props.directors.map((directors) =>
       <span className="spanName" onClick={() => onDirectorClick(directors)}>{directors.fullName} </span>
     );
@@ -51,7 +53,6 @@ function MovieViewSynopsis(props) {
             setaddWatchlistButtonColor({background: 'rgb(59, 94, 189)'});
         }
         else {
-          console.log(storeWatchlist);
           if (storeWatchlist == true || props.checkWatchList == true) {
             setWatchListButtonText("Remove From Watchlist");
             setaddWatchlistButtonColor({background: 'red'});
@@ -75,20 +76,47 @@ function MovieViewSynopsis(props) {
               method: 'delete', url: `https://${window.location.host}/api/watchlist`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
                 "movieId": props.id
               }
-            }).then()
-            setWatchListButtonText("Add To WatchList");
+            }).then(res=>{setWatchListButtonText("Add To WatchList");
             setStoreWatchList(false);
             setaddWatchlistButtonColor({background: 'rgb(59, 94, 189)'});
+            }).catch(err=>{
+              if(err.response.status===401){
+                (async()=>{
+                  var token=await getRefreshToken();
+                  axios({
+                    method: 'delete', url: `https://${window.location.host}/api/watchlist`, headers: { 'Authorization': 'Bearer ' + token}, params: {
+                      "movieId": props.id
+                    }
+                  }).then(res=>{setWatchListButtonText("Add To WatchList");
+                  setStoreWatchList(false);
+                  setaddWatchlistButtonColor({background: 'rgb(59, 94, 189)'})});
+                })();
+              }
+            })
           }
           else if (storeWatchlist == false) {
+            
             await axios({
               method: 'post', url: `https://${window.location.host}/api/watchlist`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
                 "movieId": props.id
               }
-            }).then()
-            setWatchListButtonText("Remove From Watchlist");
+            }).then(res=>{setWatchListButtonText("Remove From Watchlist");
             setStoreWatchList(true);
-            setaddWatchlistButtonColor({background: 'red'});
+            setaddWatchlistButtonColor({background: 'red'});}).catch(err=>{
+              if(err.response.status===401){
+                (async()=>{
+                  var token=await getRefreshToken();
+                  axios({
+                    method: 'post', url: `https://${window.location.host}/api/watchlist`, headers: { 'Authorization': 'Bearer ' + token }, params: {
+                      "movieId": props.id
+                    }
+                  }).then(res=>{setWatchListButtonText("Remove From Watchlist");
+                  setStoreWatchList(true);
+                  setaddWatchlistButtonColor({background: 'red'});})
+                })();
+              }
+            })
+            
           }
         }
     }
@@ -123,7 +151,6 @@ function MovieViewSynopsis(props) {
       popupToggle();
     }
     async function getDirectorCarousel(directors) {
-      console.log(directors.fullName);
       await axios({
         method: 'post', url: `https://${window.location.host}/api/movie/search`, data: {
           "page": 1, "itemsPerPage": 20, "director": directors.fullName
@@ -131,7 +158,6 @@ function MovieViewSynopsis(props) {
       }).then(res => setData(res.data.results))
     }
     async function getActorCarousel(actors) {
-      console.log(actors.fullName);
       await axios({
         method: 'post', url: `https://${window.location.host}/api/movie/search`, data: {
           "page": 1, "itemsPerPage": 20, "actor": actors.fullName
@@ -139,7 +165,6 @@ function MovieViewSynopsis(props) {
       }).then(res => setData(res.data.results))
     }
     async function getWriterCarousel(writers) {
-      console.log(writers.fullName);
       await axios({
         method: 'post', url: `https://${window.location.host}/api/movie/search`, data: {
           "page": 1, "itemsPerPage": 20, "writer": writers.fullName
@@ -158,7 +183,6 @@ function MovieViewSynopsis(props) {
     const slidePrev = () => setActiveIndex(activeIndex - 1);
     const slideNext = () => setActiveIndex(activeIndex + 1);
     const syncActiveIndex = ({ item }) => setActiveIndex(item);
-    console.log("WatchList:",props.checkWatchList);
     var itemsLength=false;
     if(items.length>3){
         itemsLength=true;
