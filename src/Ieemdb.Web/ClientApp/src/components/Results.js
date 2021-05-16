@@ -9,7 +9,7 @@ function Results({results,flag,onClick,disabled,featured}) {
                 <li key={result.id}><ResultCard
                     id={result.id}
                     title={result.title}
-                    poster={result.posterUrl?result.posterUrl:"https://media.comicbook.com/files/img/default-movie.png"}
+                    poster={result.posterUrl==="https://image.tmdb.org/t/p/w600_and_h900_bestv2"?"https://media.comicbook.com/files/img/default-movie.png":result.posterUrl}
                     release_date={result.releaseDate}
                     overview={result.plot}
                     flag={flag}

@@ -8,6 +8,7 @@ namespace Esentis.Ieemdb.Web.Controllers
 
   using Esentis.Ieemdb.Persistence;
   using Esentis.Ieemdb.Persistence.Helpers;
+  using Esentis.Ieemdb.Persistence.Identity;
   using Esentis.Ieemdb.Persistence.Models;
   using Esentis.Ieemdb.Web.Helpers;
   using Esentis.Ieemdb.Web.Models.Enums;
@@ -16,6 +17,7 @@ namespace Esentis.Ieemdb.Web.Controllers
   using Kritikos.PureMap.Contracts;
 
   using Microsoft.AspNetCore.Authorization;
+  using Microsoft.AspNetCore.Identity;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.EntityFrameworkCore;
   using Microsoft.Extensions.Hosting;
@@ -28,9 +30,11 @@ namespace Esentis.Ieemdb.Web.Controllers
     private readonly DeletedCleanupService deleteService;
     private readonly MovieSyncingService movieSeedService;
     private readonly RefreshTokenCleanupService tokenCleanupService;
+    private readonly UserManager<IeemdbUser> userManager;
 
     public AdminController(
       ILogger<AdminController> logger,
+      UserManager<IeemdbUser> userManager,
       IeemdbDbContext ctx,
       IPureMapper mapper,
       IEnumerable<IHostedService> hostedServices)
@@ -45,6 +49,7 @@ namespace Esentis.Ieemdb.Web.Controllers
       tokenCleanupService = hostedServices.OfType<RefreshTokenCleanupService>().SingleOrDefault()
                             ?? throw new InvalidOperationException(
                               $"Could not locate an instance of the service {nameof(RefreshTokenCleanupService)}");
+      this.userManager = userManager;
     }
 
     [HttpPost("startDeleteService")]
@@ -134,6 +139,54 @@ namespace Esentis.Ieemdb.Web.Controllers
       Context.ServiceBatchingProgresses.RemoveRange(movieServices);
 
       await Context.SaveChangesAsync();
+      return NoContent();
+    }
+
+    /// <summary>
+    /// Returns all users.
+    /// </summary>
+    /// <response code="204">Returns users.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <returns>No content.</returns>
+    [HttpGet("getUsers")]
+    public async Task<ActionResult<ServiceBatchingProgress>> GetAllUsers(CancellationToken token = default)
+    {
+      var users = await Context.Users
+        .ToListAsync(token);
+
+      await Context.SaveChangesAsync();
+      return Ok(users);
+    }
+
+    /// <summary>
+    /// Removes a user.
+    /// </summary>
+    /// <response code="204">Removes user.</response>
+    /// <response code="400">User has conflicts.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <returns>No content.</returns>
+    [HttpDelete("deleteUser")]
+    public async Task<ActionResult<ServiceBatchingProgress>> RemoveUser(string id, CancellationToken token = default)
+    {
+      var user = await Context.Users.SingleOrDefaultAsync(x => x.Id == Guid.Parse(id), token);
+
+      var devicesToDelete = await Context.Devices.Where(d => d.User == user).ToListAsync(token);
+      var ratingsToDelete = await Context.Ratings.Where(r => r.User == user).ToListAsync(token);
+      var watchlistsToDelete = await Context.Watchlists.Where(w => w.User == user).ToListAsync(token);
+      var favoritesToDelete = await Context.Favorites.Where(f => f.User == user).ToListAsync(token);
+
+      Context.Devices.RemoveRange(devicesToDelete);
+      Context.Ratings.RemoveRange(ratingsToDelete);
+      Context.Watchlists.RemoveRange(watchlistsToDelete);
+      Context.Favorites.RemoveRange(favoritesToDelete);
+
+      var result = await userManager.DeleteAsync(user);
+      if (!result.Succeeded)
+      {
+        return BadRequest(result.Errors);
+      }
+
+      await Context.SaveChangesAsync(token);
       return NoContent();
     }
   }
