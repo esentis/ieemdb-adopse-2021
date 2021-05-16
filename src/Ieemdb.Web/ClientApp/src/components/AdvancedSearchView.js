@@ -64,7 +64,7 @@ function AdvancedSearchView() {
                 years.push({value:max,label:max})
         }
         const Ratings=[];
-            for(var i=1;i<=5;i++){
+            for(var i=1;i<=10;i++){
             Ratings.push({value:i,label:i});
         }
 
@@ -112,7 +112,7 @@ function AdvancedSearchView() {
 
         function addRatings(arg){
             const AvailableRatings=[];
-            for(var i=arg;i<=5;i++){
+            for(var i=arg;i<=10;i++){
                 AvailableRatings.push({value:i,label:i})
             }
             setRatingOptions(AvailableRatings);
@@ -157,7 +157,6 @@ function AdvancedSearchView() {
             setDuration1(value.label);
             setDurationValue("");
             setDuration2("");
-            console.log()
         }
 
         function handleDuration2(value){
@@ -169,9 +168,9 @@ function AdvancedSearchView() {
        <Col className='column-right-AdvancedSearch'>
        <div className="AdvancedForm">
           <p><input placeholder="Movie Title" name={"MovieTitle"} onChange={handleInputs} ></input></p>
-          <p><input placeholder="Actor LastName" name={"ActorName"} onChange={handleInputs} value={inputs.ActorName} ></input></p>
-          <p><input placeholder="Director LastName" name={"DirectorName"} onChange={handleInputs} value={inputs.DirectorName}></input></p>
-          <p><input placeholder="Writer LastName" name={"WriterName"} onChange={handleInputs} value={inputs.WriterName}></input></p>
+          <p><input placeholder="Actor Name" name={"ActorName"} onChange={handleInputs} value={inputs.ActorName} ></input></p>
+          <p><input placeholder="Director Name" name={"DirectorName"} onChange={handleInputs} value={inputs.DirectorName}></input></p>
+          <p><input placeholder="Writer Name" name={"WriterName"} onChange={handleInputs} value={inputs.WriterName}></input></p>
           <DurationSelect style={myStyles} onChange1={handleDuration1} onChange2={handleDuration2} options={DurationOptions} value={durationValue} />
           <p></p>
           <GenresSelect style={myStyles} onChange={handleGenre}  />
