@@ -167,10 +167,10 @@ function AdvancedSearchView() {
     return (
        <Col className='column-right-AdvancedSearch'>
        <div className="AdvancedForm">
-          <p><input placeholder="Movie Title" name={"MovieTitle"} onChange={handleInputs} ></input></p>
-          <p><input placeholder="Actor Name" name={"ActorName"} onChange={handleInputs} value={inputs.ActorName} ></input></p>
-          <p><input placeholder="Director Name" name={"DirectorName"} onChange={handleInputs} value={inputs.DirectorName}></input></p>
-          <p><input placeholder="Writer Name" name={"WriterName"} onChange={handleInputs} value={inputs.WriterName}></input></p>
+          <p><input placeholder="Movie" name={"MovieTitle"} onChange={handleInputs} ></input></p>
+          <p><input placeholder="Actor" name={"ActorName"} onChange={handleInputs} value={inputs.ActorName} ></input></p>
+          <p><input placeholder="Director" name={"DirectorName"} onChange={handleInputs} value={inputs.DirectorName}></input></p>
+          <p><input placeholder="Writer" name={"WriterName"} onChange={handleInputs} value={inputs.WriterName}></input></p>
           <DurationSelect style={myStyles} onChange1={handleDuration1} onChange2={handleDuration2} options={DurationOptions} value={durationValue} />
           <p></p>
           <GenresSelect style={myStyles} onChange={handleGenre}  />
