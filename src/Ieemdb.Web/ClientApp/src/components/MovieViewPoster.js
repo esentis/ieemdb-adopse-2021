@@ -10,6 +10,7 @@ import ReviewPanel from './ReviewPanel';
 import axios from 'axios';
 import UserReviews from './UserReviews';
 import {Link} from 'react-router-dom';
+import getRefreshToken from './refreshToken'
 function RatingStars(rating){
   return (<div id="divRate">
     <p className="rating">{rating.stars}/10</p>
@@ -35,6 +36,7 @@ function MovieViewPoster(props) {
     const genres = props.genres.map((genre) =>
         <Genre name={genre.name} id={genre.id} onClick={HandleGenres}/>
     );
+
     const rating = props.rating;
     if (onLoad == true) {
         setStoreFavorite(props.checkFavorite);
@@ -42,7 +44,6 @@ function MovieViewPoster(props) {
             setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'});
         }
         else {
-          console.log(storeFavorite);
           if (storeFavorite == true || props.checkFavorite == true) {
             setaddFavoriteButtonColor({background: 'white'});
           }
@@ -52,6 +53,7 @@ function MovieViewPoster(props) {
         }
         setOnLoad(false);
     }
+
     async function onFavButtonClick(){
         if (localStorage.getItem('token') == null) {
           history.push('/Login/');
@@ -62,18 +64,42 @@ function MovieViewPoster(props) {
               method: 'delete', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
                 "movieId": props.id
               }
-            }).then()
-            setStoreFavorite(false);
-            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'});
+            }).then(res=>{setStoreFavorite(false);
+            setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'})}).catch(err=>{
+              
+              if(err.response.status===401){
+                (async()=>{
+                  var token=await getRefreshToken();
+                  axios({
+                    method: 'delete', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + token }, params: {
+                      "movieId": props.id
+                    }
+                  }).then(res=>{setStoreFavorite(false);
+                    setaddFavoriteButtonColor({background: 'rgba(52, 52, 52, 0)'})})
+                })();
+              }
+            })
           }
           else if (storeFavorite == false) {
             await axios({
               method: 'post', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }, params: {
                 "movieId": props.id
               }
-            }).then()
-            setStoreFavorite(true);
-            setaddFavoriteButtonColor({background: 'white'});
+            }).then(res=>{setStoreFavorite(true);
+              setaddFavoriteButtonColor({background: 'white'});}).catch(err=>{
+                if(err.response.status===401){
+                  (async()=>{
+                    var token=await getRefreshToken();
+                    axios({
+                      method: 'post', url: `https://${window.location.host}/api/favorite`, headers: { 'Authorization': 'Bearer ' + token }, params: {
+                        "movieId": props.id
+                      }
+                    }).then(res=>{setStoreFavorite(true);
+                    setaddFavoriteButtonColor({background: 'white'});})
+                  })()
+                }
+              })
+              
           }
         }
     }
@@ -88,6 +114,7 @@ function MovieViewPoster(props) {
       await axios({
         method: 'get', url: `https://${window.location.host}/api/movie/${props.id}/ratings`
       }).then(function(res){setItem(res.data);})
+
     }
     async function AddUserRating(rate,review) {
       if (rate == "0") {
@@ -101,8 +128,21 @@ function MovieViewPoster(props) {
           setItem(newItem);
           setReviewCheck(true);
           setUserReview(res.data);
-        })
-      }
+        }).catch(err=>{
+          if(err.response.status===401){
+            (async()=>{
+              var token=await getRefreshToken();
+              axios({
+                method:'post', url:`https://${window.location.host}/api/rating?movieId=${props.id}&rate=${rate}&review=${review}`, headers:{'Authorization':'Bearer '+token} 
+              }).then(function(res){
+                const newItem=[...item,res.data];
+                setItem(newItem);
+                setReviewCheck(true);
+                setUserReview(res.data);
+              })
+            })();
+          }
+        })}
     }
     async function checkIfReviewed(){
         await axios({
@@ -110,7 +150,18 @@ function MovieViewPoster(props) {
         }).then(function(res){ 
           setReviewCheck(true);
           setUserReview(res.data);
-          console.log(res.data);
+        }).catch(err=>{
+          if(err.response.status===401){
+            (async()=>{
+              var token=await getRefreshToken();
+              axios({
+                method:'post', url:`https://${window.location.host}/api/rating/check?movieId=${props.id}`, headers:{'Authorization':'Bearer '+token} 
+              }).then(function(res){ 
+                setReviewCheck(true);
+                setUserReview(res.data);
+              })
+            })();
+          }
         })
       }
       if (onLoad == true) {
@@ -144,14 +195,26 @@ function MovieViewPoster(props) {
     async function deleteComment(){
       await axios({
         method:'delete', url:`https://${window.location.host}/api/rating/delete?movieId=${props.id}`, headers:{'Authorization':'Bearer '+localStorage.getItem('token')} 
-      }).then(res => {console.log(res);
+      }).then(res => {
         const newItem=item.filter((i)=>userReview.username!==i.username);
       setItem(newItem);
       setReviewCheck(false);
+      }).catch(err=>{
+        if(err.response.status===401){
+          (async()=>{
+            var token=await getRefreshToken();
+            axios({
+              method:'delete', url:`https://${window.location.host}/api/rating/delete?movieId=${props.id}`, headers:{'Authorization':'Bearer '+token} 
+            }).then(res=>{
+              const newItem=item.filter((i)=>userReview.username!==i.username);
+              setItem(newItem);
+              setReviewCheck(false);
+            })
+          })();
+        }
       })
       
     }
-    console.log("Favorite:",props.checkFavorite);
     return(
         <Col className="backStyle" style={{backgroundImage: `linear-gradient(rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.5), rgba(41, 44, 52, 0.7), rgba(41, 44, 52, 0.9), rgba(41, 44, 52)), url(${props.poster})`}}>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>

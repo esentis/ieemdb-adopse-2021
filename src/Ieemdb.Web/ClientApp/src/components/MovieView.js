@@ -8,7 +8,8 @@ import MovieViewSynopsis from './MovieViewSynopsis';
 import LoadingSpinner from './LoadingSpinner';
 import {useUpdatePage} from './GlobalContext';
 import {useCheckLogin} from './GlobalContext';
-import axios from 'axios'
+import axios from 'axios';
+import getRefreshToken from './refreshToken';
 function MovieView() {
    
     const setPage=useUpdatePage();
@@ -33,42 +34,9 @@ function MovieView() {
         async function fetchData(){
                 const movieInfo=axios.get(`https://${window.location.host}/api/movie/${id}`);
                 const trailer=axios.get(`https://${window.location.host}/api/movie/${id}/videos`);
-                var checkFavoriteRequest="";
-                var checkWatchListRequest="";
-
-                // if(CheckLoginState()){
-                //     checkFavoriteRequest=axios({method:'post',url:`https://${window.location.host}/api/favorite/check?movieId=${id}`,headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}});
-                //     checkWatchListRequest=await axios({method:'post',url:`https://${window.location.host}/api/watchlist/check?movieId=${id}`,headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}});
-                // }
-
-
-
-            //    await axios({method:'post',url:`https://${window.location.host}/api/favorite/check?movieId=${id}`,headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}})
-            //     .then(function(res){
-            //         setItems(res.data);
-            //         setLoading(false);
-            //     }).catch(err=>{
-            //         console.log(err.response.status)});
-
-                // await (checkFavoriteRequest)
-                // .then(res=>setItems(res.data))
-                // .catch(err=>{
-                //     console.log(err);
-                //     if(err.response.status===401){
-                //         console.log("error");
-                //     }
-                // })
-                // await (checkWatchListRequest)
-                // .then(res=>setItems(res.data))
-                // .catch(err=>{
-                //     console.log(err);
-                //     if(err.response.status===401){
-                //         console.log("error");
-                //     }
-                // })
-              
-            
-                await axios.all([movieInfo,trailer,(CheckLoginState()?axios({method:'post',url:`https://${window.location.host}/api/favorite/check?movieId=${id}`,headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}}):""),(CheckLoginState()? axios({method:'post',url:`https://${window.location.host}/api/watchlist/check?movieId=${id}`,headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}}):"")]).then(axios.spread((...responses)=>{
+               
+                await axios.all([movieInfo,trailer,(CheckLoginState()?axios({method:'post',url:`https://${window.location.host}/api/favorite/check?movieId=${id}`,
+                headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}}):""),(CheckLoginState()? axios({method:'post',url:`https://${window.location.host}/api/watchlist/check?movieId=${id}`,headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}}):"")]).then(axios.spread((...responses)=>{
                    const MovieInfoResponse=responses[0];
                    const trailerResponse=responses[1];
                    const checkFavoriteResponse=responses[2];
@@ -83,25 +51,36 @@ function MovieView() {
                    setCheckFavorite(checkFavoriteResponse.data);
                    setCheckWatchList(checkWatchListResponse.data);
                    setLoading(false);
-                })).catch(err=>{
+                }))
+            .catch(err=>{
                     if(err.response.status===401){
-                         axios({method:'post',url:`https://${window.location.host}/api/account/refresh`,data:{"expiredToken":localStorage.getItem('token'),"refreshToken":localStorage.getItem('refreshToken')}})
-                        .then(res=>{
-                            console.log("hello token")
-                            localStorage.setItem('token',res.data.token);
-                        }) 
+                        (async()=>{
+                            var token=await getRefreshToken();
+                            
+                axios.all([movieInfo,trailer,(CheckLoginState()?axios({method:'post',url:`https://${window.location.host}/api/favorite/check?movieId=${id}`,
+                headers:{'Authorization':'Bearer ' + token}}):""),(CheckLoginState()? axios({method:'post',url:`https://${window.location.host}/api/watchlist/check?movieId=${id}`,headers:{'Authorization':'Bearer ' +token}}):"")]).then(axios.spread((...responses)=>{
+                   const MovieInfoResponse=responses[0];
+                   const trailerResponse=responses[1];
+                   const checkFavoriteResponse=responses[2];
+                   const checkWatchListResponse=responses[3];
+                   const MovieTrailer=trailerResponse.data.filter((video)=>"Trailer"===video.type)[0];
+                   const directors=MovieInfoResponse.data.people.filter((movie)=>"Directing"===movie.knownFor);
+                   const actors=MovieInfoResponse.data.people.filter((movie)=>"Acting"===movie.knownFor);
+                   const writers=MovieInfoResponse.data.people.filter((movie)=>"Writing"===movie.knownFor);
+                   setItems(MovieInfoResponse.data);
+                   setPeople({Directors:directors,Actors:actors,Writers:writers});
+                   setTrailerUrl(MovieTrailer);
+                   setCheckFavorite(checkFavoriteResponse.data);
+                   setCheckWatchList(checkWatchListResponse.data);
+                   setLoading(false);
+                }))            
+                })(); 
                     }
                 })
             }
           fetchData();
       },[id]);
        
-
-       // await axios({method:'post',url:`https://${window.location.host}/api/account/refresh`,data:{"expiredToken":localStorage.getItem(token),"refreshToken":localStorage.getItem(localStorage.getItem('refreshToken'))}})
-                        // .then(res=>{localStorage.setItem('token',res.data.token)})
-                    //     {method:'post',url:`https://${window.location.host}/api/favorite/check?movieId=${id}`,headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}}
-                    //     axios()
-                    // }}}
     return (
         <Col className='column-right-MovieView'>
         {!loading? <><div className='MovieViewPoster'><MovieViewPoster key={items.id} id={items.id} title={items.title} poster={items.posterUrl} releaseDate={items.releaseDate} genres={items.genres} rating={items.averageRating} checkFavorite={CheckFavorite}/></div>
