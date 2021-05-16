@@ -22,13 +22,14 @@
     .input-wrapper input {
       width: 40vw;
       background:transparent ;
-      padding: 4px;
+      padding: 10px;
       border-radius: 4rem;
       border: 2px solid white;
       color: var(--white);
       font-size: 1.25rem;
       margin-top: 5vh;
       outline: none;
+      
     }
 
     .buttonSave {
