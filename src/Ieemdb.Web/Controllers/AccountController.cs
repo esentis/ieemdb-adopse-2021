@@ -262,7 +262,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     public async Task<ActionResult<UserBindingDto>> RefreshToken([FromBody] UserRefreshTokenDto dto,
       CancellationToken token = default)
     {
-      dvar principal = GetPrincipalFromExpiredToken(dto.ExpiredToken);
+      var principal = GetPrincipalFromExpiredToken(dto.ExpiredToken);
 
       var valid = Guid.TryParse(principal.FindFirstValue(ClaimTypes.NameIdentifier), out var userId);
 
