@@ -102,6 +102,10 @@
 .AdvLink{
   display: none;
 }
+
+.Home{
+  display: none;
+}
 .logo{
   width:10vw;
   position: relative;
@@ -212,6 +216,10 @@
   } 
 
   .AdvLink{
+    display: block;
+  }
+
+  .Home{
     display: block;
   }
 
