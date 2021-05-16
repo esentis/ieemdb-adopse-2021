@@ -9,6 +9,7 @@ import Results from './Results';
 import '../Styles/Paginate.css';
 import axios from 'axios';
 import Paginate from './Paginate';
+import getRefreshToken from './refreshToken';
 
 
 
@@ -39,14 +40,31 @@ function AdminPanel() {
        async function removeFeatured(arg){
             const newFeatured=featured.filter((movie)=>arg!==movie.id)
             setFeatured(newFeatured);
-            await axios.post(`https://${window.location.host}/api/movie/unfeature?id=${arg}`)
-            
+            await axios({method:'post',url:`https://${window.location.host}/api/movie/unfeature?id=${arg}`,
+            headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}}).then().catch(err=>{
+                if(err.response.status===401){
+                    (async()=>{
+                        var token=await getRefreshToken();
+                        await axios({method:'post',url:`https://${window.location.host}/api/movie/unfeature?id=${arg}`,
+                        headers:{'Authorization':'Bearer ' + token}})
+                        })();
+                }
+            })
         }
 
         async function addFeatured(id,posterUrl,title){
             const newFeatured=[...featured,{id,posterUrl,title}]
             setFeatured(newFeatured);
-            await axios.post(`https://${window.location.host}/api/movie/feature?id=${id}`)
+            await axios({method:'post',url:`https://${window.location.host}/api/movie/feature?id=${id}`,
+            headers:{'Authorization':'Bearer ' + localStorage.getItem('token')}}).then().catch(err=>{
+                if(err.response.status===401){
+                    (async()=>{
+                        var token=await getRefreshToken();
+                        await axios({method:'post',url:`https://${window.location.host}/api/movie/feature?id=${id}`,
+                        headers:{'Authorization':'Bearer ' + token}})
+                        })();
+                }
+            })
         }
 
         const title=' Current Featured Movies';
