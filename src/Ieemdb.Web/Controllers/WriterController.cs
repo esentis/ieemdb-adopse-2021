@@ -140,6 +140,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="dto">Writer information.</param>
     /// <response code="201">Successfully added.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <returns>Created <see cref="PersonDto"/>.</returns>
     [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("")]
@@ -161,6 +162,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="id">Writer's unique ID.</param>
     /// <response code="204">Successfully deleted.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Writer not found.</response>
     [Authorize(Roles = RoleNames.Administrator)]
     [HttpDelete("")]
@@ -188,6 +190,8 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="id">Writer's unique ID.</param>
     /// <param name="dto">Writer's information.</param>
+    /// <response code="204">Successfully updated.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <returns>Updated <see cref="PersonDto"/>.</returns>
     [Authorize(Roles = RoleNames.Administrator)]
     [HttpPut("{id}")]

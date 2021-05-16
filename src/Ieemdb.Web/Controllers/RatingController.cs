@@ -43,6 +43,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="addRatingDto">Provide movie ID, rate and text Review.</param>
     /// <response code="201">Movie successfuly rated.</response>
     /// <response code="400">No such user.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Movie not found.</response>
     /// <response code="409">User has already rated the movie.</response>
     /// <returns>Created <see cref="RatingDto"/>.</returns>
@@ -89,6 +90,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="movieId">Movie's unique ID.</param>
     /// <response code="204">Movie successfuly rated.</response>
     /// <response code="400">Something went wrong.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">No rating found.</response>
     /// <returns>No Content.</returns>
     [HttpDelete("delete")]
@@ -131,6 +133,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="criteria"><see cref="PaginationCriteria"/>.</param>
     /// <response code="200">Movie successfuly rated.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="400">User error.</response>
     /// <returns>Returns a list of Ratings.</returns>
     [HttpPost("personal")]
@@ -167,6 +170,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="movieId">Movie's unique ID. </param>
     /// <response code="200">Movie successfuly rated. </response>
     /// <response code="400">Something went wrong. </response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">No rating found from the user. </response>
     /// <returns>Returns the Rating for the movie. </returns>
     [HttpPost("check")]

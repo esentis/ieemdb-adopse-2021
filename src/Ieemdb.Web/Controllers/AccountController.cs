@@ -126,6 +126,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="dto">Old and New password.</param>
     /// <response code="200">Password successfully changed.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">User not found.</response>
     /// <response code="409">Password errors.</response>
     /// <returns>No content.</returns>
@@ -153,6 +154,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="username">New username.</param>
     /// <response code="200">Username successfully changed.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">User not found.</response>
     /// <returns>No content.</returns>
     [HttpPost("changeUsername")]
@@ -176,6 +178,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// Removes a User.
     /// </summary>
     /// <response code="204">User successfully removed.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">User not found.</response>
     /// <returns>No content.</returns>
     [HttpDelete("")]

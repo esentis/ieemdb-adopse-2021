@@ -38,6 +38,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <returns>Returns list of MovieDto.</returns>
     /// <response code="200">Returns results. </response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">User not found.</response>
     [HttpGet("")]
     public async Task<ActionResult<List<MovieDto>>> GetMovieWatchlists(CancellationToken token = default)
@@ -70,6 +71,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="movieId">Movie id.</param>
     /// <response code="204">Added successful.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">User not found. Movie not found.</response>
     /// <response code="409">Movie is already in watchlist.</response>
     /// <returns>Ok.</returns>
@@ -117,6 +119,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="movieId">Movie's Id.</param>
     /// <response code="204">Successfully deleted movie from watchlist.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">User not found. Movie not found.</response>
     /// <returns>List of MovieDto/>.</returns>
     [HttpDelete("")]
@@ -149,6 +152,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="movieId">Movie's unique ID. </param>
     /// <response code="200">Returns True or False.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="400">Something went wrong. </response>
     /// <returns>True or False.</returns>
     [HttpPost("check")]
