@@ -37,7 +37,7 @@ function MovieViewPoster(props) {
         <Genre name={genre.name} id={genre.id} onClick={HandleGenres}/>
     );
 
-    const rating = props.rating;
+    const rating = props.rating.toFixed(1);
     if (onLoad == true) {
         setStoreFavorite(props.checkFavorite);
         if (localStorage.getItem('token') == null) {
