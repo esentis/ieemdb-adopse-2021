@@ -54,16 +54,26 @@ namespace Esentis.Ieemdb.Web.Controllers
       return NoContent();
     }
 
+    /// <summary>
+    /// Starts movie syncing service.
+    /// </summary>
+    /// <response code="200">Service started.</response>
+    /// <returns>All syncing services.</returns>
     [HttpPost("startSyncing")]
     public async Task<ActionResult<ServiceBatchingProgress>> InitSeeding(CancellationToken token = default)
     {
       movieSeedService.Trigger(null);
-      var status = await Context.ServiceBatchingProgresses.Where(x => x.Name == BackgroundServiceName.PopularMovieSync)
+      var status = await Context.ServiceBatchingProgresses
         .OrderByDescending(x => x.CreatedAt)
-        .SingleOrDefaultAsync(token);
+        .ToListAsync(token);
       return Ok(status);
     }
 
+    /// <summary>
+    /// Returns the sync services' status.
+    /// </summary>
+    /// <response code="200">Returns services.</response>
+    /// <returns>List of <see cref="ServiceBatchingProgress"/>.</returns>
     [HttpGet("syncStatus")]
     public async Task<ActionResult<ServiceBatchingProgress>> GetSyncStatus(CancellationToken token = default)
     {
@@ -108,7 +118,14 @@ namespace Esentis.Ieemdb.Web.Controllers
       return NoContent();
     }
 
-    [HttpPut("cleanSyncService")]
+    /// <summary>
+    /// Deletes all movie sync services.
+    /// </summary>
+    /// <response code="204">All services deleted.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="404">Batch service not found.</response>
+    /// <returns>No content.</returns>
+    [HttpDelete("cleanSyncService")]
     public async Task<ActionResult<ServiceBatchingProgress>> CleanSyncService(CancellationToken token = default)
     {
       var movieServices = await Context.ServiceBatchingProgresses.Where(x =>
