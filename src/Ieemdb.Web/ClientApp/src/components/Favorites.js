@@ -36,7 +36,7 @@ function Favorites() {
         id={i.id}
         Title={i.title} 
         Poster={i.posterUrl?i.posterUrl:"https://media.comicbook.com/files/img/default-movie.png"} 
-        height={"250vh"} 
+        height={"350vh"} 
         width={'auto'}
         posterClass='poster'
         flag={false} />)

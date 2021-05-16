@@ -78,6 +78,7 @@
   color: #D3D3D3;
   outline: none; 
   font-family: Arial;
+  padding-left: 8px;
   /* margin-left: 0.5vw; */
 }
 ::placeholder{
