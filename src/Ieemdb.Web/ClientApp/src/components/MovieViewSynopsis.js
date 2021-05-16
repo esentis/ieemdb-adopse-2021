@@ -231,7 +231,7 @@ function MovieViewSynopsis(props) {
               </div>
             </div>
             <div id="popUpBody">
-              <img className='imagePoster' src={image?image:"https://www.jing.fm/clipimg/full/426-4263841_silhouette-of-a-guy.png"} alt={name}/>
+              <img className='imagePoster' src={image==="https://image.tmdb.org/t/p/w600_and_h900_bestv2"?"https://www.jing.fm/clipimg/full/426-4263841_silhouette-of-a-guy.png":image} alt={name}/>
               <div className="columnPopUp">
                 <p className="popUpBio">{bio===""?"We don't have a biography for "+name:bio}</p>
                 <div className="div_style">
