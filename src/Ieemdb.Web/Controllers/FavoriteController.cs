@@ -40,6 +40,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="movieId">Movie's unique ID.</param>
     /// <response code="201">Movie successfuly rated.</response>
     /// <response code="400">User error.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Movie not found.</response>
     /// <response code="409">User has already favorited the movie.</response>
     /// <returns>No content.</returns>
@@ -79,6 +80,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// Returns user's favorited movies.
     /// </summary>
     /// <response code="200">Returns the list of favorited movies.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="400">User error.</response>
     /// <returns>List of <see cref="MovieDto"/>.</returns>
     [HttpGet("")]
@@ -111,6 +113,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="movieId">Movie's unique ID.</param>
     /// <response code="204">No content returned.</response>
     /// <response code="400">User error.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Favorite not found.</response>
     /// <returns>No content.</returns>
     [HttpDelete("")]
@@ -143,6 +146,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="movieId">Movie's unique ID. </param>
     /// <response code="200">Returns True or False.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="400">Something went wrong. </response>
     /// <returns>True or False.</returns>
     [HttpPost("check")]

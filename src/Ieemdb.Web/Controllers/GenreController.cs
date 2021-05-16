@@ -102,6 +102,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// </summary>
     /// <param name="dto">Genre information.</param>
     /// <response code="201">Succesfully created.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <returns>Created <see cref="GenreDto"/>.</returns>
     [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost("")]
@@ -123,6 +124,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// Deletes a Genre.
     /// </summary>
     /// <response code="204">Successfully deleted.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Genre not found.</response>
     /// <param name="id">Genre's unique ID.</param>
     [Authorize(Roles = RoleNames.Administrator)]
@@ -152,6 +154,7 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <param name="id">Genre's unique ID.</param>
     /// <param name="dto">Genre's information to be updated.</param>
     /// <response code="200">Succesfully updated.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Genre not found.</response>
     /// <returns>Updated <see cref="GenreDto"/>.</returns>
     [Authorize(Roles = RoleNames.Administrator)]

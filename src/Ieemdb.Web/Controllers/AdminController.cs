@@ -76,15 +76,18 @@ namespace Esentis.Ieemdb.Web.Controllers
     /// <summary>
     /// Updates a sync service.
     /// </summary>
+    /// <param name="id">Service unique ID.</param>
     /// <param name="page">Last proccessed page.</param>
     /// <param name="service">Service enum.</param>
     /// <response code="200">Returns updated service.</response>
+    /// <response code="401">Unauthorized.</response>
     /// <response code="404">Batch service not found.</response>
     /// <returns>Update <see cref="ServiceBatchingProgress"/>.</returns>
     [HttpPut("updateSyncService")]
-    public async Task<ActionResult<ServiceBatchingProgress>> EditSyncService(int page, BackgroundServiceName service, CancellationToken token = default)
+    public async Task<ActionResult<ServiceBatchingProgress>> EditSyncService(long id, int page,
+      BackgroundServiceName service, CancellationToken token = default)
     {
-      var status = await Context.ServiceBatchingProgresses.Where(x => x.Name == service)
+      var status = await Context.ServiceBatchingProgresses.Where(x => x.Name == service && x.Id == id)
         .OrderByDescending(x => x.CreatedAt)
         .SingleOrDefaultAsync(token);
 
@@ -102,6 +105,18 @@ namespace Esentis.Ieemdb.Web.Controllers
     public ActionResult InitTokenService()
     {
       tokenCleanupService.Trigger(null);
+      return NoContent();
+    }
+
+    [HttpPut("cleanSyncService")]
+    public async Task<ActionResult<ServiceBatchingProgress>> CleanSyncService(CancellationToken token = default)
+    {
+      var movieServices = await Context.ServiceBatchingProgresses.Where(x =>
+          x.Name == BackgroundServiceName.PopularMovieSync || x.Name == BackgroundServiceName.TopRatedMovieSync)
+        .ToListAsync(token);
+      Context.ServiceBatchingProgresses.RemoveRange(movieServices);
+
+      await Context.SaveChangesAsync();
       return NoContent();
     }
   }
