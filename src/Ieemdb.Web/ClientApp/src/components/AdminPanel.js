@@ -62,7 +62,6 @@ function AdminPanel() {
 
         const postersPerPage=10;
         async function fetchData(arg){
-            console.log("admin value:",value);
             await axios({method:'post',url:`https://${window.location.host}/api/movie/search`,data:{"page":arg+1,"itemsPerPage":postersPerPage,"titleCriteria": value}})
             .then(function (res){
             setItems({data:res.data.results,
