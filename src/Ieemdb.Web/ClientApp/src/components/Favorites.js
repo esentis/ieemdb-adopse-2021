@@ -5,6 +5,7 @@ import movies from './Movie_Dataset';
 import {useUpdatePage} from './GlobalContext';
 import {Col} from 'react-bootstrap';
 import axios from 'axios';
+import getRefreshToken from './refreshToken';
 function Favorites() {
     const setPage=useUpdatePage();
     const [data,setData]=useState([]);
@@ -16,7 +17,18 @@ function Favorites() {
             .then(function(res){
                 setData(res.data);
                 setLoading(false);
-            }).catch(err=>console.log(err.response.status))
+            }).catch(err=>{
+                if(err.response.status===401){
+                    (async()=>{
+                        var token=await getRefreshToken();
+                        await axios({method:'get',url:`https://${window.location.host}/api/favorite`,headers:{'Authorization':'Bearer ' + token}})
+                        .then(function(res){
+                        setData(res.data);
+                        setLoading(false);
+            })
+                      })();
+                }
+            })
         }
         fetchData();},[setPage]);
     const title='Favorites';
