@@ -109,10 +109,10 @@ namespace Esentis.Ieemdb.Web.Controllers
               a.Person.NormalizedFullName.Contains(criteria.Writer!.NormalizeSearch()) && x.Id == a.Movie.Id))
         .WhereIf(
           criteria.MinRating != null,
-          x => Context.Ratings.Any(r => r.Rate >= criteria.MinRating && r.Movie.Id == x.Id))
+          x => x.AverageRating >= criteria.MinRating)
         .WhereIf(
           criteria.MaxRating != null,
-          x => x.Ratings.Average(y => y.Rate) <= criteria.MaxRating)
+          x => x.AverageRating <= criteria.MaxRating)
         .WhereIf(
           criteria.Genres.Length > 0,
           x => x.MovieGenres.Any(gn => criteria.Genres.Contains(gn.Genre.Id)))
